@@ -1,3 +1,3 @@
-![logo](images/invictus.png)
+![logo](images/logo/invictus.png)
 
 Coming soon.
