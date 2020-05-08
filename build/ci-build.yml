@@ -8,11 +8,12 @@ trigger:
     include:
     - src/*
 
-pr:
-  paths:
-    include:
-    - src/*
-    - build/ci-build.yml
+pr: none # Disabled during setup
+# pr:
+#   paths:
+#     include:
+#     - src/*
+#     - build/ci-build.yml
 
 resources:
   repositories:
