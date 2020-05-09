@@ -18,7 +18,13 @@ namespace Invictus.TestLibrary.LogicApps.Model.Definitions
         public RuntimeConfiguration RuntimeConfiguration { get; set; }
 
         [JsonProperty("trackedProperties")]
-        public Dictionary<string, string> TrackedProperties { get; set; }
+        public dynamic TrackedProperties { get; set; }
+
+        [JsonProperty("actions")]
+        public Dictionary<string, ActionDefinition> Actions { get; set; }
+
+        [JsonProperty("expression")]
+        public Dictionary<string, dynamic> Expressions { get; set; }
     }
 
     public class RuntimeConfiguration
