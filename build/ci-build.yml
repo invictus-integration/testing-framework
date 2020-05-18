@@ -56,7 +56,7 @@ stages:
             displayName: 'Replace tokens'
             inputs:
               rootDirectory: 'src/Invictus.TestLibrary.LogicApps/Invictus.TestLibrary.LogicApps.UnitTests'
-              targetFiles: '**/app.config'
+              targetFiles: '*.config'
               encoding: 'auto'
               writeBOM: true
               actionOnMissing: 'warn'
