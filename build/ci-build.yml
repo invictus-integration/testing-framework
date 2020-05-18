@@ -55,8 +55,8 @@ stages:
           - task: a8515ec8-7254-4ffd-912c-86772e2b5962@3
             displayName: 'Replace tokens'
             inputs:
-              rootDirectory: 'src/Invictus.TestLibrary.LogicApps/Invictus.TestLibrary.LogicApps.UnitTests'
-              targetFiles: '*.config'
+              rootDirectory: 'src/Invictus.TestLibrary.LogicApps.UnitTests'
+              targetFiles: 'app.config'
               encoding: 'auto'
               writeBOM: true
               actionOnMissing: 'warn'
