@@ -15,7 +15,7 @@ variables:
   - group: 'Invictus Testing - Integration Testing'
   - template: ./variables/build.yml
   - name: 'Repository'
-    value: 'arcus-azure/arcus.template'
+    value: 'invictus-integration/testing-framework'
   # 'Package.Version' is added as queue-time variable on build in Azure DevOps
 
 stages:
