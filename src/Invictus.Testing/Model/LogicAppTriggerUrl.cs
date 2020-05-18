@@ -1,4 +1,8 @@
-﻿namespace Invictus.TestLibrary.LogicApps.Model
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Invictus.Testing.Model
 {
     public class LogicAppTriggerUrl
     {

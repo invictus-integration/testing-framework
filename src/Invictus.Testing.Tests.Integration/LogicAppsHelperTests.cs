@@ -1,32 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
-using Invictus.TestLibrary.LogicApps.Model;
-using Invictus.TestLibrary.LogicApps.Model.Definitions;
+using Invictus.Testing.Model;
+using Invictus.Testing.Serialization;
+using Microsoft.Extensions.Configuration;
+using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 
-namespace Invictus.TestLibrary.LogicApps.UnitTests
+namespace Invictus.Testing.Tests.Integration
 {
     [TestClass]
     public class LogicAppsHelperTests
     {
-        private readonly string resourceGroup = ConfigurationManager.AppSettings["ResourceGroup"];
-        private readonly string logicAppName = ConfigurationManager.AppSettings["TestLogicAppName"];
-        private readonly string logicAppMockingName = ConfigurationManager.AppSettings["TestMokingLogicAppName"];
+        private readonly string resourceGroup = Configuration["Azure:ResourceGroup"];
+        private readonly string logicAppName = Configuration["Azure:LogicApps:TestLogicAppName"];
+        private readonly string logicAppMockingName = Configuration["Azure:LogicApps:TestMokingLogicAppName"];
 
         private static LogicAppsHelper _logicAppsHelper;
+
+        private static readonly IConfiguration Configuration = 
+            new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile("appsettings.local.json", optional: true)
+                .Build();
 
         [ClassInitialize]
         public static void Initialize(TestContext context)
         {
-            var subscriptionId = ConfigurationManager.AppSettings["SubscriptionId"];
-            var tenantId = ConfigurationManager.AppSettings["TenantId"];
-            var clientId = ConfigurationManager.AppSettings["ClientId"];
-            var clientSecret = ConfigurationManager.AppSettings["ClientSecret"];
+            var subscriptionId = Configuration["Azure:SubscriptionId"];
+            var tenantId = Configuration["Azure:TenantId"];
+            var clientId = Configuration["Azure:Authentication:ClientId"];
+            var clientSecret = Configuration["Azure:Authentication:ClientSecret"];
 
             _logicAppsHelper = new LogicAppsHelper(subscriptionId, tenantId, clientId, clientSecret);
         }
