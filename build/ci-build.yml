@@ -49,9 +49,9 @@ stages:
           # instead of: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
           - task: NuGetToolInstaller@1
           - task: NuGetCommand@2
-              displayName: 'Nuget restore'
-              inputs:
-                restoreSolution: '$(Solution)'
+            displayName: 'Nuget restore'
+            inputs:
+              restoreSolution: '$(Solution)'
           - task: VSBuild@1
             inputs:
               solution: '$(Solution)'
