@@ -71,7 +71,6 @@ stages:
             parameters:
               dotnetSdkVersion: '$(DotNet.Sdk.Version)'
               projectName: '$(Project).Tests.Integration'
-              category: 'Integration'
 
   - stage: ReleaseToMyget
     displayName: 'Release to MyGet'
