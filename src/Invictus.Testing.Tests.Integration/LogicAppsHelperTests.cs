@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 namespace Invictus.Testing.Tests.Integration
 {
     [TestClass]
+    [TestCategory("Integration")]
     public class LogicAppsHelperTests
     {
         private readonly string resourceGroup = Configuration["Azure:ResourceGroup"];
