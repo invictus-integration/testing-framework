@@ -8,10 +8,11 @@ resources:
     - repository: templates
       type: github
       name: arcus-azure/azure-devops-templates
-      endpoint: arcus-azure
+      endpoint: invictus-integration
 
 variables:
   - group: 'Build Configuration'
+  - group: 'Invictus Testing - Integration Testing'
   - template: ./variables/build.yml
   - name: 'Repository'
     value: 'arcus-azure/arcus.template'
