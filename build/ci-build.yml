@@ -41,16 +41,23 @@ stages:
           - template: 'nuget/determine-pr-version.yml@templates'
             parameters:
               manualTriggerVersion: $(Package.Version.ManualTrigger)
-          # We'll use it once the project is migrated to .NET Core
+          # We'll use it once the project is migrated to .NET Core:
           #- template: 'build/build-solution.yml@templates'
           #  parameters:
           #    dotnetSdkVersion: '$(DotNet.Sdk.Version)'
           #    versionSuffix: '$(packageVersion)'
+          # instead of: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+          - task: NuGetToolInstaller@1
+          - task: NuGetCommand@2
+              displayName: 'Nuget restore'
+              inputs:
+              restoreSolution: '$(Solution)'
           - task: VSBuild@1
             inputs:
                 solution: '$(Solution)'
                 platform: '$(Build.Platform)'
                 configuration: '$(Build.Configuration)'
+          # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
           - task: CopyFiles@2
             displayName: 'Copy build artifacts'
             inputs:
@@ -106,6 +113,7 @@ stages:
           #    dotnetSdkVersion: '$(DotNet.Sdk.Version)'
           #    projectName: '$(Project).UnitTests'
           #    category: 'Integration'
+          # instead of: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
           - task: a8515ec8-7254-4ffd-912c-86772e2b5962@3
             displayName: 'Replace tokens'
             inputs:
@@ -121,6 +129,7 @@ stages:
             inputs:
               platform: '$(Build.Platform)'
               configuration: '$(Build.Configuration)'
+          # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   - stage: ReleaseToMyget
     displayName: 'Release to MyGet'
@@ -130,9 +139,7 @@ stages:
       - job: PushToMyGet
         displayName: 'Push to MyGet'
         pool:
-          # We'll use it once the project is migrated to .NET Core
-          #vmImage: 'ubuntu-16.04'
-          vmImage: 'windows-latest'
+          vmImage: 'ubuntu-16.04'
         steps:
           - task: DownloadPipelineArtifact@2
             displayName: 'Download build artifacts'
