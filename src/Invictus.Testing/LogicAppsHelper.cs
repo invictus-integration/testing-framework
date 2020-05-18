@@ -15,7 +15,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Invictus.Testing
 {
-    public class LogicAppsHelper
+    public class LogicAppsHelper : IDisposable
     {
         private readonly LogicManagementClient _logicManagementClient;
         private readonly string _resourceGroupPrefix;
@@ -723,5 +723,13 @@ namespace Invictus.Testing
             return await returnDelegate();
         }
         #endregion
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            _logicManagementClient?.Dispose();
+        }
     }
 }

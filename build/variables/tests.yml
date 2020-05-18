@@ -1,0 +1,3 @@
+variables:
+  LogicApps.TestLogicAppName: 'TestLogicApp'
+  LogicApps.TestLogicAppMockingName: 'TestLogicAppMocking'
