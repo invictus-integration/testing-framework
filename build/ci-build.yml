@@ -34,7 +34,9 @@ stages:
     jobs:
       - job: Compile
         pool:
-          vmImage: 'ubuntu-16.04'
+          # We'll use it once the project is migrated to .NET Core
+          #vmImage: 'ubuntu-16.04'
+          vmImage: 'windows-latest'
         steps:
           - template: 'nuget/determine-pr-version.yml@templates'
             parameters:
@@ -89,7 +91,9 @@ stages:
       - job: IntegrationTests
         displayName: 'Run integration tests'
         pool:
-          vmImage: 'ubuntu-16.04'
+          # We'll use it once the project is migrated to .NET Core
+          #vmImage: 'ubuntu-16.04'
+          vmImage: 'windows-latest'
         steps:
           - task: DownloadPipelineArtifact@2
             displayName: 'Download build artifacts'
@@ -126,7 +130,9 @@ stages:
       - job: PushToMyGet
         displayName: 'Push to MyGet'
         pool:
-          vmImage: 'ubuntu-16.04'
+          # We'll use it once the project is migrated to .NET Core
+          #vmImage: 'ubuntu-16.04'
+          vmImage: 'windows-latest'
         steps:
           - task: DownloadPipelineArtifact@2
             displayName: 'Download build artifacts'
