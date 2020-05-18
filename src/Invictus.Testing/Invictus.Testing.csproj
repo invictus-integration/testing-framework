@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Codit</Authors>
+    <Company>Codit</Company>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Azure;Logic Apps;Testing</PackageTags>
+    <Description>Provides capabilities for easily testing Logic Apps running in Azure.</Description>
+    <Copyright>Copyright (c) Codit</Copyright>
+    <PackageLicenseUrl>https://github.com/invictus-integration/testing-framework/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/invictus-integration/testing-framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/invictus-integration/testing-framework</RepositoryUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/invictus-integration/testing-framework/master/docs/images/invictus-small.png</PackageIconUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Management.Logic" Version="4.1.0" />
+    <PackageReference Include="Microsoft.Rest.ClientRuntime.Azure.Authentication" Version="2.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+</Project>

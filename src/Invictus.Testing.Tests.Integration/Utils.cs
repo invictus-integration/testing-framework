@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Invictus.TestLibrary.LogicApps.UnitTests
+namespace Invictus.Testing.Tests.Integration
 {
     public class Utils
     {

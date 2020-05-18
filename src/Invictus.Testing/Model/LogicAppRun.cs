@@ -1,8 +1,9 @@
-﻿using Microsoft.Azure.Management.Logic.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using Microsoft.Azure.Management.Logic.Models;
 
-namespace Invictus.TestLibrary.LogicApps.Model
+namespace Invictus.Testing.Model
 {
     public class LogicAppRun
     {

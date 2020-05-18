@@ -1,14 +1,16 @@
-﻿using Invictus.TestLibrary.LogicApps.Model;
-using Microsoft.Azure.Management.Logic.Models;
-using Newtonsoft.Json.Linq;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using Invictus.Testing.Model;
+using Microsoft.Azure.Management.Logic.Models;
+using Newtonsoft.Json.Linq;
 
-namespace Invictus.TestLibrary.LogicApps
+namespace Invictus.Testing
 {
-    public class Converter
+     public class Converter
     {
         /// <summary>
         /// Convert to LogicAppRun.

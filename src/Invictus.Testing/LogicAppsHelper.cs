@@ -1,5 +1,10 @@
-﻿using Invictus.TestLibrary.LogicApps.Model;
-using Invictus.TestLibrary.LogicApps.Model.Definitions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Invictus.Testing.Model;
+using Invictus.Testing.Serialization;
 using Microsoft.Azure.Management.Logic;
 using Microsoft.Azure.Management.Logic.Models;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
@@ -7,12 +12,8 @@ using Microsoft.Rest;
 using Microsoft.Rest.Azure.OData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Invictus.TestLibrary.LogicApps
+namespace Invictus.Testing
 {
     public class LogicAppsHelper
     {

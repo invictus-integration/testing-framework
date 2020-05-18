@@ -1,9 +1,10 @@
-﻿using Microsoft.Azure.Management.Logic.Models;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using Microsoft.Azure.Management.Logic.Models;
+using Newtonsoft.Json;
 
-namespace Invictus.TestLibrary.LogicApps.Model
+namespace Invictus.Testing.Model
 {
     public class LogicAppAction
     {
@@ -26,8 +27,8 @@ namespace Invictus.TestLibrary.LogicApps.Model
                 Status = workflowRunAction.Status,
                 Error = workflowRunAction.Error,
                 TrackedProperties = workflowRunAction.TrackedProperties != null
-                                ? JsonConvert.DeserializeObject<Dictionary<string, string>>(workflowRunAction.TrackedProperties.ToString())
-                                : null
+                    ? JsonConvert.DeserializeObject<Dictionary<string, string>>(workflowRunAction.TrackedProperties.ToString())
+                    : null
             };
         }
     }

@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace Invictus.TestLibrary.LogicApps.Model.Definitions
+namespace Invictus.Testing.Serialization
 {
     public class StaticResultDefinition
     {

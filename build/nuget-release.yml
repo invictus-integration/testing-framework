@@ -8,10 +8,11 @@ resources:
     - repository: templates
       type: github
       name: arcus-azure/azure-devops-templates
-      endpoint: arcus-azure
+      endpoint: invictus-integration
 
 variables:
   - group: 'Build Configuration'
+  - group: 'Invictus Testing - Integration Testing'
   - template: ./variables/build.yml
   - name: 'Repository'
     value: 'arcus-azure/arcus.template'
@@ -38,26 +39,6 @@ stages:
             inputs:
               targetPath: '$(Pipeline.Workspace)/build'
               artifactName: Build
-
-  - stage: UnitTests
-    displayName: Unit Tests
-    dependsOn: Build
-    condition: succeeded()
-    jobs:
-      - job: UnitTests
-        displayName: 'Run unit tests'
-        pool:
-          vmImage: 'ubuntu-16.04'
-        steps:
-          - task: DownloadPipelineArtifact@2
-            displayName: 'Download build artifacts'
-            inputs:
-              artifact: 'Build'
-              path: '$(Build.SourcesDirectory)'
-          - template: test/run-unit-tests.yml@templates
-            parameters:
-              dotnetSdkVersion: '$(DotNet.Sdk.Version)'
-              projectName: '$(Project).Tests.Unit'
 
   - stage: IntegrationTests
     displayName: Integration Tests
