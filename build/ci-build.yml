@@ -51,12 +51,12 @@ stages:
           - task: NuGetCommand@2
               displayName: 'Nuget restore'
               inputs:
-              restoreSolution: '$(Solution)'
+                restoreSolution: '$(Solution)'
           - task: VSBuild@1
             inputs:
-                solution: '$(Solution)'
-                platform: '$(Build.Platform)'
-                configuration: '$(Build.Configuration)'
+              solution: '$(Solution)'
+              platform: '$(Build.Platform)'
+              configuration: '$(Build.Configuration)'
           # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
           - task: CopyFiles@2
             displayName: 'Copy build artifacts'
