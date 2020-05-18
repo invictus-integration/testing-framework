@@ -52,6 +52,17 @@ stages:
             displayName: 'Nuget restore'
             inputs:
               restoreSolution: '$(Solution)'
+          - task: a8515ec8-7254-4ffd-912c-86772e2b5962@3
+            displayName: 'Replace tokens'
+            inputs:
+              rootDirectory: 'src/Invictus.TestLibrary.LogicApps/Invictus.TestLibrary.LogicApps.UnitTests'
+              targetFiles: '**/app.config'
+              encoding: 'auto'
+              writeBOM: true
+              actionOnMissing: 'warn'
+              keepToken: false
+              tokenPrefix: '#{'
+              tokenSuffix: '}#'
           - task: VSBuild@1
             inputs:
               solution: '$(Solution)'
@@ -114,17 +125,6 @@ stages:
           #    projectName: '$(Project).UnitTests'
           #    category: 'Integration'
           # instead of: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-          - task: a8515ec8-7254-4ffd-912c-86772e2b5962@3
-            displayName: 'Replace tokens'
-            inputs:
-              rootDirectory: 'src/Invictus.TestLibrary.LogicApps/Invictus.TestLibrary.LogicApps.UnitTests'
-              targetFiles: '**/*.UnitTests.dll.config'
-              encoding: 'auto'
-              writeBOM: true
-              actionOnMissing: 'warn'
-              keepToken: false
-              tokenPrefix: '#{'
-              tokenSuffix: '}#'
           - task: VSTest@2
             inputs:
               platform: '$(Build.Platform)'
