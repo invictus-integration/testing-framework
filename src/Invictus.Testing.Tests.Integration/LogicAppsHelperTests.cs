@@ -75,7 +75,7 @@ namespace Invictus.Testing.Tests.Integration
 
             // Assert
             Task<LogicAppRun> pollingTask = _logicAppsHelper.PollForLogicAppRunAsync(_resourceGroup, _logicAppName, startTime, correlationId);
-            Task<string> postTask = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            Task postTask = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
 
             await Task.WhenAll(pollingTask, postTask);
 
@@ -105,8 +105,8 @@ namespace Invictus.Testing.Tests.Integration
                 _logicAppsHelper.PollForLogicAppRunsAsync(_resourceGroup, _logicAppName, startTime, correlationId, timeout);
             
             // Run logic app twice with the same correlation id.
-            Task<string> postTask1 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
-            Task<string> postTask2 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            Task postTask1 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            Task postTask2 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
 
             await Task.WhenAll(pollingTask, postTask1, postTask2);
 
@@ -136,19 +136,19 @@ namespace Invictus.Testing.Tests.Integration
             LogicAppTriggerUrl logicAppTriggerUrl = await _logicAppsHelper.GetLogicAppTriggerUrlAsync(_resourceGroup, _logicAppName);
 
             // Assert
-            // Run logic app twice with the same correlation id.
-            await PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
-            await PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
-            
             // Poll for a specific number of logic app runs with provided correlation id.
-            List<LogicAppRun> pollingTask = 
-                await _logicAppsHelper.PollForLogicAppRunsAsync(_resourceGroup, _logicAppName, startTime, correlationId, timeout, numberOfRuns);
+            Task<List<LogicAppRun>> pollingTask = 
+                _logicAppsHelper.PollForLogicAppRunsAsync(_resourceGroup, _logicAppName, startTime, correlationId, timeout, numberOfRuns);
 
-            //await Task.WhenAll(pollingTask, postTask1, postTask2);
+            // Run logic app twice with the same correlation id.
+            Task postTask1 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            Task postTask2 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
 
-            //Assert.NotNull(pollingTask.Result);
-            Assert.Equal(numberOfRuns, pollingTask.Count);
-            Assert.All(pollingTask, logicAppRun => Assert.Equal(correlationId, logicAppRun.CorrelationId));
+            await Task.WhenAll(pollingTask, postTask1, postTask2);
+
+            Assert.NotNull(pollingTask.Result);
+            Assert.Equal(numberOfRuns, pollingTask.Result.Count);
+            Assert.All(pollingTask.Result, logicAppRun => Assert.Equal(correlationId, logicAppRun.CorrelationId));
         }
 
         [Fact]
@@ -175,7 +175,7 @@ namespace Invictus.Testing.Tests.Integration
             Task<LogicAppRun> pollingTask = 
                 _logicAppsHelper.PollForLogicAppRunAsync(_resourceGroup, _logicAppName, startTime, trackedPropertyName, trackedPropertyValue);
             
-            Task<string> postTask = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            Task postTask = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
 
             await Task.WhenAll(pollingTask, postTask);
 
@@ -210,7 +210,7 @@ namespace Invictus.Testing.Tests.Integration
             Task<LogicAppRun> pollingTask = 
                 _logicAppsHelper.PollForLogicAppRunAsync(_resourceGroup, _logicAppName, startTime, trackedPropertyName, trackedPropertyValue1);
             
-            Task<string> postTask = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            Task postTask = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
 
             await Task.WhenAll(pollingTask, postTask);
 
@@ -247,8 +247,8 @@ namespace Invictus.Testing.Tests.Integration
                 _logicAppsHelper.PollForLogicAppRunsAsync(_resourceGroup, _logicAppName, startTime, trackedPropertyName, trackedPropertyValue, timeout);
             
             // Run logic app twice with the same tracked property.
-            Task<string> postTask1 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
-            Task<string> postTask2 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            Task postTask1 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            Task postTask2 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
 
             await Task.WhenAll(pollingTask, postTask1, postTask2);
 
@@ -287,8 +287,8 @@ namespace Invictus.Testing.Tests.Integration
                 _logicAppsHelper.PollForLogicAppRunsAsync(_resourceGroup, _logicAppName, startTime, trackedPropertyName, trackedPropertyValue, timeout, numberOfRuns);
 
             // Run logic app twice with the same tracked property.
-            Task<string> postTask1 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
-            Task<string> postTask2 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            Task postTask1 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            Task postTask2 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
 
             await Task.WhenAll(pollingTask, postTask1, postTask2);
 
@@ -449,7 +449,7 @@ namespace Invictus.Testing.Tests.Integration
             return logicAppAction;
         }
 
-        private static async Task<string> PostHeadersToLogicAppTriggerAsync(string uri, IDictionary<string, string> headers)
+        private static async Task PostHeadersToLogicAppTriggerAsync(string uri, IDictionary<string, string> headers)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Post, uri))
             {
@@ -461,7 +461,6 @@ namespace Invictus.Testing.Tests.Integration
                 using (var client = new HttpClient())
                 using (HttpResponseMessage response = await client.SendAsync(request))
                 {
-                    return await response.Content.ReadAsStringAsync();
                 }
             }
         }
