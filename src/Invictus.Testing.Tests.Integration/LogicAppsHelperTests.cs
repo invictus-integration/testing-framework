@@ -117,7 +117,7 @@ namespace Invictus.Testing.Tests.Integration
                 logicAppRun => Assert.Equal(correlationId, logicAppRun.CorrelationId));
         }
 
-        [Fact]
+        [Fact(Skip = "investigate in infinite running")]
         public async Task PollForLogicAppRuns_ByCorrelationId_NumberOfRuns_Success()
         {
             // Arrange
@@ -259,7 +259,7 @@ namespace Invictus.Testing.Tests.Integration
             });
         }
 
-        [Fact(Skip = "investigate in infinite running")]
+        [Fact]
         public async Task PollForLogicAppRuns_ByTrackedProperty_NumberOfRuns_Success()
         {
             // Arrange
