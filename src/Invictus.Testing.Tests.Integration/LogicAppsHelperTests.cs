@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Invictus.Testing.Tests.Integration
 {
+    [TestClass]
     public class LogicAppsHelperTests : IDisposable
     {
         private readonly string _resourceGroup, _logicAppName, _logicAppMockingName;
