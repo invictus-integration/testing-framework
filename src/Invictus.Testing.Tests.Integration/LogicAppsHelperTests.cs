@@ -282,17 +282,17 @@ namespace Invictus.Testing.Tests.Integration
 
             // Assert
             // Poll for a specific number of logic app runs with provided tracked property.
-            List<LogicAppRun> pollingTask = await _logicAppsHelper.PollForLogicAppRunsAsync(_resourceGroup, _logicAppName, startTime, trackedPropertyName, trackedPropertyValue, timeout, numberOfRuns);
+            Task<List<LogicAppRun>> pollingTask = _logicAppsHelper.PollForLogicAppRunsAsync(_resourceGroup, _logicAppName, startTime, trackedPropertyName, trackedPropertyValue, timeout, numberOfRuns);
 
             // Run logic app twice with the same tracked property.
-            await PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
-            await PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            Task<string> postTask1 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            Task<string> postTask2 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
 
-            //await Task.WhenAll(pollingTask, postTask1, postTask2);
+            await Task.WhenAll(pollingTask, postTask1, postTask2);
 
-            //Assert.NotNull(pollingTask.Result);
-            Assert.Equal(numberOfRuns, pollingTask.Count);
-            Assert.All(pollingTask, logicAppRun => 
+            Assert.NotNull(pollingTask.Result);
+            Assert.Equal(numberOfRuns, pollingTask.Result.Count);
+            Assert.All(pollingTask.Result, logicAppRun => 
             {
                 Assert.Contains(logicAppRun.TrackedProperties, property => property.Value == trackedPropertyValue);
             });
