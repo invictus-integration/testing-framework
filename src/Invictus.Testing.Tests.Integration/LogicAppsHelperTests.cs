@@ -117,12 +117,11 @@ namespace Invictus.Testing.Tests.Integration
                 logicAppRun => Assert.Equal(correlationId, logicAppRun.CorrelationId));
         }
 
-        [Fact(Skip = "investigate in infinite running")]
+        [Fact]
         public async Task PollForLogicAppRuns_ByCorrelationId_NumberOfRuns_Success()
         {
             // Arrange
             const int numberOfRuns = 2;
-
             TimeSpan timeout = TimeSpan.FromSeconds(30);
             DateTime startTime = DateTime.UtcNow;
 
