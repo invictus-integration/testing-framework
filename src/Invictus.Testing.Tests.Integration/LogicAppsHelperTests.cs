@@ -83,7 +83,7 @@ namespace Invictus.Testing.Tests.Integration
             Assert.Equal(correlationId, pollingTask.Result.CorrelationId);
         }
 
-        [Fact]
+        [Fact(Skip = "investigate in infinite running")]
         public async Task PollForLogicAppRuns_ByCorrelationId_AfterTimeoutPeriod_Success()
         {
             // Arrange
@@ -117,7 +117,7 @@ namespace Invictus.Testing.Tests.Integration
                 logicAppRun => Assert.Equal(correlationId, logicAppRun.CorrelationId));
         }
 
-        [Fact]
+        [Fact(Skip = "investigate in infinite running")]
         public async Task PollForLogicAppRuns_ByCorrelationId_NumberOfRuns_Success()
         {
             // Arrange
@@ -151,7 +151,7 @@ namespace Invictus.Testing.Tests.Integration
             Assert.All(pollingTask.Result, logicAppRun => Assert.Equal(correlationId, logicAppRun.CorrelationId));
         }
 
-        [Fact]
+        [Fact(Skip = "investigate in infinite running")]
         public async Task PollForLogicAppRun_ByTrackedProperty_Success()
         {
             // Arrange
@@ -185,7 +185,7 @@ namespace Invictus.Testing.Tests.Integration
                 property => property.Value == trackedPropertyValue);
         }
 
-        [Fact]
+        [Fact(Skip = "investigate in infinite running")]
         public async Task PollForLogicAppRun_ByTrackedProperty_DifferentValues_GetsLatest_Success()
         {
             // Arrange
@@ -220,7 +220,7 @@ namespace Invictus.Testing.Tests.Integration
                 property => property.Value == trackedPropertyValue2);
         }
 
-        [Fact]
+        [Fact(Skip = "investigate in infinite running")]
         public async Task PollForLogicAppRuns_ByTrackedProperty_AfterTimeoutPeriod_Success()
         {
             // Arrange
@@ -260,7 +260,7 @@ namespace Invictus.Testing.Tests.Integration
             });
         }
 
-        [Fact]
+        [Fact(Skip = "investigate in infinite running")]
         public async Task PollForLogicAppRuns_ByTrackedProperty_NumberOfRuns_Success()
         {
             // Arrange
