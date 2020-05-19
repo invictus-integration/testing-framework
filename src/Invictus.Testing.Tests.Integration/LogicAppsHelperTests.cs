@@ -185,7 +185,7 @@ namespace Invictus.Testing.Tests.Integration
                 property => property.Value == trackedPropertyValue);
         }
 
-        [Fact(Skip = "investigate in infinite running")]
+        [Fact]
         public async Task PollForLogicAppRun_ByTrackedProperty_DifferentValues_GetsLatest_Success()
         {
             // Arrange
@@ -220,7 +220,7 @@ namespace Invictus.Testing.Tests.Integration
                 property => property.Value == trackedPropertyValue2);
         }
 
-        [Fact(Skip = "investigate in infinite running")]
+        [Fact]
         public async Task PollForLogicAppRuns_ByTrackedProperty_AfterTimeoutPeriod_Success()
         {
             // Arrange
