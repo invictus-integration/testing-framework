@@ -259,7 +259,7 @@ namespace Invictus.Testing.Tests.Integration
             });
         }
 
-        [Fact(Skip = "investigate in infinite running")]
+        [Fact]
         public async Task PollForLogicAppRuns_ByTrackedProperty_NumberOfRuns_Success()
         {
             // Arrange
@@ -281,19 +281,16 @@ namespace Invictus.Testing.Tests.Integration
             LogicAppTriggerUrl logicAppTriggerUrl = await _logicAppsHelper.GetLogicAppTriggerUrlAsync(_resourceGroup, _logicAppName);
 
             // Assert
-            // Poll for a specific number of logic app runs with provided tracked property.
-            Task<List<LogicAppRun>> pollingTask = 
-                _logicAppsHelper.PollForLogicAppRunsAsync(_resourceGroup, _logicAppName, startTime, trackedPropertyName, trackedPropertyValue, timeout, numberOfRuns);
-            
             // Run logic app twice with the same tracked property.
-            Task<string> postTask1 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
-            Task<string> postTask2 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            await PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            await PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
 
-            await Task.WhenAll(pollingTask, postTask1, postTask2);
+            // Poll for a specific number of logic app runs with provided tracked property.
+            List<LogicAppRun> pollingTask = 
+                await _logicAppsHelper.PollForLogicAppRunsAsync(_resourceGroup, _logicAppName, startTime, trackedPropertyName, trackedPropertyValue, timeout, numberOfRuns);
 
-            Assert.NotNull(pollingTask.Result);
-            Assert.Equal(numberOfRuns, pollingTask.Result.Count);
-            Assert.All(pollingTask.Result, logicAppRun => 
+            Assert.Equal(numberOfRuns, pollingTask.Count);
+            Assert.All(pollingTask, logicAppRun => 
             {
                 Assert.Contains(logicAppRun.TrackedProperties, property => property.Value == trackedPropertyValue);
             });
