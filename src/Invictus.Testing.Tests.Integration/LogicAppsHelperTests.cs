@@ -136,6 +136,7 @@ namespace Invictus.Testing.Tests.Integration
             };
 
             // Act
+            _outputWriter.WriteLine("Get trigger URL of logic app");
             LogicAppTriggerUrl logicAppTriggerUrl = await _logicAppsHelper.GetLogicAppTriggerUrlAsync(_resourceGroup, _logicAppName);
 
             // Assert
