@@ -17,6 +17,8 @@ namespace Invictus.Testing.Tests.Integration
         private readonly string _resourceGroup, _logicAppName, _logicAppMockingName;
         private readonly LogicAppsHelper _logicAppsHelper;
 
+        private static readonly TestConfig Configuration = TestConfig.Create();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LogicAppsHelperTests"/> class.
         /// </summary>
@@ -24,15 +26,14 @@ namespace Invictus.Testing.Tests.Integration
         {
             _outputWriter = outputWriter;
 
-            var configuration = TestConfig.Create();
-            _resourceGroup = configuration.GetAzureResourceGroup();
-            _logicAppName = configuration.GetTestLogicAppName();
-            _logicAppMockingName = configuration.GetTestMockingLogicAppName();
+            _resourceGroup = Configuration.GetAzureResourceGroup();
+            _logicAppName = Configuration.GetTestLogicAppName();
+            _logicAppMockingName = Configuration.GetTestMockingLogicAppName();
 
-            string subscriptionId = configuration.GetAzureSubscriptionId();
-            string tenantId = configuration.GetAzureTenantId();
-            string clientId = configuration.GetAzureClientId();
-            string clientSecret = configuration.GetAzureClientSecret();
+            string subscriptionId = Configuration.GetAzureSubscriptionId();
+            string tenantId = Configuration.GetAzureTenantId();
+            string clientId = Configuration.GetAzureClientId();
+            string clientSecret = Configuration.GetAzureClientSecret();
             _logicAppsHelper = new LogicAppsHelper(subscriptionId, tenantId, clientId, clientSecret);
         }
 
@@ -261,8 +262,8 @@ namespace Invictus.Testing.Tests.Integration
             };
         }
 
-        [Fact]
-        //[Fact(Skip = "investigate in infinite running")]
+        //[Fact]
+        [Fact(Skip = "investigate in infinite running")]
         public async Task PollForLogicAppRuns_ByTrackedProperty_NumberOfRuns_Success()
         {
             // Arrange
