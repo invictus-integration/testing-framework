@@ -13,6 +13,7 @@ using Microsoft.Rest.Azure.OData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Polly;
+using Polly.Retry;
 
 namespace Invictus.Testing
 {
@@ -690,42 +691,24 @@ namespace Invictus.Testing
 
         private async Task<T> Poll<T>(Func<Task<T>> condition, int pollIntervalSeconds, TimeSpan timeout)
         {
+            RetryPolicy<T> retryPolicy = 
+                Policy.HandleResult<T>(result => result == null)
+                      .WaitAndRetryForeverAsync(index => TimeSpan.FromSeconds(pollIntervalSeconds));
+
             return await Policy.TimeoutAsync(timeout)
-                               .WrapAsync(Policy.HandleResult<T>(result => result == null)
-                                                .WaitAndRetryForeverAsync(index => TimeSpan.FromSeconds(pollIntervalSeconds)))
+                               .WrapAsync(retryPolicy)
                                .ExecuteAsync(condition);
-
-            //var timeoutTracker = new TimeoutTracker(timeout);
-            //while (await condition() == null)
-            //{
-            //    await Task.Delay(TimeSpan.FromSeconds(pollIntervalSeconds));
-            //    if (timeoutTracker.IsExpired)
-            //    {
-            //        return default;
-            //    }
-            //}
-
-            //return await condition();
         }
 
         private async Task<List<T>> Poll<T>(Func<Task<List<T>>> condition, int count, int pollIntervalSeconds, TimeSpan timeout)
         {
+            RetryPolicy<List<T>> retryPolicy = 
+                Policy.HandleResult<List<T>>(results => results.Count < count)
+                      .WaitAndRetryForeverAsync(index => TimeSpan.FromSeconds(pollIntervalSeconds));
+            
             return await Policy.TimeoutAsync(timeout)
-                               .WrapAsync(Policy.HandleResult<List<T>>(results => results.Count < count)
-                                                .WaitAndRetryForeverAsync(index => TimeSpan.FromSeconds(pollIntervalSeconds)))
+                               .WrapAsync(retryPolicy)
                                .ExecuteAsync(condition);
-
-            //var timeoutTracker = new TimeoutTracker(timeout);
-            //while (condition().Result.Count() < count)
-            //{
-            //    await Task.Delay(TimeSpan.FromSeconds(pollIntervalSeconds));
-            //    if (timeoutTracker.IsExpired)
-            //    {
-            //        return default;
-            //    }
-            //}
-
-            //return await condition();
         }
 
         private async Task<T> PollAfterTimeout<T>(Func<Task<T>> returnDelegate, TimeSpan timeout)
