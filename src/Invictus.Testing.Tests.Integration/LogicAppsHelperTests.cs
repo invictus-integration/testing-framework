@@ -136,17 +136,17 @@ namespace Invictus.Testing.Tests.Integration
             };
 
             // Act
-            _outputWriter.WriteLine("Get trigger URL of logic app");
+            Console.WriteLine("Get trigger URL of logic app");
             LogicAppTriggerUrl logicAppTriggerUrl = await _logicAppsHelper.GetLogicAppTriggerUrlAsync(_resourceGroup, _logicAppName);
 
             // Assert
-            _outputWriter.WriteLine("Run logic app twice with same correlation id");
+            Console.WriteLine("Run logic app twice with same correlation id");
             // Run logic app twice with the same correlation id.
             Task postTask1 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
             Task postTask2 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
             await Task.WhenAll(postTask1, postTask2);
 
-            _outputWriter.WriteLine("Poll for specific number of logic app runs with provided correlation id");
+            Console.WriteLine("Poll for specific number of logic app runs with provided correlation id");
             // Poll for a specific number of logic app runs with provided correlation id.
             List<LogicAppRun> pollingTask = 
                 await _logicAppsHelper.PollForLogicAppRunsAsync(_resourceGroup, _logicAppName, startTime, correlationId, timeout, numberOfRuns);
