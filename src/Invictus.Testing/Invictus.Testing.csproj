@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.Azure.Management.Logic" Version="4.1.0" />
     <PackageReference Include="Microsoft.Rest.ClientRuntime.Azure.Authentication" Version="2.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Polly-Signed" Version="5.9.0" />
   </ItemGroup>
 
 </Project>

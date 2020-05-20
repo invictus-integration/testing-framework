@@ -12,6 +12,7 @@ using Microsoft.Rest;
 using Microsoft.Rest.Azure.OData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Polly;
 
 namespace Invictus.Testing
 {
@@ -689,17 +690,22 @@ namespace Invictus.Testing
 
         private async Task<T> Poll<T>(Func<Task<T>> condition, int pollIntervalSeconds, TimeSpan timeout)
         {
-            var timeoutTracker = new TimeoutTracker(timeout);
-            while (await condition() == null)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(pollIntervalSeconds));
-                if (timeoutTracker.IsExpired)
-                {
-                    return default;
-                }
-            }
+            return await Policy.TimeoutAsync(timeout)
+                               .WrapAsync(Policy.HandleResult<T>(result => result == null)
+                                                .WaitAndRetryForever(index => TimeSpan.FromSeconds(pollIntervalSeconds)))
+                               .ExecuteAsync(condition);
 
-            return await condition();
+            //var timeoutTracker = new TimeoutTracker(timeout);
+            //while (await condition() == null)
+            //{
+            //    await Task.Delay(TimeSpan.FromSeconds(pollIntervalSeconds));
+            //    if (timeoutTracker.IsExpired)
+            //    {
+            //        return default;
+            //    }
+            //}
+
+            //return await condition();
         }
 
         private async Task<List<T>> Poll<T>(Func<Task<List<T>>> condition, int count, int pollIntervalSeconds, TimeSpan timeout)
