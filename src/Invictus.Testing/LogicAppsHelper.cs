@@ -710,17 +710,22 @@ namespace Invictus.Testing
 
         private async Task<List<T>> Poll<T>(Func<Task<List<T>>> condition, int count, int pollIntervalSeconds, TimeSpan timeout)
         {
-            var timeoutTracker = new TimeoutTracker(timeout);
-            while (condition().Result.Count() < count)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(pollIntervalSeconds));
-                if (timeoutTracker.IsExpired)
-                {
-                    return default;
-                }
-            }
+            return await Policy.TimeoutAsync(timeout)
+                               .WrapAsync(Policy.HandleResult<List<T>>(results => results.Count < count)
+                                                .WaitAndRetryForeverAsync(index => TimeSpan.FromSeconds(pollIntervalSeconds)))
+                               .ExecuteAsync(condition);
 
-            return await condition();
+            //var timeoutTracker = new TimeoutTracker(timeout);
+            //while (condition().Result.Count() < count)
+            //{
+            //    await Task.Delay(TimeSpan.FromSeconds(pollIntervalSeconds));
+            //    if (timeoutTracker.IsExpired)
+            //    {
+            //        return default;
+            //    }
+            //}
+
+            //return await condition();
         }
 
         private async Task<T> PollAfterTimeout<T>(Func<Task<T>> returnDelegate, TimeSpan timeout)
