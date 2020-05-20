@@ -5,26 +5,26 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Invictus.Testing.Model;
 using Invictus.Testing.Serialization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Invictus.Testing.Tests.Integration
 {
-    [TestClass]
     public class LogicAppsHelperTests : IDisposable
     {
+        private readonly ITestOutputHelper _outputWriter;
         private readonly string _resourceGroup, _logicAppName, _logicAppMockingName;
         private readonly LogicAppsHelper _logicAppsHelper;
-
-        private static readonly HttpClient HttpClient = new HttpClient();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogicAppsHelperTests"/> class.
         /// </summary>
-        public LogicAppsHelperTests()
+        public LogicAppsHelperTests(ITestOutputHelper outputWriter)
         {
-            var configuration = TestConfig.Create();
+            _outputWriter = outputWriter;
 
+            var configuration = TestConfig.Create();
             _resourceGroup = configuration.GetAzureResourceGroup();
             _logicAppName = configuration.GetTestLogicAppName();
             _logicAppMockingName = configuration.GetTestMockingLogicAppName();
@@ -36,18 +36,18 @@ namespace Invictus.Testing.Tests.Integration
             _logicAppsHelper = new LogicAppsHelper(subscriptionId, tenantId, clientId, clientSecret);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task GetLogicAppTriggerUrl_Success()
         {
             // Act
             LogicAppTriggerUrl logicAppTriggerUrl = await _logicAppsHelper.GetLogicAppTriggerUrlAsync(_resourceGroup, _logicAppName);
 
             // Assert
-            Assert.IsNotNull(logicAppTriggerUrl.Value);
-            Assert.AreEqual("POST", logicAppTriggerUrl.Method);
+            Assert.NotNull(logicAppTriggerUrl.Value);
+            Assert.Equal("POST", logicAppTriggerUrl.Method);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task GetLogicAppTriggerUrl_ByName_Success()
         {
             // Act
@@ -55,11 +55,11 @@ namespace Invictus.Testing.Tests.Integration
                 await _logicAppsHelper.GetLogicAppTriggerUrlAsync(_resourceGroup, _logicAppName, triggerName: "manual");
 
             // Assert
-            Assert.IsNotNull(logicAppTriggerUrl.Value);
-            Assert.AreEqual("POST", logicAppTriggerUrl.Method);
+            Assert.NotNull(logicAppTriggerUrl.Value);
+            Assert.Equal("POST", logicAppTriggerUrl.Method);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task PollForLogicAppRun_ByCorrelationId_Success()
         {
             // Arrange
@@ -80,11 +80,11 @@ namespace Invictus.Testing.Tests.Integration
 
             await Task.WhenAll(pollingTask, postTask);
 
-            Assert.IsNotNull(pollingTask.Result);
-            Assert.AreEqual(correlationId, pollingTask.Result.CorrelationId);
+            Assert.NotNull(pollingTask.Result);
+            Assert.Equal(correlationId, pollingTask.Result.CorrelationId);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task PollForLogicAppRuns_ByCorrelationId_AfterTimeoutPeriod_Success()
         {
             // Arrange
@@ -111,16 +111,16 @@ namespace Invictus.Testing.Tests.Integration
 
             await Task.WhenAll(pollingTask, postTask1, postTask2);
 
-            Assert.IsNotNull(pollingTask.Result);
-            Assert.AreEqual(2, pollingTask.Result.Count);
+            Assert.NotNull(pollingTask.Result);
+            Assert.Equal(2, pollingTask.Result.Count);
             foreach (var logicAppRun in pollingTask.Result)
             {
-                Assert.AreEqual(correlationId, logicAppRun.CorrelationId);
+                Assert.Equal(correlationId, logicAppRun.CorrelationId);
             }
         }
 
-        [TestMethod]
-        //[TestMethod(Skip = "investigate in infinite running")]
+        [Fact]
+        //[Fact(Skip = "investigate in infinite running")]
         public async Task PollForLogicAppRuns_ByCorrelationId_NumberOfRuns_Success()
         {
             // Arrange
@@ -138,25 +138,25 @@ namespace Invictus.Testing.Tests.Integration
             LogicAppTriggerUrl logicAppTriggerUrl = await _logicAppsHelper.GetLogicAppTriggerUrlAsync(_resourceGroup, _logicAppName);
 
             // Assert
-            // Poll for a specific number of logic app runs with provided correlation id.
-            Task<List<LogicAppRun>> pollingTask = 
-                _logicAppsHelper.PollForLogicAppRunsAsync(_resourceGroup, _logicAppName, startTime, correlationId, timeout, numberOfRuns);
-
+            _outputWriter.WriteLine("Run logic app twice with same correlation id");
             // Run logic app twice with the same correlation id.
             Task postTask1 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
             Task postTask2 = PostHeadersToLogicAppTriggerAsync(logicAppTriggerUrl.Value, headers);
+            await Task.WhenAll(postTask1, postTask2);
 
-            await Task.WhenAll(pollingTask, postTask1, postTask2);
+            _outputWriter.WriteLine("Poll for specific number of logic app runs with provided correlation id");
+            // Poll for a specific number of logic app runs with provided correlation id.
+            List<LogicAppRun> pollingTask = 
+                await _logicAppsHelper.PollForLogicAppRunsAsync(_resourceGroup, _logicAppName, startTime, correlationId, timeout, numberOfRuns);
 
-            Assert.IsNotNull(pollingTask.Result);
-            Assert.AreEqual(numberOfRuns, pollingTask.Result.Count);
-            foreach (var logicAppRun in pollingTask.Result)
+            Assert.Equal(numberOfRuns, pollingTask.Count);
+            foreach (var logicAppRun in pollingTask)
             {
-                Assert.AreEqual(correlationId, logicAppRun.CorrelationId);
+                Assert.Equal(correlationId, logicAppRun.CorrelationId);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public async Task PollForLogicAppRun_ByTrackedProperty_Success()
         {
             // Arrange
@@ -184,11 +184,11 @@ namespace Invictus.Testing.Tests.Integration
 
             await Task.WhenAll(pollingTask, postTask);
 
-            Assert.IsNotNull(pollingTask.Result);
-            Assert.IsTrue(pollingTask.Result.TrackedProperties.ContainsValue(trackedPropertyValue));
+            Assert.NotNull(pollingTask.Result);
+            Assert.True(pollingTask.Result.TrackedProperties.ContainsValue(trackedPropertyValue));
         }
 
-        [TestMethod]
+        [Fact]
         public async Task PollForLogicAppRun_ByTrackedProperty_DifferentValues_GetsLatest_Success()
         {
             // Arrange
@@ -217,11 +217,11 @@ namespace Invictus.Testing.Tests.Integration
 
             await Task.WhenAll(pollingTask, postTask);
 
-            Assert.IsNotNull(pollingTask.Result);
-            Assert.IsTrue(pollingTask.Result.TrackedProperties.ContainsValue(trackedPropertyValue2));
+            Assert.NotNull(pollingTask.Result);
+            Assert.True(pollingTask.Result.TrackedProperties.ContainsValue(trackedPropertyValue2));
         }
 
-        [TestMethod]
+        [Fact]
         public async Task PollForLogicAppRuns_ByTrackedProperty_AfterTimeoutPeriod_Success()
         {
             // Arrange
@@ -253,16 +253,16 @@ namespace Invictus.Testing.Tests.Integration
 
             await Task.WhenAll(pollingTask, postTask1, postTask2);
 
-            Assert.IsNotNull(pollingTask.Result);
-            Assert.AreEqual(2, pollingTask.Result.Count);
+            Assert.NotNull(pollingTask.Result);
+            Assert.Equal(2, pollingTask.Result.Count);
             foreach (var logicAppRun in pollingTask.Result)
             {
-                Assert.IsTrue(logicAppRun.TrackedProperties.ContainsValue(trackedPropertyValue));
+                Assert.True(logicAppRun.TrackedProperties.ContainsValue(trackedPropertyValue));
             };
         }
 
-        [TestMethod]
-        //[TestMethod(Skip = "investigate in infinite running")]
+        [Fact]
+        //[Fact(Skip = "investigate in infinite running")]
         public async Task PollForLogicAppRuns_ByTrackedProperty_NumberOfRuns_Success()
         {
             // Arrange
@@ -294,15 +294,15 @@ namespace Invictus.Testing.Tests.Integration
 
             await Task.WhenAll(pollingTask, postTask1, postTask2);
 
-            Assert.IsNotNull(pollingTask.Result);
-            Assert.AreEqual(numberOfRuns, pollingTask.Result.Count);
+            Assert.NotNull(pollingTask.Result);
+            Assert.Equal(numberOfRuns, pollingTask.Result.Count);
             foreach (var logicAppRun in pollingTask.Result)
             {
-                Assert.IsTrue(logicAppRun.TrackedProperties.ContainsValue(trackedPropertyValue));
+                Assert.True(logicAppRun.TrackedProperties.ContainsValue(trackedPropertyValue));
             };
         }
 
-        [TestMethod]
+        [Fact]
         public async Task EnableStaticResultForAction_Success()
         {
             // Arrange
@@ -329,17 +329,17 @@ namespace Invictus.Testing.Tests.Integration
             bool result = await _logicAppsHelper.EnableStaticResultForActionAsync(_resourceGroup, _logicAppMockingName, actionName, staticResultDefinition);
             
             // Assert
-            Assert.IsTrue(result);
+            Assert.True(result);
 
             await RunLogicAppOnTriggerUrlAsync(headers);
             LogicAppAction logicAppAction = await PollForLogicAppActionAsync(correlationId, actionName);
             
-            Assert.AreEqual("200", logicAppAction.Outputs.statusCode.ToString());
-            Assert.AreEqual("testvalue", logicAppAction.Outputs.headers["testheader"].ToString());
-            Assert.IsTrue(logicAppAction.Outputs.body.ToString().Contains("test body"));
+            Assert.Equal("200", logicAppAction.Outputs.statusCode.ToString());
+            Assert.Equal("testvalue", logicAppAction.Outputs.headers["testheader"].ToString());
+            Assert.True(logicAppAction.Outputs.body.ToString().Contains("test body"));
         }
 
-        [TestMethod]
+        [Fact]
         public async Task EnableStaticResultForActions_Success()
         {
             // Arrange
@@ -368,17 +368,17 @@ namespace Invictus.Testing.Tests.Integration
             bool isSuccess = await _logicAppsHelper.EnableStaticResultForActionsAsync(_resourceGroup, _logicAppMockingName, actions);
             
             // Assert
-            Assert.IsTrue(isSuccess);
+            Assert.True(isSuccess);
 
             await RunLogicAppOnTriggerUrlAsync(headers);
             LogicAppAction logicAppAction = await PollForLogicAppActionAsync(correlationId, actionName);
             
-            Assert.AreEqual("200", logicAppAction.Outputs.statusCode.ToString());
-            Assert.AreEqual("testvalue", logicAppAction.Outputs.headers["testheader"].ToString());
-            Assert.AreEqual("test body", logicAppAction.Outputs.body.ToString());
+            Assert.Equal("200", logicAppAction.Outputs.statusCode.ToString());
+            Assert.Equal("testvalue", logicAppAction.Outputs.headers["testheader"].ToString());
+            Assert.Equal("test body", logicAppAction.Outputs.body.ToString());
         }
 
-        [TestMethod]
+        [Fact]
         public async Task DisableStaticResultForAction_Success()
         {
             // Arrange
@@ -394,16 +394,16 @@ namespace Invictus.Testing.Tests.Integration
             bool isSuccess = await _logicAppsHelper.DisableStaticResultForActionAsync(_resourceGroup, _logicAppMockingName, actionName);
             
             // Assert
-            Assert.IsTrue(isSuccess);
+            Assert.True(isSuccess);
 
             await RunLogicAppOnTriggerUrlAsync(headers);
             LogicAppAction logicAppAction = await PollForLogicAppActionAsync(correlationId, actionName);
             
             string body = logicAppAction.Outputs.body;
-            Assert.AreNotEqual("test body", body);
+            Assert.NotEqual("test body", body);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task DisableStaticResultForAllActions_Success()
         {
             // Arrange
@@ -419,7 +419,7 @@ namespace Invictus.Testing.Tests.Integration
             bool isSuccess = await _logicAppsHelper.DisableAllStaticResultsForLogicAppAsync(_resourceGroup, _logicAppMockingName);
             
             // Assert
-            Assert.IsTrue(isSuccess);
+            Assert.True(isSuccess);
 
             await RunLogicAppOnTriggerUrlAsync(headers);
 
@@ -428,7 +428,7 @@ namespace Invictus.Testing.Tests.Integration
             foreach (var action in logicAppRun.Actions)
             { 
                 string body = action.Outputs.body;
-                Assert.AreNotEqual("test body", body);
+                Assert.NotEqual("test body", body);
             };
         }
 
@@ -443,10 +443,10 @@ namespace Invictus.Testing.Tests.Integration
             DateTime startTime = DateTime.UtcNow.AddMinutes(-1);
 
             LogicAppRun logicAppRun = await _logicAppsHelper.PollForLogicAppRunAsync(_resourceGroup, _logicAppMockingName, startTime, correlationId);
-            Assert.IsTrue(logicAppRun.Actions.Count != 0);
+            Assert.True(logicAppRun.Actions.Count != 0);
             
             LogicAppAction logicAppAction = logicAppRun.Actions.First(action => action.Name.Equals(actionName));
-            Assert.IsNotNull(logicAppAction);
+            Assert.NotNull(logicAppAction);
 
             return logicAppAction;
         }
