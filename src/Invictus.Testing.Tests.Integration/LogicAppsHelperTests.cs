@@ -120,8 +120,8 @@ namespace Invictus.Testing.Tests.Integration
             }
         }
 
-        [Fact]
-        //[Fact(Skip = "investigate in infinite running")]
+        //[Fact]
+        [Fact(Skip = "investigate in infinite running")]
         public async Task PollForLogicAppRuns_ByCorrelationId_NumberOfRuns_Success()
         {
             // Arrange
