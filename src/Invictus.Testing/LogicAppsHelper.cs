@@ -692,7 +692,7 @@ namespace Invictus.Testing
         {
             return await Policy.TimeoutAsync(timeout)
                                .WrapAsync(Policy.HandleResult<T>(result => result == null)
-                                                .WaitAndRetryForever(index => TimeSpan.FromSeconds(pollIntervalSeconds)))
+                                                .WaitAndRetryForeverAsync(index => TimeSpan.FromSeconds(pollIntervalSeconds)))
                                .ExecuteAsync(condition);
 
             //var timeoutTracker = new TimeoutTracker(timeout);
