@@ -14,6 +14,7 @@ using Microsoft.Rest.Azure;
 using Microsoft.Rest.Azure.OData;
 using Polly;
 using Polly.Retry;
+using Polly.Timeout;
 
 namespace Invictus.Testing 
 {
@@ -165,6 +166,11 @@ namespace Invictus.Testing
             RetryPolicy<IEnumerable<LogicAppRun>> retryPolicy =
                 Policy.HandleResult<IEnumerable<LogicAppRun>>(
                           runs => numberOfItems <= 0 ? !runs.Any() : runs.Count() < numberOfItems)
+                      .Or<Exception>(ex =>
+                      {
+                          _logger.LogError(ex, "Polling for logic app runs was faulted: {Message}", ex.Message);
+                          return true;
+                      })
                       .WaitAndRetryForeverAsync(index =>
                       {
                           _logger.LogTrace("Could not retrieve logic app runs in time, wait 5s and try again...");
@@ -178,22 +184,28 @@ namespace Invictus.Testing
 
             if (result.Outcome == OutcomeType.Failure)
             {
-                string amount = numberOfItems <= 0 ? "any" : numberOfItems.ToString();
-                _logger.LogError("Polling finished faulted without {Amount} logic app runs", amount);
+                if (result.FinalException is null
+                    || result.FinalException.GetType() == typeof(TimeoutRejectedException))
+                {
+                    string amount = numberOfItems <= 0 ? "any" : numberOfItems.ToString();
+                    _logger.LogError("Polling finished faulted without {Amount} logic app runs", amount);
 
-                string correlation = _hasCorrelationId
-                    ? $"{Environment.NewLine} with correlation property equal '{_correlationId}'"
-                    : String.Empty;
+                    string correlation = _hasCorrelationId
+                        ? $"{Environment.NewLine} with correlation property equal '{_correlationId}'"
+                        : String.Empty;
 
-                string trackedProperty = _hasTrackedProperty
-                    ? $" {Environment.NewLine} with tracked property [{_trackedPropertyName}] = {_trackedPropertyValue}"
-                    : String.Empty;
+                    string trackedProperty = _hasTrackedProperty
+                        ? $" {Environment.NewLine} with tracked property [{_trackedPropertyName}] = {_trackedPropertyValue}"
+                        : String.Empty;
 
-                throw new TimeoutException(
-                    $"Could not in the given timeout span ({_timeout:g}) retrieve {amount} logic app runs "
-                    + $"{Environment.NewLine} with StartTime <= {_startTime:O}"
-                    + correlation
-                    + trackedProperty);
+                    throw new TimeoutException(
+                        $"Could not in the given timeout span ({_timeout:g}) retrieve {amount} logic app runs "
+                        + $"{Environment.NewLine} with StartTime <= {_startTime:O}"
+                        + correlation
+                        + trackedProperty);
+                }
+
+                throw result.FinalException;
             }
 
             _logger.LogTrace("Polling finished successful with {LogicAppRunsCount} logic app runs", result.Result.Count());
@@ -250,15 +262,25 @@ namespace Invictus.Testing
             var actions = new Collection<LogicAppAction>();
             foreach (WorkflowRunAction workflowRunAction in workflowRunActions)
             {
-                string input = await HttpClient.GetStringAsync(workflowRunAction.InputsLink.Uri);
-                string output = await HttpClient.GetStringAsync(workflowRunAction.OutputsLink.Uri);
-
+                string input = await GetHttpStringAsync(workflowRunAction.InputsLink?.Uri);
+                string output = await GetHttpStringAsync(workflowRunAction.OutputsLink?.Uri);
+                
                 var action = Converter.ToLogicAppAction(workflowRunAction, input, output);
                 actions.Add(action);
             }
 
             _logger.LogTrace("Found {LogicAppActionsCount} logic app actions", actions.Count);
             return actions.AsEnumerable();
+        }
+
+        private static async Task<string> GetHttpStringAsync(string uri)
+        {
+            if (uri != null)
+            {
+                return await HttpClient.GetStringAsync(uri);
+            }
+
+            return null;
         }
 
         private bool HasTrackedProperty(IDictionary<string, string> properties)

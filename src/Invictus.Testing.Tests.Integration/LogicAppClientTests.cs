@@ -79,17 +79,18 @@ namespace Invictus.Testing.Tests.Integration
                     // Act
                     await logicApp.TriggerAsync(headers);
                     LogicAppAction action = await PollForLogicAppActionAsync(correlationId, actionName);
-            
-                    Assert.Equal("200", action.Outputs.statusCode.ToString());
-                    Assert.Equal("testvalue", action.Outputs.headers["testheader"].ToString());
-                    Assert.True(action.Outputs.body.ToString().Contains("test body"));
+
+                    JObject output = JObject.Parse(action.Outputs.ToString());
+                    Assert.Equal("200", output.Value<string>("statusCode"));
+                    Assert.Equal("testvalue", output.GetValue("headers").Value<string>("testheader"));
+                    Assert.Equal("test body", output.GetValue("body").Value<string>("name"));
                 }
                 {
                     await logicApp.TriggerAsync(headers);
                     LogicAppAction action = await PollForLogicAppActionAsync(correlationId, actionName);
             
-                    string body = action.Outputs.body;
-                    Assert.NotEqual("test body", body);
+                    JObject output = JObject.Parse(action.Outputs.ToString());
+                    Assert.DoesNotContain("test body", output.GetValue("body").Value<string>());
                 }
                 
             }
