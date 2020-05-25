@@ -14,19 +14,5 @@ namespace Invictus.Testing.Model
         public DateTimeOffset? EndTime { get; set; }
         public string Status { get; set; }
         public object Error { get; set; }
-
-        public static explicit operator LogicAppTrigger(WorkflowRunTrigger workflowRunTrigger)
-        {
-            return new LogicAppTrigger
-            {
-                Name = workflowRunTrigger.Name,
-                Inputs = workflowRunTrigger.Inputs,
-                Outputs = workflowRunTrigger.Outputs,
-                StartTime = workflowRunTrigger.StartTime,
-                EndTime = workflowRunTrigger.EndTime,
-                Status = workflowRunTrigger.Status,
-                Error = workflowRunTrigger.Error,
-            };
-        }
     }
 }

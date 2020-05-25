@@ -16,20 +16,5 @@ namespace Invictus.Testing.Model
         public dynamic Inputs { get; set; }
         public dynamic Outputs { get; set; }
         public Dictionary<string, string> TrackedProperties { get; set; }
-
-        public static explicit operator LogicAppAction(WorkflowRunAction workflowRunAction)
-        {
-            return new LogicAppAction
-            {
-                Name = workflowRunAction.Name,
-                StartTime = workflowRunAction.StartTime,
-                EndTime = workflowRunAction.EndTime,
-                Status = workflowRunAction.Status,
-                Error = workflowRunAction.Error,
-                TrackedProperties = workflowRunAction.TrackedProperties != null
-                    ? JsonConvert.DeserializeObject<Dictionary<string, string>>(workflowRunAction.TrackedProperties.ToString())
-                    : null
-            };
-        }
     }
 }

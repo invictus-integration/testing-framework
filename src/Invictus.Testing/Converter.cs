@@ -1,86 +1,74 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Invictus.Testing.Model;
 using Microsoft.Azure.Management.Logic.Models;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Invictus.Testing
 {
-     public class Converter
+    internal class Converter
     {
         /// <summary>
-        /// Convert to LogicAppRun.
+        /// Convert to <see cref="LogicAppRun"/>.
         /// </summary>
-        /// <param name="helper"></param>
-        /// <param name="resourceGroupName"></param>
-        /// <param name="logicAppName"></param>
-        /// <param name="workFlowRun"></param>
-        /// <returns></returns>
-        public static LogicAppRun ToLogicAppRun(LogicAppsHelper helper, string resourceGroupName, string logicAppName, WorkflowRun workFlowRun)
+        public static LogicAppRun ToLogicAppRun(WorkflowRun workFlowRun, IEnumerable<LogicAppAction> actions)
         {
-            var logicAppRun = (LogicAppRun)workFlowRun;
+            return new LogicAppRun
+            {
+                Id = workFlowRun.Name,
+                StartTime = workFlowRun.StartTime,
+                EndTime = workFlowRun.EndTime,
+                Status = workFlowRun.Status,
+                Error = workFlowRun.Error,
+                CorrelationId = workFlowRun.Correlation?.ClientTrackingId,
+                Trigger = CreateLogicAppTriggerFrom(workFlowRun.Trigger),
+                Actions = actions,
+                TrackedProperties = new ReadOnlyDictionary<string, string>(GetAllTrackedProperties(actions))
+            };
+        }
 
-            logicAppRun.Actions = helper.GetLogicAppRunActionsAsync(resourceGroupName, logicAppName, workFlowRun.Name, false).Result;
-
-            logicAppRun.TrackedProperties = GetAllTrackedProperties(logicAppRun.Actions);
-
-            return logicAppRun;
+        private static LogicAppTrigger CreateLogicAppTriggerFrom(WorkflowRunTrigger workflowRunTrigger)
+        {
+            return new LogicAppTrigger
+            {
+                Name = workflowRunTrigger.Name,
+                Inputs = workflowRunTrigger.Inputs,
+                Outputs = workflowRunTrigger.Outputs,
+                StartTime = workflowRunTrigger.StartTime,
+                EndTime = workflowRunTrigger.EndTime,
+                Status = workflowRunTrigger.Status,
+                Error = workflowRunTrigger.Error
+            };
         }
 
         /// <summary>
-        /// Convert to LogicAppRun.
+        /// Convert to <see cref="LogicAppAction"/>.
         /// </summary>
-        /// <param name="workFlowRun"></param>
-        /// <param name="actions"></param>
-        /// <returns></returns>
-        public static LogicAppRun ToLogicAppRun(WorkflowRun workFlowRun, List<LogicAppAction> actions)
+        public static LogicAppAction ToLogicAppAction(WorkflowRunAction workflowRunAction, string input, string output)
         {
-            var logicAppRun = (LogicAppRun)workFlowRun;
-
-            logicAppRun.Actions = actions;
-            logicAppRun.TrackedProperties = GetAllTrackedProperties(logicAppRun.Actions);
-
-            return logicAppRun;
-        }
-
-        /// <summary>
-        /// Convert to LogicAppAction.
-        /// </summary>
-        /// <param name="workflowRunAction"></param>
-        /// <returns></returns>
-        public static async Task<LogicAppAction> ToLogicAppActionAsync(WorkflowRunAction workflowRunAction)
-        {
-            var logicAppAction = (LogicAppAction)workflowRunAction;
-
-            if (workflowRunAction.InputsLink != null)
+            var logicAppAction = new LogicAppAction
             {
-                logicAppAction.Inputs = JToken.Parse(await DoHttpRequestAsync(workflowRunAction.InputsLink.Uri));
-            }
-            if (workflowRunAction.OutputsLink != null)
+                Name = workflowRunAction.Name,
+                StartTime = workflowRunAction.StartTime,
+                EndTime = workflowRunAction.EndTime,
+                Status = workflowRunAction.Status,
+                Error = workflowRunAction.Error,
+                Inputs = input,
+                Outputs = output
+            };
+
+            if (workflowRunAction.TrackedProperties != null)
             {
-                logicAppAction.Outputs = JToken.Parse(await DoHttpRequestAsync(workflowRunAction.OutputsLink.Uri));
+                logicAppAction.TrackedProperties =
+                    JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                        workflowRunAction.TrackedProperties.ToString());
             }
 
             return logicAppAction;
         }
 
-        #region Private Methods
-        private static async Task<string> DoHttpRequestAsync(string uri)
-        {
-            string responseString = string.Empty;
-            using (var httpClient = new HttpClient())
-            {
-                responseString = await httpClient.GetStringAsync(uri);
-            }
-
-            return responseString;
-        }
-
-        private static Dictionary<string, string> GetAllTrackedProperties(List<LogicAppAction> actions)
+        private static IDictionary<string, string> GetAllTrackedProperties(IEnumerable<LogicAppAction> actions)
         {
             return actions
                 .Where(x => x.TrackedProperties != null)
@@ -89,7 +77,23 @@ namespace Invictus.Testing
                 .GroupBy(x => x.Key)
                 .Select(g => g.First())
                 .ToDictionary(x => x.Key, x => x.Value);
-        } 
-        #endregion
+        }
+
+        /// <summary>
+        /// Convert to <see cref="LogicApp"/>.
+        /// </summary>
+        public static LogicApp ToLogicApp(Workflow workflow)
+        {
+            return new LogicApp
+            {
+                Name = workflow.Name,
+                CreatedTime = workflow.CreatedTime,
+                ChangedTime = workflow.ChangedTime,
+                State = workflow.State,
+                Version = workflow.Version,
+                AccessEndpoint = workflow.AccessEndpoint,
+                Definition = workflow.Definition
+            };
+        }
     }
 }
