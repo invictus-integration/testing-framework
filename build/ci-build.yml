@@ -13,8 +13,7 @@ pr:
     include:
     - src/*
     - build/ci-build.yml
-    - build/variables/build.yml
-    - build/variables/tests.yml
+    - build/variables/*
 
 resources:
   repositories:
