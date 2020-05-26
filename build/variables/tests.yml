@@ -1,3 +1,5 @@
 variables:
+  LogicApps.ClientId: '60b83144-d508-4845-996f-756949ed2b21'
+  LogicApps.ResourceGroup: 'Invictus-tst-testing'
   LogicApps.TestLogicAppName: 'TestLogicApp'
   LogicApps.TestLogicAppMockingName: 'TestLogicAppMocking'
