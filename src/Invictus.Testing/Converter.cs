@@ -45,7 +45,7 @@ namespace Invictus.Testing
         /// <summary>
         /// Convert to <see cref="LogicAppAction"/>.
         /// </summary>
-        public static LogicAppAction ToLogicAppAction(WorkflowRunAction workflowRunAction, string input, string output)
+        public static LogicAppAction ToLogicAppAction(WorkflowRunAction workflowRunAction, dynamic input, dynamic output)
         {
             var logicAppAction = new LogicAppAction
             {

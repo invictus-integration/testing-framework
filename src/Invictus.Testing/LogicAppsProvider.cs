@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Rest.Azure;
 using Microsoft.Rest.Azure.OData;
+using Newtonsoft.Json.Linq;
 using Polly;
 using Polly.Retry;
 using Polly.Timeout;
@@ -262,8 +263,8 @@ namespace Invictus.Testing
             var actions = new Collection<LogicAppAction>();
             foreach (WorkflowRunAction workflowRunAction in workflowRunActions)
             {
-                string input = await GetHttpStringAsync(workflowRunAction.InputsLink?.Uri);
-                string output = await GetHttpStringAsync(workflowRunAction.OutputsLink?.Uri);
+                JToken input = await GetHttpJsonStringAsync(workflowRunAction.InputsLink?.Uri);
+                JToken output = await GetHttpJsonStringAsync(workflowRunAction.OutputsLink?.Uri);
                 
                 var action = Converter.ToLogicAppAction(workflowRunAction, input, output);
                 actions.Add(action);
@@ -273,11 +274,12 @@ namespace Invictus.Testing
             return actions.AsEnumerable();
         }
 
-        private static async Task<string> GetHttpStringAsync(string uri)
+        private static async Task<JToken> GetHttpJsonStringAsync(string uri)
         {
             if (uri != null)
             {
-                return await HttpClient.GetStringAsync(uri);
+                string json = await HttpClient.GetStringAsync(uri);
+                return JToken.Parse(json);
             }
 
             return null;

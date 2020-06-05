@@ -74,25 +74,43 @@ namespace Invictus.Testing.Tests.Integration
             // Act
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppMockingName, Authentication))
             {
-                await using (await logicApp.TemporaryEnableStaticResultAsync(actionName, definition))
+                await using (await logicApp.TemporaryEnableAsync())
                 {
-                    // Act
-                    await logicApp.TriggerAsync(headers);
-                    LogicAppAction action = await PollForLogicAppActionAsync(correlationId, actionName);
+                    await using (await logicApp.TemporaryEnableStaticResultAsync(actionName, definition))
+                    {
+                        // Act
+                        await logicApp.TriggerAsync(headers);
+                        LogicAppAction enabledAction = await PollForLogicAppActionAsync(correlationId, actionName);
 
-                    JObject output = JObject.Parse(action.Outputs.ToString());
-                    Assert.Equal("200", output.Value<string>("statusCode"));
-                    Assert.Equal("testvalue", output.GetValue("headers").Value<string>("testheader"));
-                    Assert.Equal("test body", output.GetValue("body").Value<string>("name"));
+                        Assert.Equal("200", enabledAction.Outputs.statusCode.ToString());
+                        Assert.Equal("testvalue", enabledAction.Outputs.headers["testheader"].ToString());
+                        Assert.Contains("test body", enabledAction.Outputs.body.ToString());
+                    }
+
+                    await logicApp.TriggerAsync(headers);
+                    LogicAppAction disabledAction = await PollForLogicAppActionAsync(correlationId, actionName);
+
+                    Assert.DoesNotContain("test body", disabledAction.Outputs.body.ToString());
+                }
+            }
+        }
+
+        [Fact]
+        public async Task TemporaryEnableLogicApp_Success()
+        {
+            // Act
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppMockingName, Authentication, Logger))
+            {
+                await using (await logicApp.TemporaryEnableAsync())
+                {
+                    // Assert
+                    LogicApp metadata = await logicApp.GetMetadataAsync();
+                    Assert.Equal("Enabled", metadata.State);
                 }
                 {
-                    await logicApp.TriggerAsync(headers);
-                    LogicAppAction action = await PollForLogicAppActionAsync(correlationId, actionName);
-            
-                    JObject output = JObject.Parse(action.Outputs.ToString());
-                    Assert.DoesNotContain("test body", output.GetValue("body").Value<string>());
+                    LogicApp metadata = await logicApp.GetMetadataAsync();
+                    Assert.Equal("Disabled", metadata.State);
                 }
-                
             }
         }
 
