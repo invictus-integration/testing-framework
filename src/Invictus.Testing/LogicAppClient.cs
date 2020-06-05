@@ -172,15 +172,22 @@ namespace Invictus.Testing
         }
 
         /// <summary>
+        /// Runs the current logic app resource by searching for triggers on the logic app.
+        /// </summary>
+        /// <exception cref="LogicAppTriggerNotFoundException">When no trigger can be found on the logic app.</exception>
+        public async Task RunAsync()
+        {
+            string triggerName = await GetTriggerNameAsync();
+            await RunByNameAsync(triggerName);
+        }
+
+        /// <summary>
         /// Runs the current logic app resource using the given <paramref name="triggerName"/>.
         /// </summary>
         /// <param name="triggerName">The name of the trigger that executes a workflow in the logic app.</param>
-        public async Task RunAsync(string triggerName = "")
+        public async Task RunByNameAsync(string triggerName)
         {
-            if (String.IsNullOrEmpty(triggerName))
-            {
-                triggerName = await GetTriggerNameAsync();
-            }
+            Guard.NotNullOrEmpty(triggerName, nameof(triggerName));
 
             _logger.LogTrace("Run the workflow trigger of logic app '{LogicAppName}' in resource group '{ResourceGroup}'", _logicAppName, _resourceGroup);
             await _logicManagementClient.WorkflowTriggers.RunAsync(_resourceGroup, _logicAppName, triggerName);
@@ -220,15 +227,24 @@ namespace Invictus.Testing
         }
 
         /// <summary>
+        /// Gets the URL on which the workflow with trigger can be run by searching the workflow for configured triggers.
+        /// </summary>
+        /// <exception cref="LogicAppTriggerNotFoundException">When no trigger can be found on the logic app.</exception>
+        public async Task<LogicAppTriggerUrl> GetTriggerUrlAsync()
+        {
+            string triggerName = await GetTriggerNameAsync();
+            LogicAppTriggerUrl triggerUrl = await GetTriggerUrlByNameAsync(triggerName);
+            
+            return triggerUrl;
+        }
+
+        /// <summary>
         /// Gets the URL on which the workflow with the <paramref name="triggerName"/> can be run.
         /// </summary>
         /// <param name="triggerName">The name of the trigger that relates to a workflow.</param>
-        public async Task<LogicAppTriggerUrl> GetTriggerUrlAsync(string triggerName = "")
+        public async Task<LogicAppTriggerUrl> GetTriggerUrlByNameAsync(string triggerName)
         {
-            if (String.IsNullOrEmpty(triggerName))
-            {
-                triggerName = await GetTriggerNameAsync();
-            }
+            Guard.NotNullOrEmpty(triggerName, nameof(triggerName));
             
             _logger.LogTrace("Request the workflow trigger URL of logic app '{LogicAppName}' in resource group '{ResourceGroup}'", _logicAppName, _resourceGroup);
             WorkflowTriggerCallbackUrl callbackUrl = 
@@ -243,17 +259,15 @@ namespace Invictus.Testing
 
         private async Task<string> GetTriggerNameAsync()
         {
-            // TODO: when no triggers can be found, shouldn't this throw?
-            var triggerName = String.Empty;
-            
             IPage<WorkflowTrigger> triggers = await _logicManagementClient.WorkflowTriggers.ListAsync(_resourceGroup, _logicAppName);
             
             if (triggers.Any())
             {
-                triggerName = triggers.First().Name;
+                return triggers.First().Name;
             }
 
-            return triggerName;
+            throw new LogicAppTriggerNotFoundException(
+                $"Cannot find any trigger for logic app '{_logicAppName}' in resource group '{_resourceGroup}'");
         }
 
         /// <summary>

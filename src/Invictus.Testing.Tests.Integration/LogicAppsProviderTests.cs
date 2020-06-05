@@ -11,7 +11,7 @@ namespace Invictus.Testing.Tests.Integration
     public class LogicAppsProviderTests : IntegrationTest
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LogicAppsHelperTests"/> class.
+        /// Initializes a new instance of the <see cref="LogicAppsProviderTests"/> class.
         /// </summary>
         public LogicAppsProviderTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {

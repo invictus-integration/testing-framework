@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Invictus.Testing.Model;
 using Invictus.Testing.Serialization;
@@ -14,7 +13,7 @@ namespace Invictus.Testing.Tests.Integration
     public class LogicAppClientTests : IntegrationTest
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LogicAppsHelperTests"/> class.
+        /// Initializes a new instance of the <see cref="LogicAppClientTests"/> class.
         /// </summary>
         public LogicAppClientTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
@@ -41,7 +40,7 @@ namespace Invictus.Testing.Tests.Integration
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication))
             {
                 // Act
-                LogicAppTriggerUrl logicAppTriggerUrl = await logicApp.GetTriggerUrlAsync(triggerName: "manual");
+                LogicAppTriggerUrl logicAppTriggerUrl = await logicApp.GetTriggerUrlByNameAsync(triggerName: "manual");
 
                 // Assert
                 Assert.NotNull(logicAppTriggerUrl.Value);
