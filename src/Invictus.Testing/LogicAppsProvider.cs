@@ -147,7 +147,7 @@ namespace Invictus.Testing
         public async Task<LogicAppRun> PollForSingleLogicAppRunAsync()
         {
             IEnumerable<LogicAppRun> logicAppRuns = await PollForLogicAppRunsAsync(numberOfItems: 1);
-            return logicAppRuns.FirstOrDefault();
+            return logicAppRuns.SingleOrDefault();
         }
 
         /// <summary>
