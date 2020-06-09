@@ -20,7 +20,7 @@ namespace Invictus.Testing.Tests.Integration
         }
 
         [Fact]
-        public async Task GetLogicAppTriggerUrl_Success()
+        public async Task GetLogicAppTriggerUrl_NoTriggerNameSpecified_Success()
         {
             // Arrange
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication))
