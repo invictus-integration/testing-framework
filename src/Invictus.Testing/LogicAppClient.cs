@@ -328,34 +328,7 @@ namespace Invictus.Testing
                 async () => await DisableStaticResultsForActionsAsync(actions.Keys));
         }
 
-        /// <summary>
-        /// Enables a static result for an action with the given <paramref name="actionName"/> on the logic app.
-        /// </summary>
-        /// <param name="actionName">The name of the action to enable the static result.</param>
-        /// <param name="staticResultDefinition">The definition that describes the static result for the action.</param>
-        /// <returns>
-        ///     An indication whether the enabling was successful [true] or not [false].
-        /// </returns>
-        public async Task<bool> EnableStaticResultForActionAsync(string actionName, StaticResultDefinition staticResultDefinition = null)
-        {
-            return await EnableStaticResultForActionsAsync(new Dictionary<string, StaticResultDefinition>
-            {
-                [actionName] = staticResultDefinition ?? new StaticResultDefinition
-                {
-                    Outputs = new Outputs { Headers = new Dictionary<string, string>(), StatusCode = "OK" },
-                    Status = "Succeeded"
-                }
-            });
-        }
-
-        /// <summary>
-        /// Enables static results for a given set of actions on the logic app.
-        /// </summary>
-        /// <param name="actions">The set of action names and the corresponding static result.</param>
-        /// <returns>
-        ///     An indication whether the enabling was successful [true] or not [false].
-        /// </returns>
-        public async Task<bool> EnableStaticResultForActionsAsync(IDictionary<string, StaticResultDefinition> actions)
+        private async Task EnableStaticResultForActionsAsync(IDictionary<string, StaticResultDefinition> actions)
         {
             Guard.NotNull(actions, nameof(actions));
             Guard.NotAny(actions, nameof(actions));
@@ -382,7 +355,12 @@ namespace Invictus.Testing
             workflow.Definition = JObject.Parse(JsonConvert.SerializeObject(logicAppDefinition));
 
             Workflow resultWorkflow = await _logicManagementClient.Workflows.CreateOrUpdateAsync(_resourceGroup, _logicAppName, workflow);
-            return resultWorkflow.Name == _logicAppName;
+            if (resultWorkflow.Name != _logicAppName)
+            {
+                throw new LogicAppNotUpdatedException(
+                    "Logic app was not updated correctly with an enabled static result",
+                    _logicAppName, _resourceGroup, _logicManagementClient.SubscriptionId);
+            }
         }
 
         private static LogicAppDefinition UpdateLogicAppDefinitionWithStaticResult(
@@ -421,7 +399,7 @@ namespace Invictus.Testing
         /// <returns>
         ///     An indication whether the disabling was successful [true], or not [false].
         /// </returns>
-        public async Task<bool> DisableStaticResultForActionAsync(string actionName)
+        public async Task DisableStaticResultForActionAsync(string actionName)
         {
             Guard.NotNullOrEmpty(actionName, nameof(actionName));
 
@@ -429,7 +407,7 @@ namespace Invictus.Testing
                 "Disables (-) a static result definition for action {ActionName} of logic app '{LogicAppName}' in resource group '{ResourceGroup}'", 
                 actionName, _logicAppName, _resourceGroup);
             
-            return await DisableStaticResultsForActionAsync(name => name == actionName);
+            await DisableStaticResultsForActionAsync(name => name == actionName);
         }
 
         /// <summary>
@@ -439,7 +417,7 @@ namespace Invictus.Testing
         /// <returns>
         ///     An indication whether the disabling was successful [true], or not [false].
         /// </returns>
-        public async Task<bool> DisableStaticResultsForActionsAsync(IEnumerable<string> actionNames)
+        public async Task DisableStaticResultsForActionsAsync(IEnumerable<string> actionNames)
         {
             Guard.NotNull(actionNames, nameof(actionNames));
             Guard.NotAny(actionNames, nameof(actionNames));
@@ -451,7 +429,7 @@ namespace Invictus.Testing
                 "Disables (-) a static result definition for actions {ActionNames} of logic app '{LogicAppName}' in resource group '{ResourceGroup}'", 
                 actionNames, _logicAppName, _resourceGroup);
 
-            return await DisableStaticResultsForActionAsync(actionNames.Contains);
+            await DisableStaticResultsForActionAsync(actionNames.Contains);
         }
 
         /// <summary>
@@ -460,15 +438,15 @@ namespace Invictus.Testing
         /// <returns>
         ///     An indication whether the disabling was successful [true], or not [false].
         /// </returns>
-        public async Task<bool> DisableAllStaticResultForActionAsync()
+        public async Task DisableAllStaticResultForActionAsync()
         {
             _logger.LogTrace(
                 "Disables (-) a static result definition for all actions of logic app '{LogicAppName}' in resource group '{ResourceGroup}'", _logicAppName, _resourceGroup);
 
-            return await DisableStaticResultsForActionAsync(actionName => true);
+            await DisableStaticResultsForActionAsync(actionName => true);
         }
 
-        private async Task<bool> DisableStaticResultsForActionAsync(Func<string, bool> shouldDisable)
+        private async Task DisableStaticResultsForActionAsync(Func<string, bool> shouldDisable)
         {
             Workflow workflow = await _logicManagementClient.Workflows.GetAsync(_resourceGroup, _logicAppName);
             var logicAppDefinition = JsonConvert.DeserializeObject<LogicAppDefinition>(workflow.Definition.ToString());
@@ -485,7 +463,12 @@ namespace Invictus.Testing
             workflow.Definition = JObject.Parse(JsonConvert.SerializeObject(logicAppDefinition));
 
             Workflow resultWorkflow = await _logicManagementClient.Workflows.CreateOrUpdateAsync(_resourceGroup, _logicAppName, workflow);
-            return resultWorkflow.Name == _logicAppName;
+            if (resultWorkflow.Name != _logicAppName)
+            {
+                throw new LogicAppNotUpdatedException(
+                    "Logic app was not updated correctly with a disabled static result",
+                    _logicAppName, _resourceGroup, _logicManagementClient.SubscriptionId);
+            }
         }
 
         /// <summary>
