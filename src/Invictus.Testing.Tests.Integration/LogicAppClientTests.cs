@@ -160,6 +160,60 @@ namespace Invictus.Testing.Tests.Integration
             }
         }
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task Constructor_WithBlankResourceGroup_Fails(string resourceGroup)
+        {
+            await Assert.ThrowsAsync<ArgumentException>(
+                () => LogicAppClient.CreateAsync(resourceGroup, LogicAppName, Authentication));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task Constructor_WithBlankLogicApp_Fails(string logicApp)
+        {
+            await Assert.ThrowsAsync<ArgumentException>(
+                () => LogicAppClient.CreateAsync(ResourceGroup, logicApp, Authentication));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task ConstructorWithLogger_WithBlankResourceGroup_Fails(string resourceGroup)
+        {
+            await Assert.ThrowsAsync<ArgumentException>(
+                () => LogicAppClient.CreateAsync(resourceGroup, LogicAppName, Authentication, Logger));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task ConstructorWithLogger_WithBlankLogicApp_Fails(string logicApp)
+        {
+            await Assert.ThrowsAsync<ArgumentException>(
+                () => LogicAppClient.CreateAsync(ResourceGroup, logicApp, Authentication, Logger));
+        }
+
+        [Fact]
+        public async Task Constructor_WithNullAuthentication_Fails()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(
+                () => LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, authentication: null));
+        }
+
+        [Fact]
+        public async Task ConstructorWithLogger_WithNullAuthentication_Fails()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(
+                () => LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, authentication: null, logger: Logger));
+        }
+
         private async Task<LogicAppAction> PollForLogicAppActionAsync(string correlationId, string actionName)
         {
             LogicAppRun logicAppRun = await LogicAppsProvider

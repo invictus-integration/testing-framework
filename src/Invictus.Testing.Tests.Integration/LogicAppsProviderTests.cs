@@ -239,5 +239,59 @@ namespace Invictus.Testing.Tests.Integration
                 }); 
             }
         }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void Constructor_WithBlankResourceGroup_Fails(string resourceGroup)
+        {
+            Assert.Throws<ArgumentException>(
+                () => LogicAppsProvider.LocatedAt(resourceGroup, LogicAppName, Authentication));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void Constructor_WithBlankLogicApp_Fails(string logicApp)
+        {
+            Assert.Throws<ArgumentException>(
+                () => LogicAppsProvider.LocatedAt(ResourceGroup, logicApp, Authentication));
+        }
+
+        [Fact]
+        public void Constructor_WithoutAuthentication_Fails()
+        {
+            Assert.Throws<ArgumentException>(
+                () => LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, authentication: null));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void ConstructorWithLogger_WithBlankResourceGroup_Fails(string resourceGroup)
+        {
+            Assert.Throws<ArgumentException>(
+                () => LogicAppsProvider.LocatedAt(resourceGroup, LogicAppName, Authentication, Logger));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void ConstructorWithLogger_WithBlankLogicApp_Fails(string logicApp)
+        {
+            Assert.Throws<ArgumentException>(
+                () => LogicAppsProvider.LocatedAt(ResourceGroup, logicApp, Authentication, Logger));
+        }
+
+        [Fact]
+        public void ConstructorWithLogger_WithoutAuthentication_Fails()
+        {
+            Assert.Throws<ArgumentException>(
+                () => LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, authentication: null, logger: Logger));
+        }
     }
 }
