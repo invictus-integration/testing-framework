@@ -267,7 +267,8 @@ namespace Invictus.Testing
             }
 
             throw new LogicAppTriggerNotFoundException(
-                $"Cannot find any trigger for logic app '{_logicAppName}' in resource group '{_resourceGroup}'");
+                $"Cannot find any trigger for logic app '{_logicAppName}' in resource group '{_resourceGroup}'",
+                _logicAppName, _resourceGroup, _logicManagementClient.SubscriptionId);
         }
 
         /// <summary>
