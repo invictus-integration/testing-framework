@@ -18,6 +18,58 @@ namespace Invictus.Testing.Tests.Integration
         }
 
         [Fact]
+        public async Task PollForLogicAppRun_WithoutLogger_Success()
+        {
+            // Arrange
+            string correlationId = $"correlationId-{Guid.NewGuid()}";
+            var headers = new Dictionary<string, string>
+            {
+                { "correlationId", correlationId }
+            };
+
+            // Act
+            Task<LogicAppRun> pollingTask =
+                LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication)
+                                 .WithCorrelationId(correlationId)
+                                 .PollForSingleLogicAppRunAsync();
+
+
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication, Logger))
+            {
+                // Assert
+                Task postTask = logicApp.TriggerAsync(headers);
+                await Task.WhenAll(pollingTask, postTask);
+
+                Assert.NotNull(pollingTask.Result);
+                Assert.Equal(correlationId, pollingTask.Result.CorrelationId);
+            }
+        }
+
+        [Fact]
+        public async Task PollForLogicAppRun_NotMatchedCorrelation_Fails()
+        {
+            // Arrange
+            var headers = new Dictionary<string, string>
+            {
+                { "correlationId", $"correlationId-{Guid.NewGuid()}" }
+            };
+
+            // Act
+            Task<LogicAppRun> pollingTask =
+                LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication, Logger)
+                                 .WithTimeout(TimeSpan.FromSeconds(5))
+                                 .WithCorrelationId("not-matched-correlation-ID")
+                                 .PollForSingleLogicAppRunAsync();
+
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication, Logger))
+            {
+                // Assert
+                await logicApp.TriggerAsync(headers);
+                await Assert.ThrowsAsync<TimeoutException>(() => pollingTask);
+            }
+        }
+
+        [Fact]
         public async Task PollForLogicAppRun_ByCorrelationId_Success()
         {
             // Arrange
@@ -34,7 +86,7 @@ namespace Invictus.Testing.Tests.Integration
                                  .PollForSingleLogicAppRunAsync();
 
 
-            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication))
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication, Logger))
             {
                 // Assert
                 Task postTask = logicApp.TriggerAsync(headers);
