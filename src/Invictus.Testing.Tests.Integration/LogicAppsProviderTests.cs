@@ -152,7 +152,7 @@ namespace Invictus.Testing.Tests.Integration
             // Arrange
             const string trackedPropertyName = "trackedproperty";
             const int numberOfRuns = 2;
-            TimeSpan timeout = TimeSpan.FromSeconds(30);
+            TimeSpan timeout = TimeSpan.FromSeconds(40);
             
             string correlationId = $"correlationId-{Guid.NewGuid()}";
             var trackedPropertyValue = Guid.NewGuid().ToString();
