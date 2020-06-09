@@ -28,7 +28,7 @@ namespace Invictus.Testing
         private readonly LogicAuthentication _authentication;
         private readonly ILogger _logger;
 
-        private DateTime _startTime = DateTime.UtcNow;
+        private DateTimeOffset _startTime = DateTimeOffset.UtcNow;
         private TimeSpan _timeout = TimeSpan.FromSeconds(90);
         private string _trackedPropertyName, _trackedPropertyValue, _correlationId;
         private bool _hasTrackedProperty, _hasCorrelationId;
@@ -95,7 +95,7 @@ namespace Invictus.Testing
         /// Sets the start time when the logic app runs were executed.
         /// </summary>
         /// <param name="startTime">The date that the logic app ran.</param>
-        public LogicAppsProvider WithStartTime(DateTime startTime)
+        public LogicAppsProvider WithStartTime(DateTimeOffset startTime)
         {
             // TODO: just migrated from original 'helper' class, should be with offset?
             _startTime = startTime;
