@@ -49,6 +49,41 @@ namespace Invictus.Testing.Tests.Integration
         }
 
         [Fact]
+        public async Task TemporaryEnableSuccessStaticResultForAction_WithoutConsumerStaticResult_Success()
+        {
+            // Arrange
+            const string actionName = "HTTP";
+            string correlationId = $"correlationId-{Guid.NewGuid()}";
+            var headers = new Dictionary<string, string>
+            {
+                { "correlationId", correlationId },
+            };
+
+            // Act
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppMockingName, Authentication, Logger))
+            {
+                await using (await logicApp.TemporaryEnableAsync())
+                {
+                    await using (await logicApp.TemporaryEnableSuccessStaticResultAsync(actionName))
+                    {
+                        // Act
+                        await logicApp.TriggerAsync(headers);
+                        LogicAppAction enabledAction = await PollForLogicAppActionAsync(correlationId, actionName);
+
+                        Assert.Equal(actionName, enabledAction.Name);
+                        Assert.Equal("200", enabledAction.Outputs.statusCode.ToString());
+                        Assert.Equal("Succeeded", enabledAction.Status);
+                    }
+
+                    await logicApp.TriggerAsync(headers);
+                    LogicAppAction disabledAction = await PollForLogicAppActionAsync(correlationId, actionName);
+
+                    Assert.NotEmpty(disabledAction.Outputs.headers);
+                }
+            }
+        }
+
+        [Fact]
         public async Task TemporaryEnableStaticResultsForAction_WithSuccessStaticResult_Success()
         {
             // Arrange

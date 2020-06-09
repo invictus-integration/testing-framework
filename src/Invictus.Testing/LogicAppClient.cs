@@ -279,7 +279,7 @@ namespace Invictus.Testing
         /// <returns>
         ///     An instance to control when the static result for the action on the logic app should be disabled.
         /// </returns>
-        public async Task<IAsyncDisposable> TemporaryEnableSuccessStaticResult(string actionName)
+        public async Task<IAsyncDisposable> TemporaryEnableSuccessStaticResultAsync(string actionName)
         {
             Guard.NotNullOrEmpty(actionName, nameof(actionName));
 
