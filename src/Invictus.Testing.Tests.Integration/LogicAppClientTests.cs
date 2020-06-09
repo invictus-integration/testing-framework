@@ -117,7 +117,7 @@ namespace Invictus.Testing.Tests.Integration
         {
             LogicAppRun logicAppRun = await LogicAppsProvider
                 .LocatedAt(ResourceGroup, LogicAppMockingName, Authentication, Logger)
-                .WithStartTime(DateTime.UtcNow.AddMinutes(-1))
+                .WithStartTime(DateTimeOffset.UtcNow.AddMinutes(-1))
                 .WithCorrelationId(correlationId)
                 .PollForSingleLogicAppRunAsync();
             

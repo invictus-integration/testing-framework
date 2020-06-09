@@ -147,7 +147,7 @@ namespace Invictus.Testing
         public async Task<LogicAppRun> PollForSingleLogicAppRunAsync()
         {
             IEnumerable<LogicAppRun> logicAppRuns = await PollForLogicAppRunsAsync(numberOfItems: 1);
-            return logicAppRuns.SingleOrDefault();
+            return logicAppRuns.FirstOrDefault();
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace Invictus.Testing
         /// </summary>
         public async Task<IEnumerable<LogicAppRun>> PollForLogicAppRunsAsync()
         {
-            return await PollForLogicAppRunsAsync(numberOfItems: -1);
+            return await PollForLogicAppRunsAsync(numberOfItems: 1);
         }
 
         /// <summary>
@@ -164,9 +164,10 @@ namespace Invictus.Testing
         /// <param name="numberOfItems">The minimum amount of logic app runs to retrieve.</param>
         public async Task<IEnumerable<LogicAppRun>> PollForLogicAppRunsAsync(int numberOfItems)
         {
+            Guard.NotLessThanOrEqualTo(numberOfItems, 0, nameof(numberOfItems));
+
             RetryPolicy<IEnumerable<LogicAppRun>> retryPolicy =
-                Policy.HandleResult<IEnumerable<LogicAppRun>>(
-                          runs => numberOfItems <= 0 ? !runs.Any() : runs.Count() < numberOfItems)
+                Policy.HandleResult<IEnumerable<LogicAppRun>>(runs => runs.Count() < numberOfItems)
                       .Or<Exception>(ex =>
                       {
                           _logger.LogError(ex, "Polling for logic app runs was faulted: {Message}", ex.Message);
@@ -188,7 +189,7 @@ namespace Invictus.Testing
                 if (result.FinalException is null
                     || result.FinalException.GetType() == typeof(TimeoutRejectedException))
                 {
-                    string amount = numberOfItems <= 0 ? "any" : numberOfItems.ToString();
+                    string amount = (int?) numberOfItems <= 0 ? "any" : ((int?) numberOfItems).ToString();
                     _logger.LogError("Polling finished faulted without {Amount} logic app runs", amount);
 
                     string correlation = _hasCorrelationId
@@ -219,7 +220,7 @@ namespace Invictus.Testing
             {
                 var odataQuery = new ODataQuery<WorkflowRunFilter>
                 {
-                    Filter = $"StartTime ge {_startTime:O} and Status ne 'Running'"
+                    Filter = $"StartTime ge {_startTime.UtcDateTime:o} and Status ne 'Running'"
                 };
 
                 if (_hasCorrelationId)
