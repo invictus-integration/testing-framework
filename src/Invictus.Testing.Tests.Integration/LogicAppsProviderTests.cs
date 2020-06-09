@@ -263,7 +263,7 @@ namespace Invictus.Testing.Tests.Integration
         [Fact]
         public void Constructor_WithoutAuthentication_Fails()
         {
-            Assert.Throws<ArgumentException>(
+            Assert.ThrowsAny<ArgumentException>(
                 () => LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, authentication: null));
         }
 
@@ -290,7 +290,7 @@ namespace Invictus.Testing.Tests.Integration
         [Fact]
         public void ConstructorWithLogger_WithoutAuthentication_Fails()
         {
-            Assert.Throws<ArgumentException>(
+            Assert.ThrowsAny<ArgumentException>(
                 () => LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, authentication: null, logger: Logger));
         }
     }

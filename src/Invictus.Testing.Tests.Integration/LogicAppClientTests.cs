@@ -238,14 +238,14 @@ namespace Invictus.Testing.Tests.Integration
         [Fact]
         public async Task Constructor_WithNullAuthentication_Fails()
         {
-            await Assert.ThrowsAsync<ArgumentException>(
+            await Assert.ThrowsAnyAsync<ArgumentException>(
                 () => LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, authentication: null));
         }
 
         [Fact]
         public async Task ConstructorWithLogger_WithNullAuthentication_Fails()
         {
-            await Assert.ThrowsAsync<ArgumentException>(
+            await Assert.ThrowsAnyAsync<ArgumentException>(
                 () => LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, authentication: null, logger: Logger));
         }
 
