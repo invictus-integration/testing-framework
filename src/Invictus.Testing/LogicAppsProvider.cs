@@ -251,7 +251,7 @@ namespace Invictus.Testing
                     if (_hasTrackedProperty && actions.Any(action => HasTrackedProperty(action.TrackedProperties))
                         || !_hasTrackedProperty)
                     {
-                        var logicAppRun = Converter.ToLogicAppRun(workFlowRun, actions);
+                        var logicAppRun = LogicAppConverter.ToLogicAppRun(workFlowRun, actions);
                         logicAppRuns.Add(logicAppRun);
                     }
                 }
@@ -273,7 +273,7 @@ namespace Invictus.Testing
                 JToken input = await GetHttpJsonStringAsync(workflowRunAction.InputsLink?.Uri);
                 JToken output = await GetHttpJsonStringAsync(workflowRunAction.OutputsLink?.Uri);
                 
-                var action = Converter.ToLogicAppAction(workflowRunAction, input, output);
+                var action = LogicAppConverter.ToLogicAppAction(workflowRunAction, input, output);
                 actions.Add(action);
             }
 

@@ -200,7 +200,7 @@ namespace Invictus.Testing
         public async Task<LogicApp> GetMetadataAsync()
         {
             Workflow workflow = await _logicManagementClient.Workflows.GetAsync(_resourceGroup, _logicAppName);
-            return Converter.ToLogicApp(workflow);
+            return LogicAppConverter.ToLogicApp(workflow);
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Invictus.Testing
 {
-    internal class Converter
+    internal class LogicAppConverter
     {
         /// <summary>
         /// Convert to <see cref="LogicAppRun"/>.
