@@ -112,15 +112,15 @@ namespace Invictus.Testing
         public async Task<IAsyncDisposable> TemporaryEnableAsync()
         {
             return await AsyncDisposable.CreateAsync(
-                () =>
+                async () =>
                 {
                     _logger.LogTrace("Enables (+) the workflow on logic app '{LogicAppName}' in resource group '{ResourceGroup}'", _logicAppName, _resourceGroup);
-                    return _logicManagementClient.Workflows.EnableAsync(_resourceGroup, _logicAppName);
+                    await _logicManagementClient.Workflows.EnableAsync(_resourceGroup, _logicAppName);
                 },
-                () =>
+                async () =>
                 {
                     _logger.LogTrace("Disables (-) the workflow on logic app '{LogicAppName}' in resource group '{ResourceGroup}'", _logicAppName, _resourceGroup);
-                    return _logicManagementClient.Workflows.DisableAsync(_resourceGroup, _logicAppName);
+                    await _logicManagementClient.Workflows.DisableAsync(_resourceGroup, _logicAppName);
                 });
         }
 

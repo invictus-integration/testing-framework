@@ -83,8 +83,8 @@ namespace Invictus.Testing
             LogicAuthentication authentication,
             ILogger logger)
         {
-            Guard.NotNullOrWhitespace(resourceGroup, nameof(resourceGroup));
-            Guard.NotNullOrWhitespace(logicAppName, nameof(logicAppName));
+            Guard.NotNullOrEmpty(resourceGroup, nameof(resourceGroup));
+            Guard.NotNullOrEmpty(logicAppName, nameof(logicAppName));
             Guard.NotNull(authentication, nameof(authentication));
             
             logger = logger ?? NullLogger.Instance;
@@ -97,7 +97,6 @@ namespace Invictus.Testing
         /// <param name="startTime">The date that the logic app ran.</param>
         public LogicAppsProvider WithStartTime(DateTimeOffset startTime)
         {
-            // TODO: just migrated from original 'helper' class, should be with offset?
             _startTime = startTime;
             return this;
         }
@@ -166,8 +165,16 @@ namespace Invictus.Testing
         {
             Guard.NotLessThanOrEqualTo(numberOfItems, 0, nameof(numberOfItems));
 
+            string amount = numberOfItems == 1 ? "any" : numberOfItems.ToString();
             RetryPolicy<IEnumerable<LogicAppRun>> retryPolicy =
-                Policy.HandleResult<IEnumerable<LogicAppRun>>(runs => runs.Count() < numberOfItems)
+                Policy.HandleResult<IEnumerable<LogicAppRun>>(runs =>
+                      {
+                          int count = runs.Count();
+                          bool isStillPending = count < numberOfItems;
+
+                          _logger.LogTrace("Polling for {Amount} log app runs, whilst got now {Current} ", amount, count);
+                          return isStillPending;
+                      })
                       .Or<Exception>(ex =>
                       {
                           _logger.LogError(ex, "Polling for logic app runs was faulted: {Message}", ex.Message);
@@ -175,8 +182,8 @@ namespace Invictus.Testing
                       })
                       .WaitAndRetryForeverAsync(index =>
                       {
-                          _logger.LogTrace("Could not retrieve logic app runs in time, wait 5s and try again...");
-                          return TimeSpan.FromSeconds(5);
+                          _logger.LogTrace("Could not retrieve logic app runs in time, wait 1s and try again...");
+                          return TimeSpan.FromSeconds(1);
                       });
 
             PolicyResult<IEnumerable<LogicAppRun>> result =
@@ -189,7 +196,6 @@ namespace Invictus.Testing
                 if (result.FinalException is null
                     || result.FinalException.GetType() == typeof(TimeoutRejectedException))
                 {
-                    string amount = (int?) numberOfItems <= 0 ? "any" : ((int?) numberOfItems).ToString();
                     _logger.LogError("Polling finished faulted without {Amount} logic app runs", amount);
 
                     string correlation = _hasCorrelationId
@@ -220,7 +226,7 @@ namespace Invictus.Testing
             {
                 var odataQuery = new ODataQuery<WorkflowRunFilter>
                 {
-                    Filter = $"StartTime ge {_startTime.UtcDateTime:o} and Status ne 'Running'"
+                    Filter = $"StartTime ge {_startTime.UtcDateTime:O} and Status ne 'Running'"
                 };
 
                 if (_hasCorrelationId)

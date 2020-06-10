@@ -27,21 +27,24 @@ namespace Invictus.Testing.Tests.Integration
                 { "correlationId", correlationId }
             };
 
-            // Act
-            Task<LogicAppRun> pollingTask =
-                LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication)
-                                 .WithCorrelationId(correlationId)
-                                 .PollForSingleLogicAppRunAsync();
-
-
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication, Logger))
+            await using (await logicApp.TemporaryEnableAsync())
             {
-                // Assert
                 Task postTask = logicApp.TriggerAsync(headers);
+
+                // Act
+                Task<IEnumerable<LogicAppRun>> pollingTask =
+                    LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication)
+                                     .WithCorrelationId(correlationId)
+                                     .PollForLogicAppRunsAsync();
+
                 await Task.WhenAll(pollingTask, postTask);
 
+                // Assert
                 Assert.NotNull(pollingTask.Result);
-                Assert.Equal(correlationId, pollingTask.Result.CorrelationId);
+                LogicAppRun logicAppRun = Assert.Single(pollingTask.Result);
+                Assert.NotNull(logicAppRun);
+                Assert.Equal(correlationId, logicAppRun.CorrelationId);
             }
         }
 
@@ -79,19 +82,20 @@ namespace Invictus.Testing.Tests.Integration
                 { "correlationId", correlationId }
             };
 
-            // Act
-            Task<LogicAppRun> pollingTask =
-                LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication, Logger)
-                                 .WithCorrelationId(correlationId)
-                                 .PollForSingleLogicAppRunAsync();
-
-
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication, Logger))
+            await using (await logicApp.TemporaryEnableAsync())
             {
-                // Assert
                 Task postTask = logicApp.TriggerAsync(headers);
+
+                // Act
+                Task<LogicAppRun> pollingTask =
+                    LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication, Logger)
+                                     .WithCorrelationId(correlationId)
+                                     .PollForSingleLogicAppRunAsync();
+
                 await Task.WhenAll(pollingTask, postTask);
 
+                // Assert
                 Assert.NotNull(pollingTask.Result);
                 Assert.Equal(correlationId, pollingTask.Result.CorrelationId);
             }
@@ -110,21 +114,23 @@ namespace Invictus.Testing.Tests.Integration
                 { "correlationId", correlationId }
             };
 
-            // Act
-            // Poll for a specific number of logic app runs with provided correlation id.
-            Task<IEnumerable<LogicAppRun>> pollingTask =
-                LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication, Logger)
-                                 .WithCorrelationId(correlationId)
-                                 .WithTimeout(timeout)
-                                 .PollForLogicAppRunsAsync(numberOfRuns);
-            
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication))
+            await using (await logicApp.TemporaryEnableAsync())
             {
                 // Run logic app twice with the same correlation id.
                 Task postTask1 = logicApp.TriggerAsync(headers);
                 Task postTask2 = logicApp.TriggerAsync(headers);
+
+                // Act
+                Task<IEnumerable<LogicAppRun>> pollingTask =
+                    LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication, Logger)
+                                     .WithCorrelationId(correlationId)
+                                     .WithTimeout(timeout)
+                                     .PollForLogicAppRunsAsync(numberOfRuns);
+
                 await Task.WhenAll(pollingTask, postTask1, postTask2);
 
+                // Assert
                 Assert.Equal(numberOfRuns, pollingTask.Result.Count());
                 Assert.All(pollingTask.Result, logicAppRun =>
                 {
@@ -148,18 +154,20 @@ namespace Invictus.Testing.Tests.Integration
                 { "trackedpropertyheader2", trackedPropertyValue }
             };
 
-            // Act
-            Task<LogicAppRun> pollingTask =
-                LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication, Logger)
-                                 .WithTrackedProperty(trackedPropertyName, trackedPropertyValue)
-                                 .PollForSingleLogicAppRunAsync();
-
-            // Assert
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication))
+            await using (await logicApp.TemporaryEnableAsync())
             {
                 Task postTask = logicApp.TriggerAsync(headers);
+             
+                // Act
+                Task<LogicAppRun> pollingTask =
+                    LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication, Logger)
+                                     .WithTrackedProperty(trackedPropertyName, trackedPropertyValue)
+                                     .PollForSingleLogicAppRunAsync();
+
                 await Task.WhenAll(pollingTask, postTask);
 
+                // Assert
                 Assert.NotNull(pollingTask.Result);
                 Assert.Contains(pollingTask.Result.TrackedProperties, property => property.Value == trackedPropertyValue);
             }
@@ -181,18 +189,20 @@ namespace Invictus.Testing.Tests.Integration
                 { "trackedpropertyheader2", trackedPropertyValue2 }
             };
 
-            // Act
-            Task<LogicAppRun> pollingTask =
-                LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication, Logger)
-                                 .WithTrackedProperty(trackedPropertyName, trackedPropertyValue1)
-                                 .PollForSingleLogicAppRunAsync();
-
-            // Assert
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication))
+            await using (await logicApp.TemporaryEnableAsync())
             {
                 Task postTask = logicApp.TriggerAsync(headers);
+
+                // Act
+                Task<LogicAppRun> pollingTask =
+                    LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication, Logger)
+                                     .WithTrackedProperty(trackedPropertyName, trackedPropertyValue1)
+                                     .PollForSingleLogicAppRunAsync();
+
                 await Task.WhenAll(pollingTask, postTask);
 
+                // Assert
                 Assert.NotNull(pollingTask.Result);
                 Assert.Contains(pollingTask.Result.TrackedProperties, property => property.Value == trackedPropertyValue2); 
             }
@@ -215,22 +225,24 @@ namespace Invictus.Testing.Tests.Integration
                 { "trackedpropertyheader2", trackedPropertyValue }
             };
 
-            // Act
-            // Poll for a specific number of logic app runs with provided tracked property.
-            Task<IEnumerable<LogicAppRun>> pollingTask = 
-                LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication, Logger)
-                                 .WithTrackedProperty(trackedPropertyName, trackedPropertyValue)
-                                 .WithTimeout(timeout)
-                                 .PollForLogicAppRunsAsync(numberOfRuns);
-
-            // Assert
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication))
+            await using (await logicApp.TemporaryEnableAsync())
             {
                 // Run logic app twice with the same tracked property.
                 Task postTask1 = logicApp.TriggerAsync(headers);
                 Task postTask2 = logicApp.TriggerAsync(headers);
+
+                // Act
+                // Poll for a specific number of logic app runs with provided tracked property.
+                Task<IEnumerable<LogicAppRun>> pollingTask =
+                    LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication, Logger)
+                                     .WithTrackedProperty(trackedPropertyName, trackedPropertyValue)
+                                     .WithTimeout(timeout)
+                                     .PollForLogicAppRunsAsync(numberOfRuns);
+
                 await Task.WhenAll(pollingTask, postTask1, postTask2);
 
+                // Assert
                 Assert.NotNull(pollingTask.Result);
                 Assert.Equal(numberOfRuns, pollingTask.Result.Count());
                 Assert.All(pollingTask.Result, logicAppRun =>
@@ -243,7 +255,6 @@ namespace Invictus.Testing.Tests.Integration
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("   ")]
         public void Constructor_WithBlankResourceGroup_Fails(string resourceGroup)
         {
             Assert.Throws<ArgumentException>(
@@ -253,7 +264,6 @@ namespace Invictus.Testing.Tests.Integration
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("   ")]
         public void Constructor_WithBlankLogicApp_Fails(string logicApp)
         {
             Assert.Throws<ArgumentException>(
@@ -270,7 +280,6 @@ namespace Invictus.Testing.Tests.Integration
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("   ")]
         public void ConstructorWithLogger_WithBlankResourceGroup_Fails(string resourceGroup)
         {
             Assert.Throws<ArgumentException>(
@@ -280,7 +289,6 @@ namespace Invictus.Testing.Tests.Integration
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("   ")]
         public void ConstructorWithLogger_WithBlankLogicApp_Fails(string logicApp)
         {
             Assert.Throws<ArgumentException>(

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace Invictus.Testing
 {
@@ -61,6 +63,14 @@ namespace Invictus.Testing
             string resourceGroup,
             string subscriptionId,
             Exception innerException) : base(message, logicAppName, resourceGroup, subscriptionId, innerException)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogicAppException"/> class.
+        /// </summary>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        protected LogicAppTriggerNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

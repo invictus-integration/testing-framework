@@ -87,17 +87,9 @@ namespace Invictus.Testing
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         protected LogicAppException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            string logicAppName = info.GetString(nameof(LogicAppName));
-            string resourceGroup = info.GetString(nameof(ResourceGroup));
-            string subscriptionId = info.GetString(nameof(SubscriptionId));
-
-            Guard.NotNullOrWhitespace(logicAppName, nameof(logicAppName));
-            Guard.NotNullOrWhitespace(resourceGroup, nameof(resourceGroup));
-            Guard.NotNullOrWhitespace(subscriptionId, nameof(subscriptionId));
-
-            LogicAppName = logicAppName;
-            ResourceGroup = resourceGroup;
-            SubscriptionId = subscriptionId;
+            LogicAppName = info.GetString(nameof(LogicAppName));
+            ResourceGroup = info.GetString(nameof(ResourceGroup));
+            SubscriptionId = info.GetString(nameof(SubscriptionId));
         }
 
         /// <summary>

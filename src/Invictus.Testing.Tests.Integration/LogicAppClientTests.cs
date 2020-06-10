@@ -198,7 +198,6 @@ namespace Invictus.Testing.Tests.Integration
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("   ")]
         public async Task Constructor_WithBlankResourceGroup_Fails(string resourceGroup)
         {
             await Assert.ThrowsAsync<ArgumentException>(
@@ -208,7 +207,6 @@ namespace Invictus.Testing.Tests.Integration
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("   ")]
         public async Task Constructor_WithBlankLogicApp_Fails(string logicApp)
         {
             await Assert.ThrowsAsync<ArgumentException>(
@@ -218,7 +216,6 @@ namespace Invictus.Testing.Tests.Integration
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("   ")]
         public async Task ConstructorWithLogger_WithBlankResourceGroup_Fails(string resourceGroup)
         {
             await Assert.ThrowsAsync<ArgumentException>(
@@ -228,7 +225,6 @@ namespace Invictus.Testing.Tests.Integration
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("   ")]
         public async Task ConstructorWithLogger_WithBlankLogicApp_Fails(string logicApp)
         {
             await Assert.ThrowsAsync<ArgumentException>(

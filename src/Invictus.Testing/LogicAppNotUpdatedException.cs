@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace Invictus.Testing
 {
     /// <summary>
     /// Thrown when the logic app running in Azure could not be updated.
     /// </summary>
+    [Serializable]
     public class LogicAppNotUpdatedException : LogicAppException
     {
         /// <summary>
@@ -60,6 +63,14 @@ namespace Invictus.Testing
             string resourceGroup,
             string subscriptionId,
             Exception innerException) : base(message, logicAppName, resourceGroup, subscriptionId, innerException)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogicAppException"/> class.
+        /// </summary>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        protected LogicAppNotUpdatedException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
