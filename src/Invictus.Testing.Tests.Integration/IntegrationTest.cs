@@ -23,7 +23,7 @@ namespace Invictus.Testing.Tests.Integration
             string tenantId = Configuration.GetAzureTenantId();
             string clientId = Configuration.GetAzureClientId();
             string clientSecret = Configuration.GetAzureClientSecret();
-            Authentication = LogicAuthentication.UsingServicePrincipal(subscriptionId, tenantId, clientId, clientSecret);
+            Authentication = LogicAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret);
         }
 
         /// <summary>

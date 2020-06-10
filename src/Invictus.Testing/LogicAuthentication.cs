@@ -24,14 +24,14 @@ namespace Invictus.Testing
         /// <summary>
         /// Uses the service principal to authenticate with Azure.
         /// </summary>
-        /// <param name="subscriptionId">The ID that identifies the subscription on Azure.</param>
         /// <param name="tenantId">The ID where the resources are located on Azure.</param>
+        /// <param name="subscriptionId">The ID that identifies the subscription on Azure.</param>
         /// <param name="clientId">The ID of the client or application that has access to the logic apps running on Azure.</param>
         /// <param name="clientSecret">The secret of the client or application that has access to the logic apps running on Azure.</param>
-        public static LogicAuthentication UsingServicePrincipal(string subscriptionId, string tenantId, string clientId, string clientSecret)
+        public static LogicAuthentication UsingServicePrincipal(string tenantId, string subscriptionId, string clientId, string clientSecret)
         {
-            Guard.NotNullOrWhitespace(subscriptionId, nameof(subscriptionId));
             Guard.NotNullOrWhitespace(tenantId, nameof(tenantId));
+            Guard.NotNullOrWhitespace(subscriptionId, nameof(subscriptionId));
             Guard.NotNullOrWhitespace(clientId, nameof(clientId));
             Guard.NotNullOrWhitespace(clientSecret, nameof(clientSecret));
 
