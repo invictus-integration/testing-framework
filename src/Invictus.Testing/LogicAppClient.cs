@@ -392,14 +392,7 @@ namespace Invictus.Testing
             return logicAppDefinition;
         }
 
-        /// <summary>
-        /// Disables a static result for an action with given <paramref name="actionName"/> on the logic app.
-        /// </summary>
-        /// <param name="actionName">The name of the action to disable the static result.</param>
-        /// <returns>
-        ///     An indication whether the disabling was successful [true], or not [false].
-        /// </returns>
-        public async Task DisableStaticResultForActionAsync(string actionName)
+        private async Task DisableStaticResultForActionAsync(string actionName)
         {
             Guard.NotNullOrEmpty(actionName, nameof(actionName));
 
@@ -410,14 +403,7 @@ namespace Invictus.Testing
             await DisableStaticResultsForActionAsync(name => name == actionName);
         }
 
-        /// <summary>
-        /// Disables static result for a given set of actions on the logic app.
-        /// </summary>
-        /// <param name="actionNames">The set of  action names to disable the static result.</param>
-        /// <returns>
-        ///     An indication whether the disabling was successful [true], or not [false].
-        /// </returns>
-        public async Task DisableStaticResultsForActionsAsync(IEnumerable<string> actionNames)
+        private async Task DisableStaticResultsForActionsAsync(IEnumerable<string> actionNames)
         {
             Guard.NotNull(actionNames, nameof(actionNames));
             Guard.NotAny(actionNames, nameof(actionNames));
@@ -430,20 +416,6 @@ namespace Invictus.Testing
                 actionNames, _logicAppName, _resourceGroup);
 
             await DisableStaticResultsForActionAsync(actionNames.Contains);
-        }
-
-        /// <summary>
-        /// Disables static result for all actions on the logic app.
-        /// </summary>
-        /// <returns>
-        ///     An indication whether the disabling was successful [true], or not [false].
-        /// </returns>
-        public async Task DisableAllStaticResultForActionAsync()
-        {
-            _logger.LogTrace(
-                "Disables (-) a static result definition for all actions of logic app '{LogicAppName}' in resource group '{ResourceGroup}'", _logicAppName, _resourceGroup);
-
-            await DisableStaticResultsForActionAsync(actionName => true);
         }
 
         private async Task DisableStaticResultsForActionAsync(Func<string, bool> shouldDisable)
