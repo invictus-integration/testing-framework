@@ -145,7 +145,7 @@ namespace Invictus.Testing
         /// </summary>
         public async Task<LogicAppRun> PollForSingleLogicAppRunAsync()
         {
-            IEnumerable<LogicAppRun> logicAppRuns = await PollForLogicAppRunsAsync(numberOfItems: 1);
+            IEnumerable<LogicAppRun> logicAppRuns = await PollForLogicAppRunsAsync(minimumNumberOfItems: 1);
             return logicAppRuns.FirstOrDefault();
         }
 
@@ -154,23 +154,23 @@ namespace Invictus.Testing
         /// </summary>
         public async Task<IEnumerable<LogicAppRun>> PollForLogicAppRunsAsync()
         {
-            return await PollForLogicAppRunsAsync(numberOfItems: 1);
+            return await PollForLogicAppRunsAsync(minimumNumberOfItems: 1);
         }
 
         /// <summary>
-        /// Starts polling for a <paramref name="numberOfItems"/> corresponding to the previously set filtering criteria.
+        /// Starts polling for a <paramref name="minimumNumberOfItems"/> corresponding to the previously set filtering criteria.
         /// </summary>
-        /// <param name="numberOfItems">The minimum amount of logic app runs to retrieve.</param>
-        public async Task<IEnumerable<LogicAppRun>> PollForLogicAppRunsAsync(int numberOfItems)
+        /// <param name="minimumNumberOfItems">The minimum amount of logic app runs to retrieve.</param>
+        public async Task<IEnumerable<LogicAppRun>> PollForLogicAppRunsAsync(int minimumNumberOfItems)
         {
-            Guard.NotLessThanOrEqualTo(numberOfItems, 0, nameof(numberOfItems));
+            Guard.NotLessThanOrEqualTo(minimumNumberOfItems, 0, nameof(minimumNumberOfItems));
 
-            string amount = numberOfItems == 1 ? "any" : numberOfItems.ToString();
+            string amount = minimumNumberOfItems == 1 ? "any" : minimumNumberOfItems.ToString();
             RetryPolicy<IEnumerable<LogicAppRun>> retryPolicy =
                 Policy.HandleResult<IEnumerable<LogicAppRun>>(runs =>
                       {
                           int count = runs.Count();
-                          bool isStillPending = count < numberOfItems;
+                          bool isStillPending = count < minimumNumberOfItems;
 
                           _logger.LogTrace("Polling for {Amount} log app runs, whilst got now {Current} ", amount, count);
                           return isStillPending;
