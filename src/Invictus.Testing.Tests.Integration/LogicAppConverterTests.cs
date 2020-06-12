@@ -74,7 +74,7 @@ namespace Invictus.Testing.Tests.Integration
             Assert.Equal(workflowAction.Error, actual.Error);
             Assert.Equal(inputs, actual.Inputs);
             Assert.Equal(outputs, actual.Outputs);
-            Assert.True(trackedProperties != null && trackedProperties.SequenceEqual(actual.TrackedProperties));
+            Assert.True(trackedPropertiesJson != null && trackedProperties.SequenceEqual(actual.TrackedProperties));
         }
 
         [Fact]
