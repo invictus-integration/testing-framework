@@ -9,6 +9,25 @@ namespace Invictus.Testing.Tests.Integration
     public class LogicAppNotUpdatedExceptionTests
     {
         [Fact]
+        public void CreateException_WithAllProperties_AssignsAllProperties()
+        {
+            // Arrange
+            string logicApp = "logic app name", resourceGroup = "resource group", subscriptionId = "subscription ID";
+            string message = "There's something wrong with updating the logic app";
+            var innerException = new KeyNotFoundException("Couldn't find the logic app");
+
+            // Act
+            var exception = new LogicAppNotUpdatedException(message, logicApp, resourceGroup, subscriptionId, innerException);
+
+            // Assert
+            Assert.Equal(message, exception.Message);
+            Assert.Equal(logicApp, exception.LogicAppName);
+            Assert.Equal(resourceGroup, exception.ResourceGroup);
+            Assert.Equal(subscriptionId, exception.SubscriptionId);
+            Assert.Equal(innerException, exception.InnerException);
+        }
+
+        [Fact]
         public void SerializeException_WithoutProperties_SerializesWithoutProperties()
         {
             // Arrange
