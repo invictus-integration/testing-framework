@@ -1,0 +1,52 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+  },
+  "triggers": {
+    "manual": {
+      "correlation": {
+        "clientTrackingId": "@{coalesce(triggerOutputs()?['headers']?['correlationId'], guid())}"
+      },
+      "type": "Request",
+      "kind": "Http",
+      "inputs": {
+        "schema": {
+        }
+      }
+    }
+  },
+  "actions": {
+    "Response": {
+      "runAfter": {
+        "Set_Response": [
+          "Succeeded"
+        ]
+      },
+      "type": "Response",
+      "kind": "Http",
+      "inputs": {
+        "body": {
+          "response": "@{variables('response')}"
+        },
+        "statusCode": 200
+      }
+    },
+    "Set_Response": {
+      "runAfter": {
+      },
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "response",
+            "type": "string",
+            "value": "Updated"
+          }
+        ]
+      }
+    }
+  },
+  "outputs": {
+  }
+}
