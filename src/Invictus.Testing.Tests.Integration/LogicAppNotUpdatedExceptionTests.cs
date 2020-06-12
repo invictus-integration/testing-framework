@@ -17,7 +17,7 @@ namespace Invictus.Testing.Tests.Integration
             var innerException = new KeyNotFoundException("Couldn't find the logic app");
 
             // Act
-            var exception = new LogicAppNotUpdatedException(message, logicApp, resourceGroup, subscriptionId, innerException);
+            var exception = new LogicAppNotUpdatedException(subscriptionId, resourceGroup, logicApp, message, innerException);
 
             // Assert
             Assert.Equal(message, exception.Message);
@@ -52,7 +52,7 @@ namespace Invictus.Testing.Tests.Integration
                    subscriptionId = "subscription ID";
 
             var innerException = new KeyNotFoundException("Problem with update");
-            var exception = new LogicAppNotUpdatedException("App not updated", logicApp, resourceGroup, subscriptionId, innerException);
+            var exception = new LogicAppNotUpdatedException(subscriptionId, resourceGroup, logicApp, "App not updated", innerException);
 
             string expected = exception.ToString();
 
@@ -73,7 +73,7 @@ namespace Invictus.Testing.Tests.Integration
         public void Constructor_WithBlankLogicAppName_Fails(string logicAppName)
         {
             Assert.Throws<ArgumentException>(
-                () => new LogicAppNotUpdatedException("App not updated", logicAppName, "resource group", "subscription ID"));
+                () => new LogicAppNotUpdatedException("subscription ID", "resource group", logicAppName, "App not updated"));
         }
 
         [Theory]
@@ -83,7 +83,7 @@ namespace Invictus.Testing.Tests.Integration
         public void Constructor_WithBlankResourceGroup_Fails(string resourceGroup)
         {
             Assert.Throws<ArgumentException>(
-                () => new LogicAppNotUpdatedException("App not updated", "logic app", resourceGroup, "subscription ID"));
+                () => new LogicAppNotUpdatedException("subscription ID", resourceGroup, "logic app", "App not updated"));
         }
 
         [Theory]
@@ -93,7 +93,7 @@ namespace Invictus.Testing.Tests.Integration
         public void Constructor_WithBlankSubscriptionId_Fails(string subscriptionId)
         {
             Assert.Throws<ArgumentException>(
-                () => new LogicAppNotUpdatedException("App not updated", "logic app", "resource group", subscriptionId));
+                () => new LogicAppNotUpdatedException(subscriptionId, "resource group", "logic app", "App not updated"));
         }
 
         [Theory]
@@ -104,7 +104,7 @@ namespace Invictus.Testing.Tests.Integration
         {
             var innerException = new Exception("The cause of the exception");
             Assert.Throws<ArgumentException>(
-                () => new LogicAppNotUpdatedException("App not updated", logicAppName, "resource group", "subscription ID", innerException));
+                () => new LogicAppNotUpdatedException("subscription ID", "resource group", logicAppName, "App not updated", innerException));
         }
 
         [Theory]
@@ -115,7 +115,7 @@ namespace Invictus.Testing.Tests.Integration
         {
             var innerException = new Exception("The cause of the exception");
             Assert.Throws<ArgumentException>(
-                () => new LogicAppNotUpdatedException("App not updated", "logic app", resourceGroup, "subscription ID", innerException));
+                () => new LogicAppNotUpdatedException("subscription ID", resourceGroup, "logic app", "App not updated", innerException));
         }
 
         [Theory]
@@ -126,7 +126,7 @@ namespace Invictus.Testing.Tests.Integration
         {
             var innerException = new Exception("The cause of the exception");
             Assert.Throws<ArgumentException>(
-                () => new LogicAppNotUpdatedException("Trigger could not be found", "logic app", "resource group", subscriptionId, innerException));
+                () => new LogicAppNotUpdatedException(subscriptionId, "resource group", "logic app", "Trigger could not be found", innerException));
         }
 
         private static LogicAppNotUpdatedException SerializeDeserializeException(LogicAppNotUpdatedException exception)
