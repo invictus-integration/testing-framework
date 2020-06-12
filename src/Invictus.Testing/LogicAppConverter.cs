@@ -1,19 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using GuardNet;
 using Invictus.Testing.Model;
 using Microsoft.Azure.Management.Logic.Models;
 using Newtonsoft.Json;
 
 namespace Invictus.Testing
 {
-    internal class LogicAppConverter
+    /// <summary>
+    /// Collection of conversion function to create custom models from Azure SDK models.
+    /// </summary>
+    public static class LogicAppConverter
     {
         /// <summary>
         /// Convert to <see cref="LogicAppRun"/>.
         /// </summary>
         public static LogicAppRun ToLogicAppRun(WorkflowRun workFlowRun, IEnumerable<LogicAppAction> actions)
         {
+            Guard.NotNull(workFlowRun, nameof(workFlowRun));
+            Guard.NotNull(actions, nameof(actions));
+
             return new LogicAppRun
             {
                 Id = workFlowRun.Name,
@@ -84,6 +91,8 @@ namespace Invictus.Testing
         /// </summary>
         public static LogicApp ToLogicApp(Workflow workflow)
         {
+            Guard.NotNull(workflow, nameof(workflow));
+
             return new LogicApp
             {
                 Name = workflow.Name,
