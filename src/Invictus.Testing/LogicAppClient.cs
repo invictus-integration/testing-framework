@@ -266,9 +266,7 @@ namespace Invictus.Testing
                 return triggers.First().Name;
             }
 
-            throw new LogicAppTriggerNotFoundException(
-                $"Cannot find any trigger for logic app '{_logicAppName}' in resource group '{_resourceGroup}'",
-                _logicAppName, _resourceGroup, _logicManagementClient.SubscriptionId);
+            throw new LogicAppTriggerNotFoundException(_logicManagementClient.SubscriptionId, _resourceGroup, _logicAppName, $"Cannot find any trigger for logic app '{_logicAppName}' in resource group '{_resourceGroup}'");
         }
 
         /// <summary>
@@ -357,9 +355,7 @@ namespace Invictus.Testing
             Workflow resultWorkflow = await _logicManagementClient.Workflows.CreateOrUpdateAsync(_resourceGroup, _logicAppName, workflow);
             if (resultWorkflow.Name != _logicAppName)
             {
-                throw new LogicAppNotUpdatedException(
-                    "Logic app was not updated correctly with an enabled static result",
-                    _logicAppName, _resourceGroup, _logicManagementClient.SubscriptionId);
+                throw new LogicAppNotUpdatedException(_logicManagementClient.SubscriptionId, _resourceGroup, _logicAppName, "Logic app was not updated correctly with an enabled static result");
             }
         }
 
@@ -437,9 +433,7 @@ namespace Invictus.Testing
             Workflow resultWorkflow = await _logicManagementClient.Workflows.CreateOrUpdateAsync(_resourceGroup, _logicAppName, workflow);
             if (resultWorkflow.Name != _logicAppName)
             {
-                throw new LogicAppNotUpdatedException(
-                    "Logic app was not updated correctly with a disabled static result",
-                    _logicAppName, _resourceGroup, _logicManagementClient.SubscriptionId);
+                throw new LogicAppNotUpdatedException(_logicManagementClient.SubscriptionId, _resourceGroup, _logicAppName, "Logic app was not updated correctly with a disabled static result");
             }
         }
 

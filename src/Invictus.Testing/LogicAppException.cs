@@ -38,47 +38,47 @@ namespace Invictus.Testing
         /// <summary>
         /// Initializes a new instance of the <see cref="LogicAppException"/> class.
         /// </summary>
-        /// <param name="message">The message that describes the exception.</param>
-        /// <param name="logicAppName">The name of the logic app resource running in Azure.</param>
-        /// <param name="resourceGroup">The resource group where the logic app is located.</param>
         /// <param name="subscriptionId">The ID that identifies the subscription on Azure.</param>
+        /// <param name="resourceGroup">The resource group where the logic app is located.</param>
+        /// <param name="logicAppName">The name of the logic app resource running in Azure.</param>
+        /// <param name="message">The message that describes the exception.</param>
         public LogicAppException(
-            string message,
-            string logicAppName,
+            string subscriptionId,
             string resourceGroup,
-            string subscriptionId) : base(message)
+            string logicAppName,
+            string message) : base(message)
         {
-            Guard.NotNullOrWhitespace(logicAppName, nameof(logicAppName));
-            Guard.NotNullOrWhitespace(resourceGroup, nameof(resourceGroup));
             Guard.NotNullOrWhitespace(subscriptionId, nameof(subscriptionId));
+            Guard.NotNullOrWhitespace(resourceGroup, nameof(resourceGroup));
+            Guard.NotNullOrWhitespace(logicAppName, nameof(logicAppName));
 
-            LogicAppName = logicAppName;
-            ResourceGroup = resourceGroup;
             SubscriptionId = subscriptionId;
+            ResourceGroup = resourceGroup;
+            LogicAppName = logicAppName;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogicAppException"/> class.
         /// </summary>
-        /// <param name="message">The message that describes the exception.</param>
-        /// <param name="logicAppName">The name of the logic app resource running in Azure.</param>
-        /// <param name="resourceGroup">The resource group where the logic app is located.</param>
         /// <param name="subscriptionId">The ID that identifies the subscription on Azure.</param>
+        /// <param name="resourceGroup">The resource group where the logic app is located.</param>
+        /// <param name="logicAppName">The name of the logic app resource running in Azure.</param>
+        /// <param name="message">The message that describes the exception.</param>
         /// <param name="innerException">The exception that is the cause of the current exception</param>
         public LogicAppException(
-            string message,
-            string logicAppName,
-            string resourceGroup,
             string subscriptionId,
+            string resourceGroup,
+            string logicAppName,
+            string message,
             Exception innerException) : base(message, innerException)
         {
-            Guard.NotNullOrWhitespace(logicAppName, nameof(logicAppName));
-            Guard.NotNullOrWhitespace(resourceGroup, nameof(resourceGroup));
             Guard.NotNullOrWhitespace(subscriptionId, nameof(subscriptionId));
+            Guard.NotNullOrWhitespace(resourceGroup, nameof(resourceGroup));
+            Guard.NotNullOrWhitespace(logicAppName, nameof(logicAppName));
 
-            LogicAppName = logicAppName;
-            ResourceGroup = resourceGroup;
             SubscriptionId = subscriptionId;
+            ResourceGroup = resourceGroup;
+            LogicAppName = logicAppName;
         }
 
         /// <summary>
@@ -93,9 +93,9 @@ namespace Invictus.Testing
         }
 
         /// <summary>
-        /// Gets the name of the logic app running on Azure.
+        /// Gets the ID of the subscription of
         /// </summary>
-        public string LogicAppName { get; }
+        public string SubscriptionId { get; }
 
         /// <summary>
         /// Gets the resource group on Azure in which the logic app is located.
@@ -103,9 +103,9 @@ namespace Invictus.Testing
         public string ResourceGroup { get; }
 
         /// <summary>
-        /// Gets the ID of the subscription of
+        /// Gets the name of the logic app running on Azure.
         /// </summary>
-        public string SubscriptionId { get; }
+        public string LogicAppName { get; }
 
         /// <summary>
         /// When overridden in a derived class, sets the <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> with information about the exception.
@@ -117,9 +117,9 @@ namespace Invictus.Testing
         {
             Guard.NotNull(info, nameof(info));
 
-            info.AddValue(nameof(LogicAppName), LogicAppName);
-            info.AddValue(nameof(ResourceGroup), ResourceGroup);
             info.AddValue(nameof(SubscriptionId), SubscriptionId);
+            info.AddValue(nameof(ResourceGroup), ResourceGroup);
+            info.AddValue(nameof(LogicAppName), LogicAppName);
 
             base.GetObjectData(info, context);
         }

@@ -16,7 +16,7 @@ namespace Invictus.Testing.Tests.Integration
             var innerException = new KeyNotFoundException("Couldn't find the logic app");
 
             // Act
-            var exception = new LogicAppException(message, logicApp, resourceGroup, subscriptionId, innerException);
+            var exception = new LogicAppException(subscriptionId, resourceGroup, logicApp, message, innerException);
 
             // Assert
             Assert.Equal(message, exception.Message);

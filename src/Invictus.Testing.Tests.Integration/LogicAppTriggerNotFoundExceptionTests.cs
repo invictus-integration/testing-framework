@@ -17,7 +17,7 @@ namespace Invictus.Testing.Tests.Integration
             var innerException = new KeyNotFoundException("Couldn't find the trigger in the logic app");
 
             // Act
-            var exception = new LogicAppTriggerNotFoundException(message, logicApp, resourceGroup, subscriptionId, innerException);
+            var exception = new LogicAppTriggerNotFoundException(subscriptionId, resourceGroup, logicApp, message, innerException);
 
             // Assert
             Assert.Equal(message, exception.Message);
@@ -52,7 +52,7 @@ namespace Invictus.Testing.Tests.Integration
                    subscriptionId = "subscription ID";
 
             var innerException = new KeyNotFoundException("No trigger with this key found");
-            var exception = new LogicAppTriggerNotFoundException("Trigger could not be found", logicApp, resourceGroup, subscriptionId, innerException);
+            var exception = new LogicAppTriggerNotFoundException(subscriptionId, resourceGroup, logicApp, "Trigger could not be found", innerException);
 
             string expected = exception.ToString();
 
@@ -73,7 +73,7 @@ namespace Invictus.Testing.Tests.Integration
         public void Constructor_WithBlankLogicAppName_Fails(string logicAppName)
         {
             Assert.Throws<ArgumentException>(
-                () => new LogicAppTriggerNotFoundException("Trigger could not be found", logicAppName, "resource group", "subscription ID"));
+                () => new LogicAppTriggerNotFoundException("subscription ID", "resource group", logicAppName, "Trigger could not be found"));
         }
 
         [Theory]
@@ -83,7 +83,7 @@ namespace Invictus.Testing.Tests.Integration
         public void Constructor_WithBlankResourceGroup_Fails(string resourceGroup)
         {
             Assert.Throws<ArgumentException>(
-                () => new LogicAppTriggerNotFoundException("Trigger could not be found", "logic app", resourceGroup, "subscription ID"));
+                () => new LogicAppTriggerNotFoundException("subscription ID", resourceGroup, "logic app", "Trigger could not be found"));
         }
 
         [Theory]
@@ -93,7 +93,7 @@ namespace Invictus.Testing.Tests.Integration
         public void Constructor_WithBlankSubscriptionId_Fails(string subscriptionId)
         {
             Assert.Throws<ArgumentException>(
-                () => new LogicAppTriggerNotFoundException("Trigger could not be found", "logic app", "resource group", subscriptionId));
+                () => new LogicAppTriggerNotFoundException(subscriptionId, "resource group", "logic app", "Trigger could not be found"));
         }
 
         [Theory]
@@ -104,7 +104,7 @@ namespace Invictus.Testing.Tests.Integration
         {
             var innerException = new Exception("The cause of the exception");
             Assert.Throws<ArgumentException>(
-                () => new LogicAppTriggerNotFoundException("Trigger could not be found", logicAppName, "resource group", "subscription ID", innerException));
+                () => new LogicAppTriggerNotFoundException("subscription ID", "resource group", logicAppName, "Trigger could not be found", innerException));
         }
 
         [Theory]
@@ -115,7 +115,7 @@ namespace Invictus.Testing.Tests.Integration
         {
             var innerException = new Exception("The cause of the exception");
             Assert.Throws<ArgumentException>(
-                () => new LogicAppTriggerNotFoundException("Trigger could not be found", "logic app", resourceGroup, "subscription ID", innerException));
+                () => new LogicAppTriggerNotFoundException("subscription ID", resourceGroup, "logic app", "Trigger could not be found", innerException));
         }
 
         [Theory]
@@ -126,7 +126,7 @@ namespace Invictus.Testing.Tests.Integration
         {
             var innerException = new Exception("The cause of the exception");
             Assert.Throws<ArgumentException>(
-                () => new LogicAppTriggerNotFoundException("Trigger could not be found", "logic app", "resource group", subscriptionId, innerException));
+                () => new LogicAppTriggerNotFoundException(subscriptionId, "resource group", "logic app", "Trigger could not be found", innerException));
         }
 
         private static LogicAppTriggerNotFoundException SerializeDeserializeException(LogicAppTriggerNotFoundException exception)
