@@ -46,10 +46,11 @@ namespace Invictus.Testing.Tests.Integration
         public void ToLogicAppAction_WithInputOutput_CreatesAlternative()
         {
             // Arrange
-            var propertyCount = BogusGenerator.Random.Int(1, 10);
-            Dictionary<string, string> trackedProperties =
-                BogusGenerator.Make(propertyCount, () => new KeyValuePair<string, string>(Guid.NewGuid().ToString(), BogusGenerator.Random.Word()))
-                              .ToDictionary(item => item.Key, item => item.Value);
+            var trackedProperties = new Dictionary<string, string>
+            {
+                [Guid.NewGuid().ToString()] = BogusGenerator.Random.Word()
+            };
+
             string trackedPropertiesJson = JsonConvert.SerializeObject(trackedProperties).OrNull(BogusGenerator);
 
             var workflowAction = new WorkflowRunAction(
@@ -74,7 +75,7 @@ namespace Invictus.Testing.Tests.Integration
             Assert.Equal(workflowAction.Error, actual.Error);
             Assert.Equal(inputs, actual.Inputs);
             Assert.Equal(outputs, actual.Outputs);
-            Assert.True(trackedPropertiesJson != null && trackedProperties.SequenceEqual(actual.TrackedProperties));
+            Assert.True(trackedPropertiesJson == null || trackedProperties.SequenceEqual(actual.TrackedProperties));
         }
 
         [Fact]
