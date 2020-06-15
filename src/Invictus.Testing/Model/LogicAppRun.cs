@@ -14,21 +14,7 @@ namespace Invictus.Testing.Model
         public object Error { get; set; }
         public string CorrelationId { get; set; }
         public LogicAppTrigger Trigger { get; set; }
-        public List<LogicAppAction> Actions { get; set; }
-        public Dictionary<string, string> TrackedProperties { get; set; }
-
-        public static explicit operator LogicAppRun(WorkflowRun workFlowRun)
-        {
-            return new LogicAppRun
-            {
-                Id = workFlowRun.Name,
-                StartTime = workFlowRun.StartTime,
-                EndTime = workFlowRun.EndTime,
-                Status = workFlowRun.Status,
-                Error = workFlowRun.Error,
-                CorrelationId = workFlowRun.Correlation?.ClientTrackingId,
-                Trigger = (LogicAppTrigger)workFlowRun.Trigger
-            };
-        }
+        public IEnumerable<LogicAppAction> Actions { get; set; }
+        public IReadOnlyDictionary<string, string> TrackedProperties { get; set; }
     }
 }
