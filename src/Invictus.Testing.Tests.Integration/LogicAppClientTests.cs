@@ -110,7 +110,7 @@ namespace Invictus.Testing.Tests.Integration
             {
                 await using (await logicApp.TemporaryEnableAsync())
                 {
-                    var definitions = new Dictionary<string, StaticResultDefinition> { { actionName, definition } };
+                    var definitions = new Dictionary<string, StaticResultDefinition> { [actionName] = definition };
                     await using (await logicApp.TemporaryEnableStaticResultsAsync(definitions))
                     {
                         // Act
