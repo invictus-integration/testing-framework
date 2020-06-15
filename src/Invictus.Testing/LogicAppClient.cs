@@ -355,7 +355,7 @@ namespace Invictus.Testing
             Workflow resultWorkflow = await _logicManagementClient.Workflows.CreateOrUpdateAsync(_resourceGroup, _logicAppName, workflow);
             if (resultWorkflow.Name != _logicAppName)
             {
-                throw new LogicAppNotUpdatedException(_logicManagementClient.SubscriptionId, _resourceGroup, _logicAppName, "Logic app was not updated correctly with an enabled static result");
+                throw new LogicAppNotUpdatedException(_logicManagementClient.SubscriptionId, _resourceGroup, _logicAppName, "Failed to enable a static result.");
             }
         }
 
