@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using GuardNet;
 using Invictus.Testing.Model;
@@ -26,6 +27,7 @@ namespace Invictus.Testing
     {
         private readonly string _resourceGroup, _logicAppName;
         private readonly LogicAuthentication _authentication;
+        private readonly TimeSpan _retryInterval = TimeSpan.FromSeconds(1);
         private readonly ILogger _logger;
 
         private DateTimeOffset _startTime = DateTimeOffset.UtcNow;
@@ -141,20 +143,38 @@ namespace Invictus.Testing
         }
 
         /// <summary>
+        /// Starts polling for a series of logic app runs corresponding to the previously set filtering criteria.
+        /// </summary>
+        public async Task<IEnumerable<LogicAppRun>> PollForLogicAppRunsAsync()
+        {
+            var cancellationTokenSource  = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(_timeout);
+
+            IEnumerable<LogicAppRun> logicAppRuns = Enumerable.Empty<LogicAppRun>();
+
+            while (!cancellationTokenSource.Token.IsCancellationRequested)
+            {
+                try
+                {
+                    logicAppRuns = await GetLogicAppRunsAsync();
+                    await Task.Delay(TimeSpan.FromSeconds(1), cancellationTokenSource.Token);
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError(exception, "Polling for logic app runs was faulted: {Message}", exception.Message);
+                }
+            }
+
+            return logicAppRuns ?? Enumerable.Empty<LogicAppRun>();
+        }
+
+        /// <summary>
         /// Start polling for a single logic app run corresponding to the previously set filtering criteria.
         /// </summary>
         public async Task<LogicAppRun> PollForSingleLogicAppRunAsync()
         {
             IEnumerable<LogicAppRun> logicAppRuns = await PollForLogicAppRunsAsync(minimumNumberOfItems: 1);
             return logicAppRuns.FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Starts polling for a series of logic app runs corresponding to the previously set filtering criteria.
-        /// </summary>
-        public async Task<IEnumerable<LogicAppRun>> PollForLogicAppRunsAsync()
-        {
-            return await PollForLogicAppRunsAsync(minimumNumberOfItems: 1);
         }
 
         /// <summary>
@@ -166,25 +186,25 @@ namespace Invictus.Testing
             Guard.NotLessThanOrEqualTo(minimumNumberOfItems, 0, nameof(minimumNumberOfItems));
 
             string amount = minimumNumberOfItems == 1 ? "any" : minimumNumberOfItems.ToString();
-            RetryPolicy<IEnumerable<LogicAppRun>> retryPolicy =
-                Policy.HandleResult<IEnumerable<LogicAppRun>>(runs =>
-                      {
-                          int count = runs.Count();
-                          bool isStillPending = count < minimumNumberOfItems;
+            
+            RetryPolicy<IEnumerable<LogicAppRun>> retryPolicy = 
+                Policy.HandleResult<IEnumerable<LogicAppRun>>(currentLogicAppRuns =>
+                {
+                    int count = currentLogicAppRuns.Count();
+                    bool isStillPending = count < minimumNumberOfItems;
 
-                          _logger.LogTrace("Polling for {Amount} log app runs, whilst got now {Current} ", amount, count);
-                          return isStillPending;
-                      })
-                      .Or<Exception>(ex =>
-                      {
-                          _logger.LogError(ex, "Polling for logic app runs was faulted: {Message}", ex.Message);
-                          return true;
-                      })
-                      .WaitAndRetryForeverAsync(index =>
-                      {
-                          _logger.LogTrace("Could not retrieve logic app runs in time, wait 1s and try again...");
-                          return TimeSpan.FromSeconds(1);
-                      });
+                    _logger.LogTrace("Polling for {Amount} log app runs, whilst got now {Current} ", amount, count);
+                    return isStillPending;
+                }).Or<Exception>(ex =>
+                  {
+                      _logger.LogError(ex, "Polling for logic app runs was faulted: {Message}", ex.Message);
+                      return true;
+                  })
+                  .WaitAndRetryForeverAsync(index =>
+                  {
+                      _logger.LogTrace("Could not retrieve logic app runs in time, wait 1s and try again...");
+                      return _retryInterval;
+                  });
 
             PolicyResult<IEnumerable<LogicAppRun>> result =
                 await Policy.TimeoutAsync(_timeout)
@@ -196,8 +216,6 @@ namespace Invictus.Testing
                 if (result.FinalException is null
                     || result.FinalException.GetType() == typeof(TimeoutRejectedException))
                 {
-                    _logger.LogError("Polling finished faulted without {Amount} logic app runs", amount);
-
                     string correlation = _hasCorrelationId
                         ? $"{Environment.NewLine} with correlation property equal '{_correlationId}'"
                         : String.Empty;
@@ -207,7 +225,7 @@ namespace Invictus.Testing
                         : String.Empty;
 
                     throw new TimeoutException(
-                        $"Could not in the given timeout span ({_timeout:g}) retrieve {amount} logic app runs "
+                        $"Could not in the given timeout span ({_timeout:g}) retrieve the expected amount of logic app runs "
                         + $"{Environment.NewLine} with StartTime <= {_startTime:O}"
                         + correlation
                         + trackedProperty);
@@ -218,6 +236,15 @@ namespace Invictus.Testing
 
             _logger.LogTrace("Polling finished successful with {LogicAppRunsCount} logic app runs", result.Result.Count());
             return result.Result;
+        }
+
+        private async Task<PolicyResult<IEnumerable<LogicAppRun>>> ExecutePolicy(RetryPolicy<IEnumerable<LogicAppRun>> retryPolicy)
+        {
+            PolicyResult<IEnumerable<LogicAppRun>> result =
+                await Policy.TimeoutAsync(_timeout)
+                            .WrapAsync(retryPolicy)
+                            .ExecuteAndCaptureAsync(GetLogicAppRunsAsync);
+            return result;
         }
 
         private async Task<IEnumerable<LogicAppRun>> GetLogicAppRunsAsync()

@@ -30,7 +30,8 @@ namespace Invictus.Testing.Tests.Integration
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication, Logger))
             await using (await logicApp.TemporaryEnableAsync())
             {
-                Task postTask = logicApp.TriggerAsync(headers);
+                Task postTask1 = logicApp.TriggerAsync(headers);
+                Task postTask2 = logicApp.TriggerAsync(headers);
 
                 // Act
                 Task<IEnumerable<LogicAppRun>> pollingTask =
@@ -38,13 +39,15 @@ namespace Invictus.Testing.Tests.Integration
                                      .WithCorrelationId(correlationId)
                                      .PollForLogicAppRunsAsync();
 
-                await Task.WhenAll(pollingTask, postTask);
+                await Task.WhenAll(pollingTask, postTask1, postTask2);
 
                 // Assert
                 Assert.NotNull(pollingTask.Result);
-                LogicAppRun logicAppRun = Assert.Single(pollingTask.Result);
-                Assert.NotNull(logicAppRun);
-                Assert.Equal(correlationId, logicAppRun.CorrelationId);
+                Assert.NotEmpty(pollingTask.Result);
+                Assert.All(pollingTask.Result, logicAppRun =>
+                {
+                    Assert.Equal(correlationId, logicAppRun.CorrelationId);
+                });
             }
         }
 
