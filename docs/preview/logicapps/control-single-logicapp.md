@@ -27,4 +27,17 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 }
 ```
 
-### 
+### Temporary enable Logic App
+
+The library allows you to temporary enable a Logic App which makes sure that after the test the Logic App is back to its disabled state.
+
+```csharp
+using (var logicApp = ...)
+{
+    await using (await logicApp.TemporaryEnableAsync())
+    {
+    }
+}
+```
+
+The Logic App will be disabled when the returned disposable gets disposed.
