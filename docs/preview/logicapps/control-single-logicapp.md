@@ -30,6 +30,23 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 }
 ```
 
+### Gets Logic App trigger URL
+
+The library allows you to retrieve the trigger URL on which the Logic App can by run.
+This can be done by either specifying for which trigger you want the URL or by leaving the testing framework to find the configured trigger.
+
+```csharp
+string triggerName = "my-trigger";
+using (var logicApp = ...)
+{
+    // Get trigger URL by trigger name
+    string triggerUrl = await logicApp.GetTriggerUrlByNameAsync(triggerName);
+
+    // Get trigger URL of first found trigger
+    string triggerUrl = await logicApp.GetTriggerUrlAsync();
+}
+```
+
 ### Temporary enable Logic App
 
 The library allows you to temporary enable a Logic App which makes sure that after the test the Logic App is back to its disabled state.
