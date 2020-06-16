@@ -24,7 +24,7 @@ namespace Invictus.Testing.Tests.Integration
                 createdTime: BogusGenerator.Date.Recent(),
                 changedTime: BogusGenerator.Date.Recent(),
                 state: state.ToString(),
-                version: BogusGenerator.System.Version().ToString().OrNull(BogusGenerator),
+                version: BogusGenerator.System.Version().ToString(),
                 accessEndpoint: BogusGenerator.Internet.IpAddress().ToString().OrNull(BogusGenerator),
                 definition: BogusGenerator.Random.String().OrNull(BogusGenerator));
 
@@ -126,6 +126,7 @@ namespace Invictus.Testing.Tests.Integration
                 endTime: BogusGenerator.Date.Recent(),
                 status: GenerateStatus(),
                 error: BogusGenerator.Random.Bytes(10).OrNull(BogusGenerator));
+
             return trigger;
         }
 
