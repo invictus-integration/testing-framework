@@ -24,7 +24,7 @@ string clientSecret = "my-client-secret";
 string resourceGroup = "my-resource-group";
 string logicAppName = "my-logic-app-name";
 
-var authentication = LogicAppAuthentication.UsingServicePrincipal();
+var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret);
 using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppName, authentication))
 {
 }
