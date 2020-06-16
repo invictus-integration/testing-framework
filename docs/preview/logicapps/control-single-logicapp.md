@@ -17,11 +17,14 @@ The features described here requires the following package:
 All the following features uses the `LogicAppClient` which can be created using:
 
 ```csharp
+string tenantId = "my-tenant-id";
 string subscriptionId = "my-subscription-id";
+string clientId = "my-client-id";
+string clientSecret = "my-client-secret";
 string resourceGroup = "my-resource-group";
 string logicAppName = "my-logic-app-name";
 
-var authentication = LogicAppAuthentication.Create();
+var authentication = LogicAppAuthentication.UsingServicePrincipal();
 using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppName, authentication))
 {
 }
