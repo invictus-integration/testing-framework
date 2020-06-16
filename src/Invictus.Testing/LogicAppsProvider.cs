@@ -319,7 +319,7 @@ namespace Invictus.Testing
             return null;
         }
 
-        private bool HasTrackedProperty(IDictionary<string, string> properties)
+        private bool HasTrackedProperty(IReadOnlyDictionary<string, string> properties)
         {
             if (properties is null || properties.Count <= 0)
             {

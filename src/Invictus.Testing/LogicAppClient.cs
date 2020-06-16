@@ -215,7 +215,7 @@ namespace Invictus.Testing
             LogicAppTriggerUrl triggerUrl = await GetTriggerUrlAsync();
 
             _logger.LogTrace("Trigger the workflow of logic app '{LogicAppName}' in resource group '{ResourceGroup}'", _logicAppName, _resourceGroup);
-            using (var request = new HttpRequestMessage(HttpMethod.Post, triggerUrl.Value))
+            using (var request = new HttpRequestMessage(HttpMethod.Post, triggerUrl.Url))
             {
                 foreach (KeyValuePair<string, string> header in headers)
                 {
@@ -250,11 +250,7 @@ namespace Invictus.Testing
             WorkflowTriggerCallbackUrl callbackUrl = 
                 await _logicManagementClient.WorkflowTriggers.ListCallbackUrlAsync(_resourceGroup, _logicAppName, triggerName);
 
-            return new LogicAppTriggerUrl
-            {
-                Value = callbackUrl.Value, 
-                Method = callbackUrl.Method
-            };
+            return new LogicAppTriggerUrl(callbackUrl.Value, callbackUrl.Method);
         }
 
         private async Task<string> GetTriggerNameAsync()

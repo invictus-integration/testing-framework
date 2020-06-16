@@ -29,7 +29,7 @@ namespace Invictus.Testing.Tests.Integration
                 LogicAppTriggerUrl logicAppTriggerUrl = await logicApp.GetTriggerUrlAsync();
 
                 // Assert
-                Assert.NotNull(logicAppTriggerUrl.Value);
+                Assert.NotNull(logicAppTriggerUrl.Url);
                 Assert.Equal("POST", logicAppTriggerUrl.Method); 
             }
         }
@@ -43,7 +43,7 @@ namespace Invictus.Testing.Tests.Integration
                 LogicAppTriggerUrl logicAppTriggerUrl = await logicApp.GetTriggerUrlByNameAsync(triggerName: "manual");
 
                 // Assert
-                Assert.NotNull(logicAppTriggerUrl.Value);
+                Assert.NotNull(logicAppTriggerUrl.Url);
                 Assert.Equal("POST", logicAppTriggerUrl.Method); 
             }
         }
@@ -72,7 +72,7 @@ namespace Invictus.Testing.Tests.Integration
 
                         Assert.Equal(actionName, enabledAction.Name);
                         Assert.Equal("200", enabledAction.Outputs.statusCode.ToString());
-                        Assert.Equal("Succeeded", enabledAction.Status);
+                        Assert.Equal(LogicAppActionStatus.Succeeded, enabledAction.Status);
                     }
 
                     await logicApp.TriggerAsync(headers);
@@ -186,11 +186,11 @@ namespace Invictus.Testing.Tests.Integration
                 {
                     // Assert
                     LogicApp metadata = await logicApp.GetMetadataAsync();
-                    Assert.Equal("Enabled", metadata.State);
+                    Assert.Equal(LogicAppState.Enabled, metadata.State);
                 }
                 {
                     LogicApp metadata = await logicApp.GetMetadataAsync();
-                    Assert.Equal("Disabled", metadata.State);
+                    Assert.Equal(LogicAppState.Disabled, metadata.State);
                 }
             }
         }
