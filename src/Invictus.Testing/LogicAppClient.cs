@@ -250,11 +250,7 @@ namespace Invictus.Testing
             WorkflowTriggerCallbackUrl callbackUrl = 
                 await _logicManagementClient.WorkflowTriggers.ListCallbackUrlAsync(_resourceGroup, _logicAppName, triggerName);
 
-            return new LogicAppTriggerUrl
-            {
-                Value = callbackUrl.Value, 
-                Method = callbackUrl.Method
-            };
+            return new LogicAppTriggerUrl(callbackUrl.Value, callbackUrl.Method);
         }
 
         private async Task<string> GetTriggerNameAsync()

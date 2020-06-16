@@ -18,12 +18,12 @@ namespace Invictus.Testing.Tests.Integration
         public void ToLogicApp_WithWorkflow_CreatesAlternative()
         {
             // Arrange
-            string state = BogusGenerator.PickRandom("NotSpecified", "Completed", "Enabled", "Disabled", "Deleted", "Suspended");
+            var state = BogusGenerator.PickRandom<LogicAppState>();
             var workflow = new Workflow(
                 name: BogusGenerator.Internet.DomainName().OrNull(BogusGenerator),
                 createdTime: BogusGenerator.Date.Recent(),
                 changedTime: BogusGenerator.Date.Recent(),
-                state: state.OrNull(BogusGenerator),
+                state: state.ToString(),
                 version: BogusGenerator.System.Version().ToString().OrNull(BogusGenerator),
                 accessEndpoint: BogusGenerator.Internet.IpAddress().ToString().OrNull(BogusGenerator),
                 definition: BogusGenerator.Random.String().OrNull(BogusGenerator));
@@ -36,7 +36,7 @@ namespace Invictus.Testing.Tests.Integration
             Assert.Equal(workflow.Name, actual.Name);
             Assert.Equal(workflow.CreatedTime, actual.CreatedTime);
             Assert.Equal(workflow.ChangedTime, actual.ChangedTime);
-            Assert.Equal(workflow.State, actual.State);
+            Assert.Equal(workflow.State, actual.State.ToString());
             Assert.Equal(workflow.Version, actual.Version);
             Assert.Equal(workflow.AccessEndpoint, actual.AccessEndpoint);
             Assert.Equal(workflow.Definition, actual.Definition);
@@ -71,7 +71,7 @@ namespace Invictus.Testing.Tests.Integration
             Assert.Equal(workflowAction.Name, actual.Name);
             Assert.Equal(workflowAction.StartTime, actual.StartTime);
             Assert.Equal(workflowAction.EndTime, actual.EndTime);
-            Assert.Equal(workflowAction.Status, actual.Status);
+            Assert.Equal(workflowAction.Status, actual.Status.ToString());
             Assert.Equal(workflowAction.Error, actual.Error);
             Assert.Equal(inputs, actual.Inputs);
             Assert.Equal(outputs, actual.Outputs);
@@ -92,7 +92,7 @@ namespace Invictus.Testing.Tests.Integration
             // Assert
             Assert.NotNull(actual);
             Assert.Equal(workflowRun.Name, actual.Id);
-            Assert.Equal(workflowRun.Status, actual.Status);
+            Assert.Equal(workflowRun.Status, actual.Status.ToString());
             Assert.Equal(workflowRun.StartTime, actual.StartTime);
             Assert.Equal(workflowRun.EndTime, actual.EndTime);
             Assert.Equal(workflowRun.Error, actual.Error);
@@ -104,7 +104,7 @@ namespace Invictus.Testing.Tests.Integration
             Assert.Equal(trigger.Outputs, actual.Trigger.Outputs);
             Assert.Equal(trigger.StartTime, actual.Trigger.StartTime);
             Assert.Equal(trigger.EndTime, actual.Trigger.EndTime);
-            Assert.Equal(trigger.Status, actual.Trigger.Status);
+            Assert.Equal(trigger.Status, actual.Trigger.Status.ToString());
             Assert.Equal(trigger.Error, actual.Trigger.Error);
 
             Assert.All(actions.Where(action => action.TrackedProperties != null), action =>
@@ -133,7 +133,7 @@ namespace Invictus.Testing.Tests.Integration
         {
             var correlation = new Correlation(BogusGenerator.Random.String().OrNull(BogusGenerator)).OrNull(BogusGenerator);
             var workflowRun = new WorkflowRun(
-                name: BogusGenerator.Internet.DomainWord().OrNull(BogusGenerator),
+                name: BogusGenerator.Internet.DomainWord(),
                 startTime: BogusGenerator.Date.Recent(),
                 status: GenerateStatus(),
                 error: BogusGenerator.Random.Bytes(10).OrNull(BogusGenerator),
@@ -153,17 +153,15 @@ namespace Invictus.Testing.Tests.Integration
 
             IList<LogicAppAction> actions = BogusGenerator.Make(actionCount, () =>
             {
-                return new LogicAppAction
-                {
-                    Name = BogusGenerator.Internet.DomainWord().OrNull(BogusGenerator),
-                    Inputs = BogusGenerator.Random.Words().OrNull(BogusGenerator),
-                    Outputs = BogusGenerator.Random.Words().OrNull(BogusGenerator),
-                    Status = GenerateStatus(),
-                    StartTime = BogusGenerator.Date.Past(),
-                    EndTime = BogusGenerator.Date.Recent(),
-                    Error = BogusGenerator.Random.Byte(10).OrNull(BogusGenerator),
-                    TrackedProperties = trackedProperties
-                };
+                return new LogicAppAction(
+                    BogusGenerator.Internet.DomainWord(),
+                    BogusGenerator.PickRandom<LogicAppActionStatus>(),
+                    BogusGenerator.Random.Words().OrNull(BogusGenerator),
+                    BogusGenerator.Random.Words().OrNull(BogusGenerator),
+                    BogusGenerator.Random.Byte(10).OrNull(BogusGenerator),
+                    trackedProperties,
+                    BogusGenerator.Date.Past(),
+                    BogusGenerator.Date.Recent());
             });
 
             return actions;
@@ -171,9 +169,7 @@ namespace Invictus.Testing.Tests.Integration
 
         private static string GenerateStatus()
         {
-            return BogusGenerator.PickRandom("NotSpecified", "Paused", "Running",
-                "Waiting", "Succeeded", "Skipped", "Suspended", "Cancelled", "Failed", "Faulted",
-                "TimedOut", "Aborted", "Ignored");
+            return BogusGenerator.PickRandom<LogicAppActionStatus>().ToString();
         }
     }
 }

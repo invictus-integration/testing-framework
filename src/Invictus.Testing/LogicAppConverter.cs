@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using GuardNet;
@@ -20,33 +21,35 @@ namespace Invictus.Testing
         {
             Guard.NotNull(workFlowRun, nameof(workFlowRun));
             Guard.NotNull(actions, nameof(actions));
+            Enum.TryParse(workFlowRun.Status, out LogicAppActionStatus status);
 
-            return new LogicAppRun
-            {
-                Id = workFlowRun.Name,
-                StartTime = workFlowRun.StartTime,
-                EndTime = workFlowRun.EndTime,
-                Status = workFlowRun.Status,
-                Error = workFlowRun.Error,
-                CorrelationId = workFlowRun.Correlation?.ClientTrackingId,
-                Trigger = CreateLogicAppTriggerFrom(workFlowRun.Trigger),
-                Actions = actions,
-                TrackedProperties = new ReadOnlyDictionary<string, string>(GetAllTrackedProperties(actions))
-            };
+            LogicAppTrigger trigger = CreateLogicAppTriggerFrom(workFlowRun.Trigger);
+            IDictionary<string, string> trackedProperties = GetAllTrackedProperties(actions);
+
+            return new LogicAppRun(
+                workFlowRun.Name,
+                status,
+                workFlowRun.Error,
+                workFlowRun.Correlation?.ClientTrackingId,
+                trigger,
+                actions,
+                trackedProperties,
+                workFlowRun.StartTime,
+                workFlowRun.EndTime);
         }
 
         private static LogicAppTrigger CreateLogicAppTriggerFrom(WorkflowRunTrigger workflowRunTrigger)
         {
-            return new LogicAppTrigger
-            {
-                Name = workflowRunTrigger.Name,
-                Inputs = workflowRunTrigger.Inputs,
-                Outputs = workflowRunTrigger.Outputs,
-                StartTime = workflowRunTrigger.StartTime,
-                EndTime = workflowRunTrigger.EndTime,
-                Status = workflowRunTrigger.Status,
-                Error = workflowRunTrigger.Error
-            };
+            Enum.TryParse(workflowRunTrigger.Status, out LogicAppActionStatus status);
+
+            return new LogicAppTrigger(
+                workflowRunTrigger.Name,
+                status,
+                workflowRunTrigger.Inputs,
+                workflowRunTrigger.Outputs,
+                workflowRunTrigger.Error,
+                workflowRunTrigger.StartTime,
+                workflowRunTrigger.EndTime);
         }
 
         /// <summary>
@@ -54,25 +57,36 @@ namespace Invictus.Testing
         /// </summary>
         public static LogicAppAction ToLogicAppAction(WorkflowRunAction workflowRunAction, dynamic input, dynamic output)
         {
-            var logicAppAction = new LogicAppAction
-            {
-                Name = workflowRunAction.Name,
-                StartTime = workflowRunAction.StartTime,
-                EndTime = workflowRunAction.EndTime,
-                Status = workflowRunAction.Status,
-                Error = workflowRunAction.Error,
-                Inputs = input,
-                Outputs = output
-            };
+            Guard.NotNull(param: workflowRunAction, paramName: nameof(workflowRunAction));
+            Enum.TryParse(value: workflowRunAction.Status, result: out LogicAppActionStatus status);
 
-            if (workflowRunAction.TrackedProperties != null)
+            IDictionary<string, string> trackedProperties = DeserializeTrackedProperties(workflowRunAction: workflowRunAction);
+
+            var logicAppAction = new LogicAppAction(
+                name: workflowRunAction.Name,
+                status: status,
+                error: workflowRunAction.Error,
+                inputs: input,
+                outputs: output,
+                trackedProperties: trackedProperties,
+                startTime: workflowRunAction.StartTime,
+                endTime: workflowRunAction.EndTime);
+
+                return logicAppAction;
+        }
+
+        private static IDictionary<string, string> DeserializeTrackedProperties(WorkflowRunAction workflowRunAction)
+        {
+            if (workflowRunAction.TrackedProperties is null)
             {
-                logicAppAction.TrackedProperties =
-                    JsonConvert.DeserializeObject<Dictionary<string, string>>(
-                        workflowRunAction.TrackedProperties.ToString());
+                return new Dictionary<string, string>();
             }
 
-            return logicAppAction;
+            var trackedPropertiesJson = workflowRunAction.TrackedProperties.ToString();
+            var trackedProperties = JsonConvert.DeserializeObject<Dictionary<string, string>>(trackedPropertiesJson);
+
+            return trackedProperties;
+
         }
 
         private static IDictionary<string, string> GetAllTrackedProperties(IEnumerable<LogicAppAction> actions)
@@ -92,17 +106,16 @@ namespace Invictus.Testing
         public static LogicApp ToLogicApp(Workflow workflow)
         {
             Guard.NotNull(workflow, nameof(workflow));
+            Enum.TryParse(workflow.State, out LogicAppState state);
 
-            return new LogicApp
-            {
-                Name = workflow.Name,
-                CreatedTime = workflow.CreatedTime,
-                ChangedTime = workflow.ChangedTime,
-                State = workflow.State,
-                Version = workflow.Version,
-                AccessEndpoint = workflow.AccessEndpoint,
-                Definition = workflow.Definition
-            };
+            return new LogicApp(
+                workflow.Name,
+                state,
+                workflow.Version,
+                workflow.AccessEndpoint,
+                workflow.Definition,
+                workflow.CreatedTime,
+                workflow.ChangedTime);
         }
     }
 }
