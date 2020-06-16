@@ -20,7 +20,7 @@ namespace Invictus.Testing.Tests.Integration
             // Arrange
             var state = BogusGenerator.PickRandom<LogicAppState>();
             var workflow = new Workflow(
-                name: BogusGenerator.Internet.DomainName().OrNull(BogusGenerator),
+                name: BogusGenerator.Internet.DomainName(),
                 createdTime: BogusGenerator.Date.Recent(),
                 changedTime: BogusGenerator.Date.Recent(),
                 state: state.ToString(),
@@ -54,7 +54,7 @@ namespace Invictus.Testing.Tests.Integration
             string trackedPropertiesJson = JsonConvert.SerializeObject(trackedProperties).OrNull(BogusGenerator);
 
             var workflowAction = new WorkflowRunAction(
-                name: BogusGenerator.Internet.DomainName().OrNull(BogusGenerator),
+                name: BogusGenerator.Internet.DomainName(),
                 startTime: BogusGenerator.Date.Past(),
                 endTime: BogusGenerator.Date.Past(),
                 status: GenerateStatus(),
@@ -119,7 +119,7 @@ namespace Invictus.Testing.Tests.Integration
         private static WorkflowRunTrigger CreateWorkflowRunTrigger()
         {
             var trigger = new WorkflowRunTrigger(
-                name: BogusGenerator.Internet.DomainName().OrNull(BogusGenerator),
+                name: BogusGenerator.Internet.DomainName(),
                 inputs: BogusGenerator.Random.Word().OrNull(BogusGenerator),
                 outputs: BogusGenerator.Random.Word().OrNull(BogusGenerator),
                 startTime: BogusGenerator.Date.Past(),
