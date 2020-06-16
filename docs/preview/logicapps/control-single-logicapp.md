@@ -44,3 +44,19 @@ using (var logicApp = ...)
 ```
 
 The Logic App will be disabled when the returned disposable gets disposed.
+
+### Temporary update Logic App's workflow definition
+
+This library allows you to temporary update the Logic App's workflow definition which makes sure that after the test the original workflow definition is restored.
+
+```csharp
+string workflowDefinition = ...
+using (var logicApp = ...)
+{
+    await using (await logicApp.TempraryUpdateAsync(workflowDefinition))
+    {
+    }
+}
+```
+
+The original Logic App's workflow definition will be restored when the returned disposable gets disposed.
