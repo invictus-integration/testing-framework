@@ -1,12 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using GuardNet;
 
 namespace Invictus.Testing.Model
 {
+    /// <summary>
+    /// Represents the URL of the <see cref="LogicAppTrigger"/>.
+    /// </summary>
     public class LogicAppTriggerUrl
     {
-        public string Value { get; set; }
-        public string Method { get; set; }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogicAppTriggerUrl"/> class.
+        /// </summary>
+        public LogicAppTriggerUrl(string url, string method)
+        {
+            Guard.NotNull(url, nameof(url));
+            Guard.NotNull(method, nameof(method));
+
+            Url = url;
+            Method = method;
+        }
+
+        /// <summary>
+        /// Gets the URL of the trigger.
+        /// </summary>
+        public string Url { get; }
+        
+        /// <summary>
+        /// Gets the HTTP method of the trigger.
+        /// </summary>
+        public string Method { get; }
     }
 }

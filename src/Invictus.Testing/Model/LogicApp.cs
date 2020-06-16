@@ -1,32 +1,71 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Azure.Management.Logic.Models;
+using GuardNet;
 
 namespace Invictus.Testing.Model
 {
+    /// <summary>
+    /// Represents an Logic App registration running on Azure containing meta-data information.
+    /// </summary>
     public class LogicApp
     {
-        public string Name { get; set; }
-        public DateTimeOffset? CreatedTime { get; set; }
-        public DateTimeOffset? ChangedTime { get; set; }
-        public string State { get; set; }
-        public string Version { get; set; }
-        public string AccessEndpoint { get; set; }
-        public dynamic Definition { get; set; }
-
-        public static explicit operator LogicApp(Workflow workflow)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogicApp"/> class.
+        /// </summary>
+        public LogicApp(
+            string name,
+            LogicAppState state,
+            string version,
+            string accessEndpoint,
+            dynamic definition,
+            DateTimeOffset? createdTime = null,
+            DateTimeOffset? changedTime = null)
         {
-            return new LogicApp
-            {
-                Name = workflow.Name,
-                CreatedTime = workflow.CreatedTime,
-                ChangedTime = workflow.ChangedTime,
-                State = workflow.State,
-                Version = workflow.Version,
-                AccessEndpoint = workflow.AccessEndpoint,
-                Definition = workflow.Definition
-            };
+            Guard.NotNull(name, nameof(name));
+            Guard.NotNull(version, nameof(version));
+
+            Name = name;
+            State = state;
+            Version = version;
+            AccessEndpoint = accessEndpoint;
+            Definition = definition;
+            CreatedTime = createdTime;
+            ChangedTime = changedTime;
         }
+
+        /// <summary>
+        /// Gets the resource name of the Azure Logic App.
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        /// Gets the state of the Azure Logic App.
+        /// Possible values include: 'NotSpecified', 'Completed', 'Enabled', 'Disabled', 'Deleted', 'Suspended'.
+        /// </summary>
+        public LogicAppState State { get; }
+        
+        /// <summary>
+        /// Gets the version of the Azure Logic App.
+        /// </summary>
+        public string Version { get; }
+        
+        /// <summary>
+        /// Gets the access endpoint of the Azure Logic App.
+        /// </summary>
+        public string AccessEndpoint { get; }
+        
+        /// <summary>
+        /// Gets the workflow definition of the Azure Logic App.
+        /// </summary>
+        public dynamic Definition { get; }
+        
+        /// <summary>
+        /// Gets the optional time when the Logic App was created.
+        /// </summary>
+        public DateTimeOffset? CreatedTime { get; }
+
+        /// <summary>
+        /// Gets the optional time when the Logic App was changed.
+        /// </summary>
+        public DateTimeOffset? ChangedTime { get; }
     }
 }
