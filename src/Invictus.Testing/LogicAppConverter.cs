@@ -101,14 +101,14 @@ namespace Invictus.Testing
         }
 
         /// <summary>
-        /// Convert to <see cref="LogicApp"/>.
+        /// Convert to <see cref="LogicAppMetadata"/>.
         /// </summary>
-        public static LogicApp ToLogicApp(Workflow workflow)
+        public static LogicAppMetadata ToLogicApp(Workflow workflow)
         {
             Guard.NotNull(workflow, nameof(workflow));
             Enum.TryParse(workflow.State, out LogicAppState state);
 
-            return new LogicApp(
+            return new LogicAppMetadata(
                 workflow.Name,
                 state,
                 workflow.Version,

@@ -197,7 +197,7 @@ namespace Invictus.Testing
         /// <summary>
         /// Gets the logic app definition information.
         /// </summary>
-        public async Task<LogicApp> GetMetadataAsync()
+        public async Task<LogicAppMetadata> GetMetadataAsync()
         {
             Workflow workflow = await _logicManagementClient.Workflows.GetAsync(_resourceGroup, _logicAppName);
             return LogicAppConverter.ToLogicApp(workflow);

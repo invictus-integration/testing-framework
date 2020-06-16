@@ -185,11 +185,11 @@ namespace Invictus.Testing.Tests.Integration
                 await using (await logicApp.TemporaryEnableAsync())
                 {
                     // Assert
-                    LogicApp metadata = await logicApp.GetMetadataAsync();
+                    LogicAppMetadata metadata = await logicApp.GetMetadataAsync();
                     Assert.Equal(LogicAppState.Enabled, metadata.State);
                 }
                 {
-                    LogicApp metadata = await logicApp.GetMetadataAsync();
+                    LogicAppMetadata metadata = await logicApp.GetMetadataAsync();
                     Assert.Equal(LogicAppState.Disabled, metadata.State);
                 }
             }
