@@ -10,19 +10,19 @@ namespace Invictus.Testing.Model
         /// <summary>
         /// Initializes a new instance of the <see cref="LogicAppTriggerUrl"/> class.
         /// </summary>
-        public LogicAppTriggerUrl(string value, string method)
+        public LogicAppTriggerUrl(string url, string method)
         {
-            Guard.NotNull(value, nameof(value));
+            Guard.NotNull(url, nameof(url));
             Guard.NotNull(method, nameof(method));
 
-            Value = value;
+            Url = url;
             Method = method;
         }
 
         /// <summary>
         /// Gets the URL of the trigger.
         /// </summary>
-        public string Value { get; }
+        public string Url { get; }
         
         /// <summary>
         /// Gets the HTTP method of the trigger.

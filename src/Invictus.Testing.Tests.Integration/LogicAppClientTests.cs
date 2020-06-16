@@ -29,7 +29,7 @@ namespace Invictus.Testing.Tests.Integration
                 LogicAppTriggerUrl logicAppTriggerUrl = await logicApp.GetTriggerUrlAsync();
 
                 // Assert
-                Assert.NotNull(logicAppTriggerUrl.Value);
+                Assert.NotNull(logicAppTriggerUrl.Url);
                 Assert.Equal("POST", logicAppTriggerUrl.Method); 
             }
         }
@@ -43,7 +43,7 @@ namespace Invictus.Testing.Tests.Integration
                 LogicAppTriggerUrl logicAppTriggerUrl = await logicApp.GetTriggerUrlByNameAsync(triggerName: "manual");
 
                 // Assert
-                Assert.NotNull(logicAppTriggerUrl.Value);
+                Assert.NotNull(logicAppTriggerUrl.Url);
                 Assert.Equal("POST", logicAppTriggerUrl.Method); 
             }
         }
