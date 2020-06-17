@@ -34,7 +34,7 @@ namespace Invictus.Testing
         private DateTimeOffset _startTime = DateTimeOffset.UtcNow;
         private TimeSpan _timeout = TimeSpan.FromSeconds(90);
         private string _correlationId;
-        private bool _hasTrackedProperty, _hasCorrelationId;
+        private bool _hasCorrelationId;
 
         private static readonly HttpClient HttpClient = new HttpClient();
 
@@ -137,7 +137,7 @@ namespace Invictus.Testing
             Guard.NotNull(trackedPropertyName, nameof(trackedPropertyName));
             Guard.NotNull(trackedPropertyValue, nameof(trackedPropertyValue));
 
-            _trackedProperties[trackedPropertyName] = trackedPropertyValue;
+            _trackingProperties[trackedPropertyName] = trackedPropertyValue;
             return this;
         }
 
@@ -219,8 +219,8 @@ namespace Invictus.Testing
                         ? $"{Environment.NewLine} with correlation property equal '{_correlationId}'"
                         : String.Empty;
 
-                    string trackedProperty = _hasTrackedProperty
-                        ? $" {Environment.NewLine} with tracked property [{_trackedPropertyName}] = {_trackedPropertyValue}"
+                    string trackedProperty = _trackingProperties.Count > 0
+                        ? $" {Environment.NewLine} with tracked properties {{{String.Join(", ", _trackingProperties.Select(prop => $"[{prop.Key}] = {prop.Value}"))}}}"
                         : String.Empty;
 
                     throw new TimeoutException(
@@ -274,8 +274,8 @@ namespace Invictus.Testing
                     IEnumerable<LogicAppAction> actions =
                         await FindLogicAppRunActionsAsync(managementClient, workFlowRun.Name);
 
-                    if (_trackedProperties.Any() && actions.Any(action => HasTrackedProperty(action.TrackedProperties))
-                        || !_trackedProperties.Any())
+                    if (_trackingProperties.Count > 0 && actions.Any(action => HasTrackedProperty(action.TrackedProperties))
+                        || _trackingProperties.Count <= 0)
                     {
                         var logicAppRun = LogicAppConverter.ToLogicAppRun(workFlowRun, actions);
                         logicAppRuns.Add(logicAppRun);
@@ -325,20 +325,19 @@ namespace Invictus.Testing
                 return false;
             }
 
-            return _trackedProperties.Any(prop =>
+            return _trackingProperties.All(expectedProp =>
             {
-
-                return properties.Any(property =>
+                return properties.Any(actualProp =>
                 {
-                    if (property.Key is null || property.Value is null)
+                    if (actualProp.Key is null || actualProp.Value is null)
                     {
                         return false;
                     }
 
-                    return property.Key.Equals(prop, StringComparison.OrdinalIgnoreCase)
-                           && property.Value.Equals(prop, StringComparison.OrdinalIgnoreCase);
+                    return actualProp.Key.Equals(expectedProp.Key, StringComparison.OrdinalIgnoreCase)
+                           && actualProp.Value.Equals(expectedProp.Value, StringComparison.OrdinalIgnoreCase);
                 });
-            }
+            });
         }
     }
 }
