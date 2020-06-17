@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using GuardNet;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
@@ -40,6 +41,23 @@ namespace Invictus.Testing.Tests.Integration
         }
 
         /// <summary>
+        /// Gets the Azure Logic App definition to test update interactions.
+        /// </summary>
+        public string GetLogicAppDefinition()
+        {
+            var fileName = "rcv-trigger-http.json";
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "LogicAppDefinitions", fileName);
+            
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("No Azure Logic App definition file can be found at the expected file location", filePath);
+            }
+
+            string definition = File.ReadAllText(filePath);
+            return definition;
+        }
+
+        /// <summary>
         /// Gets the name of the Azure Logic App to interact without state changes.
         /// </summary>
         public string GetTestLogicAppName()
@@ -53,6 +71,14 @@ namespace Invictus.Testing.Tests.Integration
         public string GetTestMockingLogicAppName()
         {
             return GetRequiredValue("Azure:LogicApps:TestMockingLogicAppName");
+        }
+
+        /// <summary>
+        /// Gets the name of the Azure Logic App resource running on Azure to test for updated workflow definitions.
+        /// </summary>
+        public string GetTestUpdateLogicAppName()
+        {
+            return GetRequiredValue("Azure:LogicApps:TestUpdateLogicAppName");
         }
 
         /// <summary>

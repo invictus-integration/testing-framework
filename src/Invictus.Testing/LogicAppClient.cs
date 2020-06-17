@@ -222,7 +222,9 @@ namespace Invictus.Testing
                     request.Headers.Add(header.Key, header.Value);
                 }
 
-                await HttpClient.SendAsync(request);
+                using (HttpResponseMessage response = await HttpClient.SendAsync(request))
+                {
+                }
             }
         }
 

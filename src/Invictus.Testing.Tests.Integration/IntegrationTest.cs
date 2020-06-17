@@ -18,6 +18,7 @@ namespace Invictus.Testing.Tests.Integration
             ResourceGroup = Configuration.GetAzureResourceGroup();
             LogicAppName = Configuration.GetTestLogicAppName();
             LogicAppMockingName = Configuration.GetTestMockingLogicAppName();
+            LogicAppUpdateName = Configuration.GetTestUpdateLogicAppName();
 
             string subscriptionId = Configuration.GetAzureSubscriptionId();
             string tenantId = Configuration.GetAzureTenantId();
@@ -42,15 +43,20 @@ namespace Invictus.Testing.Tests.Integration
         protected string ResourceGroup { get; }
         
         /// <summary>
-        /// Gets the name of the logic app resource running on Azure to test stateless operations against.
+        /// Gets the name of the Azure Logic App resource running on Azure to test stateless operations against.
         /// </summary>
         protected string LogicAppName { get; }
         
         /// <summary>
-        /// Gets the name of the logic app resource running on Azure to test stateful operations against.
+        /// Gets the name of the Azure Logic App resource running on Azure to test stateful operations against.
         /// </summary>
         protected string LogicAppMockingName { get; }
         
+        /// <summary>
+        /// Gets the name of the Azure Logic App resource running on Azure to test for updated workflow definitions.
+        /// </summary>
+        protected string LogicAppUpdateName { get; }
+
         /// <summary>
         /// Gets the authentication mechanism to authenticate with Azure.
         /// </summary>
