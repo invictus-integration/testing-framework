@@ -28,11 +28,12 @@ namespace Invictus.Testing
         private readonly string _resourceGroup, _logicAppName;
         private readonly LogicAuthentication _authentication;
         private readonly TimeSpan _retryInterval = TimeSpan.FromSeconds(1);
+        private readonly IDictionary<string, string> _trackingProperties = new Dictionary<string, string>();
         private readonly ILogger _logger;
 
         private DateTimeOffset _startTime = DateTimeOffset.UtcNow;
         private TimeSpan _timeout = TimeSpan.FromSeconds(90);
-        private string _trackedPropertyName, _trackedPropertyValue, _correlationId;
+        private string _correlationId;
         private bool _hasTrackedProperty, _hasCorrelationId;
 
         private static readonly HttpClient HttpClient = new HttpClient();
@@ -136,9 +137,7 @@ namespace Invictus.Testing
             Guard.NotNull(trackedPropertyName, nameof(trackedPropertyName));
             Guard.NotNull(trackedPropertyValue, nameof(trackedPropertyValue));
 
-            _hasTrackedProperty = true;
-            _trackedPropertyName = trackedPropertyName;
-            _trackedPropertyValue = trackedPropertyValue;
+            _trackedProperties[trackedPropertyName] = trackedPropertyValue;
             return this;
         }
 
@@ -275,8 +274,8 @@ namespace Invictus.Testing
                     IEnumerable<LogicAppAction> actions =
                         await FindLogicAppRunActionsAsync(managementClient, workFlowRun.Name);
 
-                    if (_hasTrackedProperty && actions.Any(action => HasTrackedProperty(action.TrackedProperties))
-                        || !_hasTrackedProperty)
+                    if (_trackedProperties.Any() && actions.Any(action => HasTrackedProperty(action.TrackedProperties))
+                        || !_trackedProperties.Any())
                     {
                         var logicAppRun = LogicAppConverter.ToLogicAppRun(workFlowRun, actions);
                         logicAppRuns.Add(logicAppRun);
@@ -326,16 +325,20 @@ namespace Invictus.Testing
                 return false;
             }
 
-            return properties.Any(property =>
+            return _trackedProperties.Any(prop =>
             {
-                if (property.Key is null || property.Value is null)
-                {
-                    return false;
-                }
 
-                return property.Key.Equals(_trackedPropertyName, StringComparison.OrdinalIgnoreCase)
-                       && property.Value.Equals(_trackedPropertyValue, StringComparison.OrdinalIgnoreCase);
-            });
+                return properties.Any(property =>
+                {
+                    if (property.Key is null || property.Value is null)
+                    {
+                        return false;
+                    }
+
+                    return property.Key.Equals(prop, StringComparison.OrdinalIgnoreCase)
+                           && property.Value.Equals(prop, StringComparison.OrdinalIgnoreCase);
+                });
+            }
         }
     }
 }
