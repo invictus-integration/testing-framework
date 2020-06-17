@@ -28,6 +28,26 @@ var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subs
 var provider = LogicAppsProvider.LocatedAt(resourceGroupName, logicAppName, authentication);
 ```
 
+And are all about polling for Logic App runs which contain following information:
+
+```csharp
+LogicAppRun logicAppRun = ...
+
+// Error occured in the Logic App run.
+object error = logicAppRun.Error;
+
+// Status of the Azure Logic App action.
+LogicAppActionStatus status = logicAppRun.Status;
+
+/// Actions in the Azure Logic App.
+IEnumerable<LogicAppAction> actions = logicAppRun.Actions;
+
+// Tracking properties.
+IDictionary<string, string> trackedProperties = logicAppRun.TrackedProperties;
+
+// ...
+```
+
 ### Filtering features
 
 These features describe how to filter for the correct Logic App runs.
