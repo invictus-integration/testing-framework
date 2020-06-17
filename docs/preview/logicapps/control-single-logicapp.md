@@ -1,4 +1,4 @@
-[home](../README.md) | [logic apps](logicapps.md)
+[home](../README.md)
 
 # Control a single Azure Logic App
 

@@ -14,3 +14,4 @@ PM > Install-Package Invictus-Testing
 
 All the features in the framework:
 * [Controlling a single Azure Logic App](./logicapps/control-single-logicapp.md) to interact with a single Logic App during the test.
+* [Retrieving Azure Logic App runs by polling](./logicapps/polling-logicapp-runs.md) to validate expected actions and tracking information.
