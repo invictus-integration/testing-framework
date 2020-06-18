@@ -41,23 +41,6 @@ namespace Invictus.Testing.Tests.Integration
         }
 
         /// <summary>
-        /// Gets the Azure Logic App definition to test update interactions.
-        /// </summary>
-        public string GetLogicAppDefinition()
-        {
-            var fileName = "rcv-trigger-http.json";
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "LogicAppDefinitions", fileName);
-            
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException("No Azure Logic App definition file can be found at the expected file location", filePath);
-            }
-
-            string definition = File.ReadAllText(filePath);
-            return definition;
-        }
-
-        /// <summary>
         /// Gets the name of the Azure Logic App to interact without state changes.
         /// </summary>
         public string GetTestLogicAppName()
@@ -74,11 +57,11 @@ namespace Invictus.Testing.Tests.Integration
         }
 
         /// <summary>
-        /// Gets the name of the Azure Logic App resource running on Azure to test for updated workflow definitions.
+        /// Gets the name of the Azure Logic App resource running on Azure to test basic operations.
         /// </summary>
-        public string GetTestUpdateLogicAppName()
+        public string GetTestBaseLogicAppName()
         {
-            return GetRequiredValue("Azure:LogicApps:TestUpdateLogicAppName");
+            return GetRequiredValue("Azure:LogicApps:TestBaseLogicAppName");
         }
 
         /// <summary>
@@ -131,6 +114,30 @@ namespace Invictus.Testing.Tests.Integration
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// Gets the Azure Logic App definition to test update interactions.
+        /// </summary>
+        public string GetLogicAppTriggerUpdateDefinition()
+        {
+            const string fileName = "rcv-trigger-http.json";
+            string definition = GetLogicAppDefinition(fileName);
+
+            return definition;
+        }
+
+        private static string GetLogicAppDefinition(string fileName)
+        {
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "LogicAppDefinitions", fileName);
+
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("No Azure Logic App definition file can be found at the expected file location", filePath);
+            }
+
+            string definition = File.ReadAllText(filePath);
+            return definition;
         }
 
         /// <summary>

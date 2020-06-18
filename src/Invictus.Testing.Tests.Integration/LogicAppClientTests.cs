@@ -209,9 +209,9 @@ namespace Invictus.Testing.Tests.Integration
                 { "correlationId", correlationId },
             };
 
-            string definition = Configuration.GetLogicAppDefinition();
+            string definition = Configuration.GetLogicAppTriggerUpdateDefinition();
 
-            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppUpdateName, Authentication, Logger))
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, TestBaseLogicAppName, Authentication, Logger))
             {
                 await using (await logicApp.TemporaryEnableAsync())
                 {
@@ -220,12 +220,12 @@ namespace Invictus.Testing.Tests.Integration
                     {
                         // Assert
                         await logicApp.TriggerAsync(headers);
-                        LogicAppAction updatedAction = await PollForLogicAppActionAsync(correlationId, actionName, LogicAppUpdateName);
+                        LogicAppAction updatedAction = await PollForLogicAppActionAsync(correlationId, actionName, TestBaseLogicAppName);
                         Assert.Equal("Updated", updatedAction.Outputs.body.response.ToString());
                     }
                     {
                         await logicApp.TriggerAsync(headers);
-                        LogicAppAction updatedAction = await PollForLogicAppActionAsync(correlationId, actionName, LogicAppUpdateName);
+                        LogicAppAction updatedAction = await PollForLogicAppActionAsync(correlationId, actionName, TestBaseLogicAppName);
                         Assert.Equal("Original", updatedAction.Outputs.body.response.ToString());
                     } 
                 }
@@ -236,7 +236,7 @@ namespace Invictus.Testing.Tests.Integration
         public async Task RunLogicApp_WithoutTrigger_ReturnsCorrelationId()
         {
             // Arrange
-            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppUpdateName, Authentication, Logger))
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, TestBaseLogicAppName, Authentication, Logger))
             {
                 await using (await logicApp.TemporaryEnableAsync())
                 {
@@ -245,7 +245,7 @@ namespace Invictus.Testing.Tests.Integration
 
                     // Assert
                     LogicAppRun run = await LogicAppsProvider
-                        .LocatedAt(ResourceGroup, LogicAppUpdateName, Authentication, Logger)
+                        .LocatedAt(ResourceGroup, TestBaseLogicAppName, Authentication, Logger)
                         .WithStartTime(DateTimeOffset.UtcNow.AddMinutes(-1))
                         .PollForSingleLogicAppRunAsync();
                     
@@ -258,7 +258,7 @@ namespace Invictus.Testing.Tests.Integration
         public async Task RunByNameLogicApp_WithoutTrigger_ReturnsCorrelationId()
         {
             // Arrange
-            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppUpdateName, Authentication, Logger))
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, TestBaseLogicAppName, Authentication, Logger))
             {
                 await using (await logicApp.TemporaryEnableAsync())
                 {
@@ -267,7 +267,7 @@ namespace Invictus.Testing.Tests.Integration
 
                     // Assert
                     LogicAppRun run = await LogicAppsProvider
-                        .LocatedAt(ResourceGroup, LogicAppUpdateName, Authentication, Logger)
+                        .LocatedAt(ResourceGroup, TestBaseLogicAppName, Authentication, Logger)
                         .WithStartTime(DateTimeOffset.UtcNow.AddMinutes(-1))
                         .PollForSingleLogicAppRunAsync();
 
