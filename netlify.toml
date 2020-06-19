@@ -8,4 +8,7 @@ ID = "2d88d2e7-be5f-4324-ac15-ce1361bfa15f"
 [build]
   # Directory to change to before starting a build. 
   # This is where we will look for package.json/.nvmrc/etc.
-  base = "docs/"
+  base = "docs/"	
+
+  # Default build command.	
+  command = "docsify serve ."
