@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using GuardNet;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
@@ -56,6 +57,14 @@ namespace Invictus.Testing.Tests.Integration
         }
 
         /// <summary>
+        /// Gets the name of the Azure Logic App resource running on Azure to test basic operations.
+        /// </summary>
+        public string GetTestBaseLogicAppName()
+        {
+            return GetRequiredValue("Azure:LogicApps:TestBaseLogicAppName");
+        }
+
+        /// <summary>
         /// Gets the identifier of the Azure subscription.
         /// </summary>
         public string GetAzureSubscriptionId()
@@ -105,6 +114,30 @@ namespace Invictus.Testing.Tests.Integration
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// Gets the Azure Logic App definition to test update interactions.
+        /// </summary>
+        public string GetLogicAppTriggerUpdateDefinition()
+        {
+            const string fileName = "rcv-trigger-http.json";
+            string definition = GetLogicAppDefinition(fileName);
+
+            return definition;
+        }
+
+        private static string GetLogicAppDefinition(string fileName)
+        {
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "LogicAppDefinitions", fileName);
+
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("No Azure Logic App definition file can be found at the expected file location", filePath);
+            }
+
+            string definition = File.ReadAllText(filePath);
+            return definition;
         }
 
         /// <summary>

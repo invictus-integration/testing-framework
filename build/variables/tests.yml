@@ -3,3 +3,4 @@ variables:
   LogicApps.ResourceGroup: 'Invictus-tst-testing'
   LogicApps.TestLogicAppName: 'TestLogicApp'
   LogicApps.TestLogicAppMockingName: 'TestLogicAppMocking'
+  LogicApps.TestBaseLogicAppName: 'invictus-tst-we-rcv-trigger-http'
