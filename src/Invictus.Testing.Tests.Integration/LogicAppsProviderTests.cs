@@ -177,6 +177,38 @@ namespace Invictus.Testing.Tests.Integration
         }
 
         [Fact]
+        public async Task PollForLogicAppRun_ByUnknownTrackedProperty_Success()
+        {
+            // Arrange
+            const string trackedPropertyName = "trackedproperty";
+            string correlationId = $"correlationId-{Guid.NewGuid()}";
+            string trackedPropertyValue = $"tracked-{Guid.NewGuid()}";
+
+            var headers = new Dictionary<string, string>
+            {
+                { "correlationId", correlationId },
+                { "trackedpropertyheader1", trackedPropertyValue },
+                { "trackedpropertyheader2", trackedPropertyValue }
+            };
+
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication))
+            await using (await logicApp.TemporaryEnableAsync())
+            {
+                Task postTask = logicApp.TriggerAsync(headers);
+
+                // Act
+                Task<LogicAppRun> pollingTask =
+                    LogicAppsProvider.LocatedAt(ResourceGroup, LogicAppName, Authentication, Logger)
+                                     .WithTimeout(TimeSpan.FromSeconds(10))
+                                     .WithTrackedProperty(trackedPropertyName, trackedPropertyValue)
+                                     .WithTrackedProperty("unknown-tracking-property", trackedPropertyValue)
+                                     .PollForSingleLogicAppRunAsync();
+
+                await Assert.ThrowsAsync<TimeoutException>(() => Task.WhenAll(pollingTask, postTask));
+            }
+        }
+
+        [Fact]
         public async Task PollForLogicAppRun_ByTrackedProperty_DifferentValues_GetsLatest_Success()
         {
             // Arrange
