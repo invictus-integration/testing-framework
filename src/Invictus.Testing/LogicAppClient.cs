@@ -175,24 +175,40 @@ namespace Invictus.Testing
         /// Runs the current logic app resource by searching for triggers on the logic app.
         /// </summary>
         /// <exception cref="LogicAppTriggerNotFoundException">When no trigger can be found on the logic app.</exception>
-        public async Task RunAsync()
+        public async Task<object> RunAsync()
         {
             string triggerName = await GetTriggerNameAsync();
-            await RunByNameAsync(triggerName);
+            object result = await RunByNameAsync(triggerName);
+
+            return result;
         }
 
         /// <summary>
         /// Runs the current logic app resource using the given <paramref name="triggerName"/>.
         /// </summary>
         /// <param name="triggerName">The name of the trigger that executes a workflow in the logic app.</param>
-        public async Task RunByNameAsync(string triggerName)
+        public async Task<object> RunByNameAsync(string triggerName)
         {
             Guard.NotNullOrEmpty(triggerName, nameof(triggerName));
 
             _logger.LogTrace("Run the workflow trigger of logic app '{LogicAppName}' in resource group '{ResourceGroup}'", _logicAppName, _resourceGroup);
-            await _logicManagementClient.WorkflowTriggers.RunAsync(_resourceGroup, _logicAppName, triggerName);
+            
+            object result = await _logicManagementClient.WorkflowTriggers.RunAsync(_resourceGroup, _logicAppName, triggerName);
+            return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="runName"></param>
+        /// <returns></returns>
+        public async Task CancelAsync(string runName)
+        {
+            Guard.NotNullOrEmpty(runName, nameof(runName));
+
+            _logger.LogTrace("Cancel the workflow run of logic app '{LogicAppName}' in resource group '{ResourceGroup}'", _logicAppName, _resourceGroup);
+            await _logicManagementClient.WorkflowRuns.CancelAsync(_resourceGroup, _logicAppName, runName);
+        }
         
         /// <summary>
         /// Gets the logic app definition information.
@@ -222,7 +238,9 @@ namespace Invictus.Testing
                     request.Headers.Add(header.Key, header.Value);
                 }
 
-                await HttpClient.SendAsync(request);
+                using (HttpResponseMessage response = await HttpClient.SendAsync(request))
+                {
+                }
             }
         }
 

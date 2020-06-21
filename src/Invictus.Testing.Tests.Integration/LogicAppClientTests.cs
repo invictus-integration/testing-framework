@@ -37,6 +37,7 @@ namespace Invictus.Testing.Tests.Integration
         [Fact]
         public async Task GetLogicAppTriggerUrl_ByName_Success()
         {
+            // Arrange
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppName, Authentication))
             {
                 // Act
@@ -59,14 +60,14 @@ namespace Invictus.Testing.Tests.Integration
                 { "correlationId", correlationId },
             };
 
-            // Act
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppMockingName, Authentication, Logger))
             {
                 await using (await logicApp.TemporaryEnableAsync())
                 {
+                    // Act
                     await using (await logicApp.TemporaryEnableSuccessStaticResultAsync(actionName))
                     {
-                        // Act
+                        // Assert
                         await logicApp.TriggerAsync(headers);
                         LogicAppAction enabledAction = await PollForLogicAppActionAsync(correlationId, actionName);
 
@@ -105,15 +106,16 @@ namespace Invictus.Testing.Tests.Integration
                 Status = "Succeeded"
             };
 
-            // Act
+            var definitions = new Dictionary<string, StaticResultDefinition> { [actionName] = definition };
+
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppMockingName, Authentication, Logger))
             {
                 await using (await logicApp.TemporaryEnableAsync())
                 {
-                    var definitions = new Dictionary<string, StaticResultDefinition> { [actionName] = definition };
+                    // Act
                     await using (await logicApp.TemporaryEnableStaticResultsAsync(definitions))
                     {
-                        // Act
+                        // Assert
                         await logicApp.TriggerAsync(headers);
                         LogicAppAction enabledAction = await PollForLogicAppActionAsync(correlationId, actionName);
 
@@ -179,9 +181,10 @@ namespace Invictus.Testing.Tests.Integration
         [Fact]
         public async Task TemporaryEnableLogicApp_Success()
         {
-            // Act
+            // Arrange
             using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppMockingName, Authentication, Logger))
             {
+                // Act
                 await using (await logicApp.TemporaryEnableAsync())
                 {
                     // Assert
@@ -191,6 +194,84 @@ namespace Invictus.Testing.Tests.Integration
                 {
                     LogicAppMetadata metadata = await logicApp.GetMetadataAsync();
                     Assert.Equal(LogicAppState.Disabled, metadata.State);
+                }
+            }
+        }
+
+        [Fact]
+        public async Task TemporaryUpdateLogicApp_WithUpdatedResponse_ReturnsUpdatedResponse()
+        {
+            // Arrange
+            const string actionName = "Response";
+            string correlationId = $"correlation-{Guid.NewGuid()}";
+            var headers = new Dictionary<string, string>
+            {
+                { "correlationId", correlationId },
+            };
+
+            string definition = Configuration.GetLogicAppTriggerUpdateDefinition();
+
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, TestBaseLogicAppName, Authentication, Logger))
+            {
+                await using (await logicApp.TemporaryEnableAsync())
+                {
+                    // Act
+                    await using (await logicApp.TemporaryUpdateAsync(definition))
+                    {
+                        // Assert
+                        await logicApp.TriggerAsync(headers);
+                        LogicAppAction updatedAction = await PollForLogicAppActionAsync(correlationId, actionName, TestBaseLogicAppName);
+                        Assert.Equal("Updated", updatedAction.Outputs.body.response.ToString());
+                    }
+                    {
+                        await logicApp.TriggerAsync(headers);
+                        LogicAppAction updatedAction = await PollForLogicAppActionAsync(correlationId, actionName, TestBaseLogicAppName);
+                        Assert.Equal("Original", updatedAction.Outputs.body.response.ToString());
+                    } 
+                }
+            }
+        }
+
+        [Fact]
+        public async Task RunLogicApp_WithoutTrigger_ReturnsCorrelationId()
+        {
+            // Arrange
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, TestBaseLogicAppName, Authentication, Logger))
+            {
+                await using (await logicApp.TemporaryEnableAsync())
+                {
+                    // Act
+                    await logicApp.RunAsync();
+
+                    // Assert
+                    LogicAppRun run = await LogicAppsProvider
+                        .LocatedAt(ResourceGroup, TestBaseLogicAppName, Authentication, Logger)
+                        .WithStartTime(DateTimeOffset.UtcNow.AddMinutes(-1))
+                        .PollForSingleLogicAppRunAsync();
+                    
+                    Assert.Contains("Response", run.Actions.Select(action => action.Name));
+                }
+            }
+        }
+
+        [Fact]
+        public async Task RunByNameLogicApp_WithoutTrigger_ReturnsCorrelationId()
+        {
+            // Arrange
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, TestBaseLogicAppName, Authentication, Logger))
+            {
+                await using (await logicApp.TemporaryEnableAsync())
+                {
+                    // Act
+                    await logicApp.RunByNameAsync(triggerName: "manual");
+
+                    // Assert
+                    LogicAppRun run = await LogicAppsProvider
+                        .LocatedAt(ResourceGroup, TestBaseLogicAppName, Authentication, Logger)
+                        .WithStartTime(DateTimeOffset.UtcNow.AddMinutes(-1))
+                        .PollForSingleLogicAppRunAsync();
+
+                    Assert.Contains("Response", run.Actions.Select(action => action.Name));
                 }
             }
         }
@@ -247,16 +328,23 @@ namespace Invictus.Testing.Tests.Integration
 
         private async Task<LogicAppAction> PollForLogicAppActionAsync(string correlationId, string actionName)
         {
+            LogicAppAction action = await PollForLogicAppActionAsync(correlationId, actionName, LogicAppMockingName);
+            return action;
+        }
+
+        private async Task<LogicAppAction> PollForLogicAppActionAsync(string correlationId, string actionName, string logicAppName)
+        {
             LogicAppRun logicAppRun = await LogicAppsProvider
-                .LocatedAt(ResourceGroup, LogicAppMockingName, Authentication, Logger)
+                .LocatedAt(ResourceGroup, logicAppName, Authentication, Logger)
                 .WithStartTime(DateTimeOffset.UtcNow.AddMinutes(-1))
                 .WithCorrelationId(correlationId)
                 .PollForSingleLogicAppRunAsync();
-            
-            Assert.True(logicAppRun.Actions.Count() != 0);
-            LogicAppAction logicAppAction = logicAppRun.Actions.First(action => action.Name.Equals(actionName));
-            Assert.NotNull(logicAppAction);
 
+            Assert.True(logicAppRun.Actions.Count() != 0);
+            LogicAppAction logicAppAction1 = logicAppRun.Actions.First(action => action.Name.Equals(actionName));
+            Assert.NotNull(logicAppAction1);
+            LogicAppAction logicAppAction = logicAppAction1;
+    
             return logicAppAction;
         }
     }
