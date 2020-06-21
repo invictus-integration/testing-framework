@@ -1,4 +1,4 @@
-![logo](../images/logo/invictus.png)
+![logo](images/logo/invictus.png)
 
 Framework for testing integration workflows in Microsoft Azure.
 
