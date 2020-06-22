@@ -4,8 +4,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using GuardNet;
-using Invictus.Testing.Model;
-using Invictus.Testing.Serialization;
+using Invictus.Testing.LogicApps.Model;
+using Invictus.Testing.LogicApps.Serialization;
 using Microsoft.Azure.Management.Logic;
 using Microsoft.Azure.Management.Logic.Models;
 using Microsoft.Extensions.Logging;
@@ -14,7 +14,7 @@ using Microsoft.Rest.Azure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Invictus.Testing 
+namespace Invictus.Testing.LogicApps 
 {
     /// <summary>
     /// Representing client operations on a given logic app running in Azure.

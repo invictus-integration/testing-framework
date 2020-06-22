@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using System.Security.Permissions;
 using GuardNet;
 
-namespace Invictus.Testing
+namespace Invictus.Testing.LogicApps
 {
     /// <summary>
     /// Thrown when a problem occurs during interaction with a logic app running in Azure.

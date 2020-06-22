@@ -1,4 +1,4 @@
-﻿namespace Invictus.Testing.Model
+﻿namespace Invictus.Testing.LogicApps.Model
 {
     /// <summary>
     /// Represents the status in which the <see cref="LogicAppAction"/> is currently at.

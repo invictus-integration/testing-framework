@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Invictus.Testing.Model;
-using Invictus.Testing.Serialization;
+using Invictus.Testing.LogicApps;
+using Invictus.Testing.LogicApps.Model;
+using Invictus.Testing.LogicApps.Serialization;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Abstractions;

@@ -5,7 +5,7 @@ using Microsoft.Azure.Management.Logic;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.Rest;
 
-namespace Invictus.Testing 
+namespace Invictus.Testing.LogicApps 
 {
     /// <summary>
     /// Authentication representation to authenticate with logic apps running on Azure.

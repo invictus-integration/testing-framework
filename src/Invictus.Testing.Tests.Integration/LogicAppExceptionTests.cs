@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Invictus.Testing.LogicApps;
 using Xunit;
 
 namespace Invictus.Testing.Tests.Integration
