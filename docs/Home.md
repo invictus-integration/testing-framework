@@ -7,7 +7,7 @@ Framework for testing integration workflows in Microsoft Azure.
 Easy to install it via NuGet.
 
 ```shell
-PM > Install-Package Invictus-Testing
+PM > Install-Package Invictus.Testing.LogicApps
 ```
 
 # Features
