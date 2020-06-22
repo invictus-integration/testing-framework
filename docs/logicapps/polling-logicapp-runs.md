@@ -9,7 +9,7 @@ The `Invictus.Testing` library provides a way to retrieve Logic App runs during 
 The features described here requires the following package:
 
 ```shell
-> Install-Package Invictus.Testing
+> Install-Package Invictus.Testing.LogicApps
 ```
 
 ## Features
