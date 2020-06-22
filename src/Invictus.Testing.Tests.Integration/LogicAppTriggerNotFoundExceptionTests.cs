@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Invictus.Testing.LogicApps;
 using Xunit;
 
 namespace Invictus.Testing.Tests.Integration

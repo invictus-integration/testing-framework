@@ -1,4 +1,5 @@
 ﻿using Arcus.Testing.Logging;
+using Invictus.Testing.LogicApps;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 

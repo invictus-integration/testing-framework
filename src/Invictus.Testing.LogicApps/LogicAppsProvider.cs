@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using GuardNet;
-using Invictus.Testing.Model;
+using Invictus.Testing.LogicApps.Model;
 using Microsoft.Azure.Management.Logic;
 using Microsoft.Azure.Management.Logic.Models;
 using Microsoft.Extensions.Logging;
@@ -18,7 +18,7 @@ using Polly;
 using Polly.Retry;
 using Polly.Timeout;
 
-namespace Invictus.Testing 
+namespace Invictus.Testing.LogicApps 
 {
     /// <summary>
     /// Component to provide access in a reliable manner on logic app resources running in Azure.

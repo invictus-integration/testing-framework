@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Invictus.Testing\Invictus.Testing.csproj" />
+    <ProjectReference Include="..\Invictus.Testing.LogicApps\Invictus.Testing.LogicApps.csproj" />
   </ItemGroup>
 
   <ItemGroup>
