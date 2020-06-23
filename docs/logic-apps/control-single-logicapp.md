@@ -2,7 +2,7 @@
 
 # Control a single Azure Logic App
 
-The `Invictus.Testing` library provides a way to control a single Logic App during integration testing.
+The `Invictus.Testing.LogicApps` library provides a way to control a single Logic App during integration testing.
 
 ## Installation
 
