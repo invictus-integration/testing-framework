@@ -2,7 +2,7 @@
 
 # Polling Azure Logic App runs
 
-The `Invictus.Testing` library provides a way to retrieve Logic App runs during integration testing.
+The `Invictus.Testing.LogicApps` library provides a way to retrieve Logic App runs during integration testing.
 
 ## Installation
 
