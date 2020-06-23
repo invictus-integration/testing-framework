@@ -1,6 +1,6 @@
 # Invictus™ Testing Framework
 [![Build Status](https://dev.azure.com/codit/Invictus%20OSS/_apis/build/status/CI%20-%20Invictus%20Testing?branchName=master)](https://dev.azure.com/codit/Invictus%20OSS/_build/latest?definitionId=840&branchName=master)
-[![NuGet Badge](https://buildstats.info/nuget/Invictus.Testing?includePreReleases=true)](https://www.nuget.org/packages/Invictus.Testing/)
+[![NuGet Badge](https://buildstats.info/nuget/Invictus.Testing.LogicApps?includePreReleases=true)](https://www.nuget.org/packages/Invictus.Testing.LogicApps/)
 
 Framework for testing integration workflows in Microsoft Azure.
 
@@ -10,7 +10,7 @@ Framework for testing integration workflows in Microsoft Azure.
 Easy to install it via NuGet:
 
 ```shell
-PM > Install-Package Invictus.Testing
+PM > Install-Package Invictus.Testing.LogicApps
 ```
 
 # Documentation
