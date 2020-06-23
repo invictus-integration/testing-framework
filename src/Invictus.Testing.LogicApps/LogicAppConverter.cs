@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using GuardNet;
-using Invictus.Testing.Model;
+using Invictus.Testing.LogicApps.Model;
 using Microsoft.Azure.Management.Logic.Models;
 using Newtonsoft.Json;
 
-namespace Invictus.Testing
+namespace Invictus.Testing.LogicApps
 {
     /// <summary>
     /// Collection of conversion function to create custom models from Azure SDK models.

@@ -1,6 +1,6 @@
 ﻿using GuardNet;
 
-namespace Invictus.Testing.Model
+namespace Invictus.Testing.LogicApps.Model
 {
     /// <summary>
     /// Represents the URL of the <see cref="LogicAppTrigger"/>.

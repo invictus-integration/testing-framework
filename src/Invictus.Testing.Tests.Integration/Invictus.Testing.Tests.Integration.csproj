@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Invictus.Testing\Invictus.Testing.csproj" />
+    <ProjectReference Include="..\Invictus.Testing.LogicApps\Invictus.Testing.LogicApps.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +25,9 @@
     </None>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="LogicAppDefinitions\rcv-trigger-http.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using GuardNet;
 
-namespace Invictus.Testing.Model
+namespace Invictus.Testing.LogicApps.Model
 {
     /// <summary>
     /// Represents a snapshot of a Logic App run located on Azure.

@@ -1,4 +1,4 @@
-﻿namespace Invictus.Testing.Model
+﻿namespace Invictus.Testing.LogicApps.Model
 {
     /// <summary>
     /// Represents the state in which the Azure <see cref="LogicAppMetadata"/> model can be in.
