@@ -25,7 +25,7 @@ namespace Invictus.Testing.Tests.Integration
             string tenantId = Configuration.GetAzureTenantId();
             string clientId = Configuration.GetAzureClientId();
             string clientSecret = Configuration.GetAzureClientSecret();
-            Authentication = LogicAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret);
+            Authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret);
         }
 
         /// <summary>
@@ -61,6 +61,6 @@ namespace Invictus.Testing.Tests.Integration
         /// <summary>
         /// Gets the authentication mechanism to authenticate with Azure.
         /// </summary>
-        protected LogicAuthentication Authentication { get; }
+        protected LogicAppAuthentication Authentication { get; }
     }
 }
