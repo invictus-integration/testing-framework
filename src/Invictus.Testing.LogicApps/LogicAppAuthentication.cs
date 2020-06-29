@@ -10,11 +10,11 @@ namespace Invictus.Testing.LogicApps
     /// <summary>
     /// Authentication representation to authenticate with logic apps running on Azure.
     /// </summary>
-    public class LogicAuthentication
+    public class LogicAppAuthentication
     {
         private readonly Func<Task<LogicManagementClient>> _authenticateAsync;
 
-        private LogicAuthentication(Func<Task<LogicManagementClient>> authenticateAsync)
+        private LogicAppAuthentication(Func<Task<LogicManagementClient>> authenticateAsync)
         {
             Guard.NotNull(authenticateAsync, nameof(authenticateAsync));
 
@@ -28,14 +28,14 @@ namespace Invictus.Testing.LogicApps
         /// <param name="subscriptionId">The ID that identifies the subscription on Azure.</param>
         /// <param name="clientId">The ID of the client or application that has access to the logic apps running on Azure.</param>
         /// <param name="clientSecret">The secret of the client or application that has access to the logic apps running on Azure.</param>
-        public static LogicAuthentication UsingServicePrincipal(string tenantId, string subscriptionId, string clientId, string clientSecret)
+        public static LogicAppAuthentication UsingServicePrincipal(string tenantId, string subscriptionId, string clientId, string clientSecret)
         {
             Guard.NotNullOrWhitespace(tenantId, nameof(tenantId));
             Guard.NotNullOrWhitespace(subscriptionId, nameof(subscriptionId));
             Guard.NotNullOrWhitespace(clientId, nameof(clientId));
             Guard.NotNullOrWhitespace(clientSecret, nameof(clientSecret));
 
-            return new LogicAuthentication(
+            return new LogicAppAuthentication(
                 () => AuthenticateLogicAppsManagementAsync(subscriptionId, tenantId, clientId, clientSecret));
         }
 

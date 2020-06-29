@@ -69,7 +69,7 @@ namespace Invictus.Testing.LogicApps
         public static async Task<LogicAppClient> CreateAsync(
             string resourceGroup,
             string logicAppName,
-            LogicAuthentication authentication)
+            LogicAppAuthentication authentication)
         {
             Guard.NotNullOrEmpty(resourceGroup, nameof(resourceGroup));
             Guard.NotNullOrEmpty(logicAppName, nameof(logicAppName));
@@ -91,7 +91,7 @@ namespace Invictus.Testing.LogicApps
         public static async Task<LogicAppClient> CreateAsync(
             string resourceGroup,
             string logicAppName,
-            LogicAuthentication authentication,
+            LogicAppAuthentication authentication,
             ILogger logger)
         {
             Guard.NotNullOrEmpty(resourceGroup, nameof(resourceGroup));

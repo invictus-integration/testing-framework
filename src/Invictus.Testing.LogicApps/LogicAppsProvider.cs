@@ -26,7 +26,7 @@ namespace Invictus.Testing.LogicApps
     public class LogicAppsProvider
     {
         private readonly string _resourceGroup, _logicAppName;
-        private readonly LogicAuthentication _authentication;
+        private readonly LogicAppAuthentication _authentication;
         private readonly TimeSpan _retryInterval = TimeSpan.FromSeconds(1);
         private readonly IDictionary<string, string> _trackingProperties = new Dictionary<string, string>();
         private readonly ILogger _logger;
@@ -41,7 +41,7 @@ namespace Invictus.Testing.LogicApps
         private LogicAppsProvider(
             string resourceGroup, 
             string logicAppName,
-            LogicAuthentication authentication,
+            LogicAppAuthentication authentication,
             ILogger logger)
         {
             Guard.NotNullOrWhitespace(resourceGroup, nameof(resourceGroup));
@@ -64,7 +64,7 @@ namespace Invictus.Testing.LogicApps
         public static LogicAppsProvider LocatedAt(
             string resourceGroup,
             string logicAppName,
-            LogicAuthentication authentication)
+            LogicAppAuthentication authentication)
         {
             Guard.NotNullOrWhitespace(resourceGroup, nameof(resourceGroup));
             Guard.NotNullOrWhitespace(logicAppName, nameof(logicAppName));
@@ -83,7 +83,7 @@ namespace Invictus.Testing.LogicApps
         public static LogicAppsProvider LocatedAt(
             string resourceGroup,
             string logicAppName,
-            LogicAuthentication authentication,
+            LogicAppAuthentication authentication,
             ILogger logger)
         {
             Guard.NotNullOrEmpty(resourceGroup, nameof(resourceGroup));
