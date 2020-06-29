@@ -1,17 +1,17 @@
 ﻿using System;
 using GuardNet;
 
-namespace Invictus.Testing.LogicApps.Model
+namespace Invictus.Testing.Model
 {
     /// <summary>
     /// Represents an Logic App registration running on Azure containing meta-data information.
     /// </summary>
-    public class LogicApp
+    public class LogicAppMetadata
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LogicApp"/> class.
+        /// Initializes a new instance of the <see cref="LogicAppMetadata"/> class.
         /// </summary>
-        public LogicApp(
+        public LogicAppMetadata(
             string name,
             LogicAppState state,
             string version,
