@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Arcus.Security.Core;
 using GuardNet;
 using Microsoft.Azure.Management.Logic;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.Rest;
+using ISecretProvider = Arcus.Security.Core.ISecretProvider;
 
 namespace Invictus.Testing.LogicApps 
 {
@@ -19,6 +21,31 @@ namespace Invictus.Testing.LogicApps
             Guard.NotNull(authenticateAsync, nameof(authenticateAsync));
 
             _authenticateAsync = authenticateAsync;
+        }
+
+        /// <summary>
+        /// Uses the service principal to authenticate with Azure.
+        /// </summary>
+        /// <param name="tenantId">The ID where the resources are located on Azure.</param>
+        /// <param name="subscriptionId">The ID that identifies the subscription on Azure.</param>
+        /// <param name="clientId">The ID of the client or application that has access to the logic apps running on Azure.</param>
+        /// <param name="clientSecretKey">The secret of the client or application that has access to the logic apps running on Azure.</param>
+        /// <param name="secretProvider">The provider to get the client secret; using the <paramref name="clientSecretKey"/>.</param>
+        public static LogicAppAuthentication UsingServicePrincipal(string tenantId, string subscriptionId, string clientId, string clientSecretKey, ISecretProvider secretProvider)
+        {
+            Guard.NotNullOrWhitespace(tenantId, nameof(tenantId));
+            Guard.NotNullOrWhitespace(subscriptionId, nameof(subscriptionId));
+            Guard.NotNullOrWhitespace(clientId, nameof(clientId));
+            Guard.NotNullOrWhitespace(clientSecretKey, nameof(clientSecretKey));
+            Guard.NotNull(secretProvider, nameof(secretProvider));
+
+            return new LogicAppAuthentication(async () =>
+            {
+                string clientSecret = await secretProvider.GetRawSecretAsync(clientSecretKey);
+                LogicManagementClient managementClient = await AuthenticateLogicAppsManagementAsync(subscriptionId, tenantId, clientId, clientSecret);
+
+                return managementClient;
+            });
         }
 
         /// <summary>
