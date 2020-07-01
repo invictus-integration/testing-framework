@@ -17,6 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Arcus.Security.Core" Version="1.2.0" />
     <PackageReference Include="Arcus.Testing.Logging" Version="0.1.0" />
     <PackageReference Include="Guard.NET" Version="1.2.0" />
     <PackageReference Include="Microsoft.Azure.Management.Logic" Version="4.1.0" />
