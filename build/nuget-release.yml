@@ -3,6 +3,10 @@ name: $(Package.Version)
 trigger: none
 pr: none
 
+parameters:
+  - name: 'Package.Version'
+    type: 'string'
+
 resources:
   repositories:
     - repository: templates
