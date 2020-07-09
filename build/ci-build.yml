@@ -15,6 +15,11 @@ pr:
     - build/ci-build.yml
     - build/variables/*
 
+parameters:
+  - name: 'Package.Version.ManualTrigger'
+    type: string
+    default: 'preview'
+
 resources:
   repositories:
     - repository: templates
