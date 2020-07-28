@@ -14,6 +14,38 @@ All of these operations have now been forged into a test framework for Azure Log
 > Install-Package Invictus.Testing.LogicApps
 ```
 
+### Authentication
+When you want to use this package to track of control your Logic Apps, you will have to authenticate against the subscription containing said Logic Apps of course.  
+This can be done by re-using the existing service principal, which has been created to connect your Azure DevOps project to the Azure subscription. However, seeing as this service principal tpyically has contributor-access to the entire subscription, which is quite an overkill for testing-purposes, it would be advised to create a new service principal, entirely dedicated to the testing scenarios.  
+This test-service principal will need to get the "*Logic App Contributor*"-role assigned, as any other role would be insufficient to update your Logic Apps (to enable static results, for instance).  
+
+But what exactly do you need to specify in order to really authenticate?  
+Well, below is an overview of the required information:
+
+```csharp
+// The Tenant ID as found in the AAD properties
+string tenantId = "my-tenant-id";
+// The ID of the subscription containing your Logic Apps.
+string subscriptionId = "my-subscription-id";
+// The Client ID of the service principal to be used to authenticate.
+string clientId = "my-client-id";
+// The Client Secret created along with the service principal used for authentication.
+// You might want to look at Arcus.Security.Provides.AzureKeyVault to ensure this value can be stored in Azure Key Vault instead
+string clientSecret = "my-client-secret";
+// The name of the resource group containing the Logic App you want to control
+string resourceGroup = "my-resource-group";
+// The name of the Logic App you want to control.
+string logicAppName = "my-logic-app-name";
+
+// Use the LogicAppAuthentication-class to retrieve the required access token.
+var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret);
+// Once authenticated, use this token to get access to your Logic Apps.
+using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppName, authentication))
+{
+}
+```
+
+
 ### Controlling an Azure Logic App
 
 One of the first and most important aspects of this framework is the ability to have control over every single Logic App that is part of your interface, only by specifying the name of the resource group and the targetted Logic App. Of course you also need to authenticate, for which you will need to provide a Client-ID and Client-Secret along with the details of Azure Subscription.  
@@ -36,7 +68,7 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 {
     await using (await logicApp.TemporaryEnableAsync())
     {
-        // Perform other actions related to your test-case.
+        // Perform actions related to your test-case, while the Logic App is enabled.
     }
 }
 ```
