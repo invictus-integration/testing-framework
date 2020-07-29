@@ -14,21 +14,7 @@ The features described here requires the following package:
 
 ## Features
 
-All the following features uses the `LogicAppClient` which can be created using:
-
-```csharp
-string tenantId = "my-tenant-id";
-string subscriptionId = "my-subscription-id";
-string clientId = "my-client-id";
-string clientSecret = "my-client-secret";
-string resourceGroup = "my-resource-group";
-string logicAppName = "my-logic-app-name";
-
-var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret);
-using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppName, authentication))
-{
-}
-```
+All the following features uses the `LogicAppClient` which can be created using [an Logic App authentication](/logicapp-authentication.md).
 
 ### Gets Logic App metadata
 
