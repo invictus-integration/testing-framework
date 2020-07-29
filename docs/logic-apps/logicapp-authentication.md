@@ -2,7 +2,11 @@
 
 # Authenticating to Azure Logic App resource
 
-When using the Logic App testing features, you require a valid authentication setup.
+Before you can start using the Azure Logic App testing features, you need to authenticate with Microsoft Azure.
+
+As of today, we provide the following authentication scenarios:
+
+- [**Using Service Principal**](#using-a-service-principal)
 Following shows what is required in both cases:
 
 ```csharp
