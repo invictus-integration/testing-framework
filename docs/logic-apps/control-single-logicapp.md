@@ -14,7 +14,7 @@ The features described here requires the following package:
 
 ## Features
 
-All the following features uses the `LogicAppClient` which can be created using [an Logic App authentication](/logicapp-authentication.md).
+All the following features uses the `LogicAppClient` which can be created using [an Logic App authentication](/authentication.md).
 
 ### Gets Logic App metadata
 

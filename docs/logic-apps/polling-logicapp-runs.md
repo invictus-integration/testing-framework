@@ -14,7 +14,7 @@ The features described here requires the following package:
 
 ## Features
 
-All the following features uses the `LogicAppProvider` which can be created using [an Logic App authentication](/logicapp-authentication.md).
+All the following features uses the `LogicAppProvider` which can be created using [an Logic App authentication](/authentication.md).
 
 And are all about polling for Logic App runs which contain following information:
 
