@@ -21,6 +21,7 @@ When using a service principal, you need to provide the following information:
 - **Client Id** - Secret of the service principal in Azure AD to authenticate with.
 
 
+Here is an example:
 ```csharp
 string tenantId = "my-tenant-id";
 string subscriptionId = "my-subscription-id";
