@@ -4,4 +4,4 @@
 * Logic Apps
   * [Authentication](logic-apps/authentication.md)
   * [Controlling a single Azure Logic App](/logic-apps/control-single-logicapp.md)
-  * [Retrieving Azure Logic App runs by polling](/logic-apps/polling-logicapp-runs.md)
+  * [Retrieving runs by polling](/logic-apps/polling-logicapp-runs.md)
