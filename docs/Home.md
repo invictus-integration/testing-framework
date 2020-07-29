@@ -13,6 +13,6 @@ PM > Install-Package Invictus.Testing.LogicApps
 # Features
 
 All the features in the framework:
-* [Authenticating to Azure Logic App](/logic-apps/authentication.md) to use the Logic App testing features.
+* [Authentication](/logic-apps/authentication.md) to use the Logic App testing features.
 * [Controlling a single Azure Logic App](/logic-apps/control-single-logicapp.md) to interact with a single Logic App during the test.
 * [Retrieving Azure Logic App runs by polling](/logic-apps/polling-logicapp-runs.md) to validate expected actions and tracking information.
