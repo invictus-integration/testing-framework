@@ -14,19 +14,7 @@ The features described here requires the following package:
 
 ## Features
 
-All the following features uses the `LogicAppClient` which can be created using:
-
-```csharp
-string tenantId = "my-tenant-id";
-string subscriptionId = "my-subscription-id";
-string clientId = "my-client-id";
-string clientSecret = "my-client-secret";
-string resourceGroup = "my-resource-group";
-string logicAppName = "my-logic-app-name";
-
-var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret);
-var provider = LogicAppsProvider.LocatedAt(resourceGroupName, logicAppName, authentication);
-```
+All the following features uses the `LogicAppProvider` which can be created using [an Logic App authentication](/authentication.md).
 
 And are all about polling for Logic App runs which contain following information:
 
