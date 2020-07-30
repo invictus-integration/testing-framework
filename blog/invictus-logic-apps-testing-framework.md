@@ -78,7 +78,7 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 ```
 
 *Want to read more about how to control a Logic App?*  
-*Have a look on [this page](https://invictus-integration.github.io/testing-framework/#/logic-apps/control-single-logicapp).*  
+*Read more about it in [our documentation](https://invictus-integration.github.io/testing-framework/#/logic-apps/control-single-logicapp).*  
 
 ### Monitoring an Azure Logic App
 
