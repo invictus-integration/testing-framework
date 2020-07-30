@@ -115,4 +115,5 @@ IEnumerable<LogicAppRun> logicAppRuns =
 *Have a look on [this page](https://invictus-integration.github.io/testing-framework/#/logic-apps/polling-logicapp-runs).*  
 
 
+# Conclusion
 Hoping that this will enable and simplify the process of including test-cases within every single integration project on Azure Logic Apps, we are looking forward to receiving feedback allowing us to keep improving and extending our Invictus Test Framework for Azure Logic Apps.
