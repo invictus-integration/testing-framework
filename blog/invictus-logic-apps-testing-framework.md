@@ -13,7 +13,7 @@ While this approach works fine, we've found that it has a few flaws:
 Since developing the Invictus Methodology, which includes patterns, best practices and several templates, Codit has been investing in building a solid foundation enabling us to quickly kick-off new projects, while ensuring a high level of quality. The biggest thing which, until now, was still lacking, was the ability to include test-cases into those projects.  
 Because of this, we started working on a framework that allowed us to easily enable/disable, trigger and even modify existing Azure Logic Apps. But, since the operations are not enough to write full-blown test-scenarios, we extended this list to ensure you would also be able to monitor the executed Azure Logic App runs.  
 
-All these operations have now been forged into the Invictus Test Framework for Azure Logic Apps which we used internally for our customers and have proven to be effective.
+All these operations have now been forged into the Invictus Test Framework for Azure Logic Apps which we used internally for our customers and have proven to be effective.  
 Today, **we are happy to announce that we are open-sourcing Invictus Test Framework for Azure Logic Apps on GitHub** and it is now available on NuGet for you to use on your projects!  
 
 Get started very easily :  
@@ -67,7 +67,7 @@ Once authenticated, you can perform any of the following operations:
 
 All of these features provide you the possibility to adjust and trigger your Azure Logic Apps to allow for a specific scenario to be tested.  
 
-Here is an example of how you can temporarily disable an Azure Logic App during your test::
+Here is an example of how you can temporarily enable an Azure Logic App during your test:  
 ```csharp
 using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppName, authentication))
 {
