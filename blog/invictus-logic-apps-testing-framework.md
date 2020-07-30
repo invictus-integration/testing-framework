@@ -55,7 +55,6 @@ Once authenticated, you can perform any of the following operations:
 - Get the Logic App metadata  
 - Get the Logic App trigger-URL  
 - (Temporarily) enable the Logic App  
-- (Temporarily) disable the Logic App  
 - (Temporarily) update the Logic App definition  
 - (Temporarily) enable static results on specific actions within the Logic App  
 - Trigger a Logic App run  
@@ -64,15 +63,16 @@ Once authenticated, you can perform any of the following operations:
 
 All of these features provide you the possibility to adjust and trigger your Azure Logic Apps to allow for a specific scenario to be tested.  
 
-Here is an example of how you can temporarily disable an Azure Logic App during your test:  
+As you don't want your unit/integration test related Logic App to inflict costs while not being used, here is an example of how you can temporarily enable an Azure Logic App during your test:  
 ```csharp
 using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppName, authentication))
 {
-    await using (await logicApp.TemporaryDisableAsync())
+    // Any action to be performed before enabling the Logic App.
+    await using (await logicApp.TemporaryEnableAsync())
     {
-        // Perform actions related to your test-case, while the Logic App is disabled.
+        // Perform actions related to your test-case, while the Logic App is enabled.
     }
-    // Any action to be performed after re-enabling the Logic App.
+    // Any action to be performed after disabling the Logic App.
 }
 ```
 
