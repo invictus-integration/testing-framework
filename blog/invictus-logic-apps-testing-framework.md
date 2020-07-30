@@ -8,8 +8,10 @@ Up until now, when building interfaces on top of Azure Logic Apps, you were forc
 Since developing the Invictus Methodology - which includes patterns, best practices and several templates - Codit has been investing in building a solid foundation enabling us to quickly kick off new projects, while ensuring a high level of quality. The biggest thing which, until now, was still lacking, was the ability to include test-cases into those projects.  
 Because of this, we started working on a set of classes allowing us to easily enable/disable, trigger and even modify existing Azure Logic Apps. But, since the operations are not enough to write full-blown test-scenarios, we extended this list to ensure you would also be able to monitor the executed Logic App-runs.
 
-All these operations have now been forged into a test framework for Azure Logic Apps, which has been made available on NuGet and can be included in your project using the following command:
+All these operations have now been forged into the Invictus Test Framework for Azure Logic Apps which we used internally for our customers and have proven to be effective.
+Today, **we are happy to announce that we are open-sourcing Invictus Test Framework for Azure Logic Apps on GitHub** and it is now available on NuGet for you to use on your projects!  
 
+Get started very easily :  
 ```shell
 > Install-Package Invictus.Testing.LogicApps
 ```
@@ -39,14 +41,10 @@ string logicAppName = "my-logic-app-name";
 
 // Use the LogicAppAuthentication-class to retrieve the required access token.
 var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret);
-// Once authenticated, use this token to get access to your Logic Apps.
-using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppName, authentication))
-{
-}
 ```
 
 *Want to read more about how to authenticate and gain access to your Logic Apps?*  
-*Have a look on [this page](https://invictus-integration.github.io/testing-framework/#/logic-apps/authentication).*  
+*Read more about it in [our documentation](https://invictus-integration.github.io/testing-framework/#/logic-apps/authentication).*  
 
 ### Controlling an Azure Logic App
 
@@ -112,8 +110,8 @@ IEnumerable<LogicAppRun> logicAppRuns =
 ```
 
 *Want to read more about how to monitor a Logic App?*  
-*Have a look on [this page](https://invictus-integration.github.io/testing-framework/#/logic-apps/polling-logicapp-runs).*  
+*Read more about it in [our documentation](https://invictus-integration.github.io/testing-framework/#/logic-apps/polling-logicapp-runs).*  
 
 
 # Conclusion
-Hoping that this will enable and simplify the process of including test-cases within every single integration project on Azure Logic Apps, we are looking forward to receiving feedback allowing us to keep improving and extending our Invictus Test Framework for Azure Logic Apps.
+We are happy to help the Azure Logic Apps community to build automated test suits on top of Azure Logic Apps! We welcome everybody to add feature requests [on GitHub](https://github.com/invictus-integration/testing-framework/) and accept contributions to make the framework even better!
