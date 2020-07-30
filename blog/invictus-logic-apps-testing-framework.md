@@ -22,34 +22,30 @@ Get started very easily :
 ```
 
 ### Authentication
-When you want to use this package to track of control your Logic Apps, you will have to authenticate against the subscription containing said Logic Apps of course.  
-This can be done by re-using the existing service principal, which has been created to connect your Azure DevOps project to the Azure subscription. However, seeing as this service principal typically has contributor-access to the entire subscription, which is quite an overkill for testing-purposes, it would be advised to create a new service principal, entirely dedicated to the testing scenarios.  
-This test-service principal will need to get the "*Logic App Contributor*"-role assigned, as any other role would be insufficient to update your Logic Apps (to enable static results, for instance).  
+When you want to use this package to track of control your Logic Apps, you will have to authenticate against your Azure subscription containing said Logic Apps of course.  
+As of today, we provide support for using service principal authentication! Our framework requires to have at least [*Logic App Contributor*](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#logic-app-contributor) which gives enough permissions to do our magic.  
+
+Of course, you can re-use existing service principals that you already have in Azure DevOps for example. However, seeing as this service principal typically has contributor-access to the entire subscription, which is quite an overkill for testing-purposes, it would be advised to create a new service principal, entirely dedicated to the testing scenarios.  
 
 But what exactly do you need to specify in order to really authenticate?  
 Well, below is an overview of the required information:
 
 ```csharp
-// The Tenant ID as found in the AAD properties
+// The Tenant ID of the Azure AD
 string tenantId = "my-tenant-id";
-// The ID of the subscription containing your Logic Apps.
+// The ID of the subscription containing your Azure Logic App.
 string subscriptionId = "my-subscription-id";
-// The Client ID of the service principal to be used to authenticate.
+// The application id of the service principal to be used to authenticate.
 string clientId = "my-client-id";
-// The Client Secret created along with the service principal used for authentication.
-// You might want to look at Arcus.Security.Provides.AzureKeyVault to ensure this value can be stored in Azure Key Vault instead
+// The client secret created along with the service principal used for authentication.
+// You might want to look at Arcus Security to ensure this value can be stored in Azure Key Vault instead
 string clientSecret = "my-client-secret";
-// The name of the resource group containing the Logic App you want to control
-string resourceGroup = "my-resource-group";
-// The name of the Logic App you want to control.
-string logicAppName = "my-logic-app-name";
 
 // Use the LogicAppAuthentication-class to retrieve the required access token.
 var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret);
 ```
 
-*Want to read more about how to authenticate and gain access to your Logic Apps?*  
-*Read more about it in [our documentation](https://invictus-integration.github.io/testing-framework/#/logic-apps/authentication).*  
+*Read more about how to authenticate and gain access to your Logic Apps in [our documentation](https://invictus-integration.github.io/testing-framework/#/logic-apps/authentication).*  
 
 ### Controlling an Azure Logic App
 
@@ -59,6 +55,7 @@ Once authenticated, you can perform any of the following operations:
 - Get the Logic App metadata  
 - Get the Logic App trigger-URL  
 - (Temporarily) enable the Logic App  
+- (Temporarily) disable the Logic App  
 - (Temporarily) update the Logic App definition  
 - (Temporarily) enable static results on specific actions within the Logic App  
 - Trigger a Logic App run  
@@ -67,36 +64,35 @@ Once authenticated, you can perform any of the following operations:
 
 All of these features provide you the possibility to adjust and trigger your Azure Logic Apps to allow for a specific scenario to be tested.  
 
-Here is an example of how you can temporarily enable an Azure Logic App during your test:  
+Here is an example of how you can temporarily disable an Azure Logic App during your test:  
 ```csharp
 using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppName, authentication))
 {
-    // Any action to be performed before enabling the Logic App.
-    await using (await logicApp.TemporaryEnableAsync())
+    await using (await logicApp.TemporaryDisableAsync())
     {
-        // Perform actions related to your test-case, while the Logic App is enabled.
+        // Perform actions related to your test-case, while the Logic App is disabled.
     }
-    // Any action to be performed after disabling the Logic App.
+    // Any action to be performed after re-enabling the Logic App.
 }
 ```
 
-*Want to read more about how to control a Logic App?*  
-*Read more about it in [our documentation](https://invictus-integration.github.io/testing-framework/#/logic-apps/control-single-logicapp).*  
+*Read more about how to control an Azure Logic App in [our documentation](https://invictus-integration.github.io/testing-framework/#/logic-apps/control-single-logicapp).*  
 
 ### Monitoring an Azure Logic App
 
-After preparing the interface for a specific scenario and actually triggering the test, it is of course as important to be able to retrieve enough information to define the outcome of the test.  
-Which is why, in addition to the operations listed above you are also able to:  
-- Get a Logic App run by 'correlation ID' a.k.a. the 'client tracking ID'
-- Get a Logic App run by tracked properties (1 or many)
-- Get a Logic App run within a specific timeframe
-- Get a given number of Logic App runs once completed (polling).   
+After preparing & triggering the interface to match your test scenario, it is important to be able to retrieve enough information to verify the outcome of the test.  
+To accommodate this, we provide a fluent way of describing what you are looking for allowing you to:  
+- Get an Azure Logic App run by its correlation ID (aka *client tracking ID*)
+- Get an Azure Logic App run by one or more tracked properties
+- Get an Azure Logic App run within a specific time frame  
+- Get a list of Azure Logic App runs within a specific time frame
+- Get a given number of completed Azure Logic App runs (polling).   
   *In case you have the same Logic App running multiple times in parallel.* 
 
-When we talk about getting a Logic App run, as mentioned above, this means you will be able to access all metadata of this run, including every possible piece of information, such as the status of the executed actions along with the tracked properties per action as well as the global overview of these properties.
+Every Azure Logic App run provides information about all metadata of the run itself such the status, what triggered it, start/end time, correlation, information & tracked properties for every single action and more!  
 
-To give you an idea on how you can use this framework to monitor Logic App runs, some small code-samples have been included.  
-In this first example we will poll for 15 seconds and look for a single run where the _Correlation Id_ matches a specific value:
+To give you an idea of how you can use our framework to monitor Logic App runs, let's take a look!  
+In this first example, we will be polling for a single run that contains the specified correlation id and give up after 15 seconds:
 ```csharp
 LogicAppRun logicAppRun =
     await LogicAppsProvider.LocatedAt(resourceGroup, logicAppName, authentication)
@@ -104,8 +100,10 @@ LogicAppRun logicAppRun =
                            .WithCorrelationId("08586073923413753771945113291CU110")
                            .PollForSingleLogicAppRunAsync();
 ```
+If the framework was unable to find a run within the specific time frame, a `TimeOutException` will be thrown.
 
-Next, let's try and retrieve all Logic App runs - we're expecting to see 3 of them - within a timeframe of 60 seconds, all of whom should be containing the tracked property _OrderNumber_ matching the value _123456_:
+In this last example, we are expecting to find 3 Azure Logic Apps runs who have _OrderNumber_ as a tracked property where we expect `123456` as its value.  
+To achieve this, we will be checking for 60 seconds and move on if we couldn't find them.  
 ```csharp
 IEnumerable<LogicAppRun> logicAppRuns =
     await LogicAppsProvider.LocatedAt(resourceGroup, logicAppName, authentication)
@@ -113,9 +111,10 @@ IEnumerable<LogicAppRun> logicAppRuns =
                            .WithTrackedProperty("OrderNumber", "123456")
                            .PollForLogicAppRunsAsync(minimumNumberOfItems: 3);
 ```
+As was the case when looking for a single run, a `TimeOutException` will be thrown if the framework was unable to find the requested number of runs within the allotted time frame.
 
-*Want to read more about how to monitor a Logic App?*  
-*Read more about it in [our documentation](https://invictus-integration.github.io/testing-framework/#/logic-apps/polling-logicapp-runs).*  
+
+*Read more about how to monitor an Azure Logic App in [our documentation](https://invictus-integration.github.io/testing-framework/#/logic-apps/polling-logicapp-runs).*  
 
 
 # Conclusion
