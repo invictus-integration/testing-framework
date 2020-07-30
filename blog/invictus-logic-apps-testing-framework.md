@@ -3,10 +3,15 @@ Announcing the Invictus Test Framework for Azure Logic Apps
 >While writing unit or integration tests should be part of every project, this proofs to be quite difficult whenever creating integration scenarios using Azure Logic Apps.
 >Thanks to the creation of the Invictus Test Framework for Azure Logic Apps, there is no longer any excuse not to write any test-cases.
 
-Up until now, when building interfaces on top of Azure Logic Apps, you were forced to manually (re)test every implemented feature because there simply wasn't anything available to help you on your way, which ends up costing both time and money you'd like to spend elsewhere.  
+Up until now, when building interfaces on top of Azure Logic Apps, you were forced to manually (re)test every implemented feature because there simply wasn't anything available to help you on your way.  
 
-Since developing the Invictus Methodology - which includes patterns, best practices and several templates - Codit has been investing in building a solid foundation enabling us to quickly kick off new projects, while ensuring a high level of quality. The biggest thing which, until now, was still lacking, was the ability to include test-cases into those projects.  
-Because of this, we started working on a set of classes allowing us to easily enable/disable, trigger and even modify existing Azure Logic Apps. But, since the operations are not enough to write full-blown test-scenarios, we extended this list to ensure you would also be able to monitor the executed Logic App-runs.
+While this approach works fine, we've found that it has a few flaws:  
+- New people on your team don't have an easy way to understand how flows should work  
+- It's cumbersome since you cannot easily automate it to guarantee quality  
+- It takes time & effort which ends up in a higher engineering & testing cost, money you'd like to spend elsewhere  
+
+Since developing the Invictus Methodology, which includes patterns, best practices and several templates, Codit has been investing in building a solid foundation enabling us to quickly kick-off new projects, while ensuring a high level of quality. The biggest thing which, until now, was still lacking, was the ability to include test-cases into those projects.  
+Because of this, we started working on a framework that allowed us to easily enable/disable, trigger and even modify existing Azure Logic Apps. But, since the operations are not enough to write full-blown test-scenarios, we extended this list to ensure you would also be able to monitor the executed Azure Logic App runs.  
 
 All these operations have now been forged into the Invictus Test Framework for Azure Logic Apps which we used internally for our customers and have proven to be effective.
 Today, **we are happy to announce that we are open-sourcing Invictus Test Framework for Azure Logic Apps on GitHub** and it is now available on NuGet for you to use on your projects!  
@@ -48,21 +53,21 @@ var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subs
 
 ### Controlling an Azure Logic App
 
-One of the first and most important aspects of this framework is the ability to have control over every single Logic App that is part of your interface, only by specifying the name of the resource group and the targeted Logic App. Of course, you also need to authenticate, for which you will need to provide the authentication-token which has been retrieved by the previously mentioned operation.  
+One of the key aspects of our framework is the ability to have control over every single Azure Logic App that is part of your interface. This can be done by only specifying the name of the resource group and the Azure Logic App itself.   
 
-But, once the **LogicAppClient**-object has been created, you can perform any of these operations:  
-- Create a Logic App
+Once authenticated, you can perform any of the following operations:  
 - Get the Logic App metadata  
 - Get the Logic App trigger-URL  
 - (Temporarily) enable the Logic App  
 - (Temporarily) update the Logic App definition  
 - (Temporarily) enable static results on specific actions within the Logic App  
 - Trigger a Logic App run  
+- Cancel a Logic App run  
 - Delete a Logic App  
 
-All of the above operations should provide sufficient possibilities for you to adjust and trigger your Logic Apps to allow for a specific scenario to be tested.
+All of these features provide you the possibility to adjust and trigger your Azure Logic Apps to allow for a specific scenario to be tested.  
 
-Below is a small example of how you can enable a Logic App during the execution of your test:
+Here is an example of how you can temporarily disable an Azure Logic App during your test::
 ```csharp
 using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppName, authentication))
 {
