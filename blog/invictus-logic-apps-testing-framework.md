@@ -45,6 +45,8 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 }
 ```
 
+*Want to read more about how to authenticate and gain access to your Logic Apps?*  
+*Have a look on [this page](https://invictus-integration.github.io/testing-framework/#/logic-apps/authentication).*  
 
 ### Controlling an Azure Logic App
 
@@ -75,6 +77,9 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 }
 ```
 
+*Want to read more about how to control a Logic App?*  
+*Have a look on [this page](https://invictus-integration.github.io/testing-framework/#/logic-apps/control-single-logicapp).*  
+
 ### Monitoring an Azure Logic App
 
 After preparing the interface for a specific scenario and actually triggering the test, it is of course as important to be able to retrieve enough information to define the outcome of the test.  
@@ -87,16 +92,27 @@ Which is why, in addition to the operations listed above you are also able to:
 
 When we talk about getting a Logic App run, as mentioned above, this means you will be able to access all metadata of this run, including every possible piece of information, such as the status of the executed actions along with the tracked properties per action as well as the global overview of these properties.
 
-To give you an idea on how you can use this framework to poll for a Logic App run, a small code-sample has been included, which will poll for 15 seconds and look for a single run containing the tracked property _OrderNumber_ matching the value _123456_:
+To give you an idea on how you can use this framework to monitor Logic App runs, some small code-samples have been included.  
+In this first example we will poll for 15 seconds and look for a single run where the _Correlation Id_ matches a specific value:
 ```csharp
 LogicAppRun logicAppRun =
     await LogicAppsProvider.LocatedAt(resourceGroup, logicAppName, authentication)
                            .WithTimeout(TimeSpan.FromSeconds(15))
-                           .WithTrackedProperty("OrderNumber", "123456")
+                           .WithCorrelationId("08586073923413753771945113291CU110")
                            .PollForSingleLogicAppRunAsync();
 ```
 
+Next, let's try and retrieve all Logic App runs - we're expecting to see 3 of them - within a timeframe of 60 seconds, all of whom should be containing the tracked property _OrderNumber_ matching the value _123456_:
+```csharp
+IEnumerable<LogicAppRun> logicAppRuns =
+    await LogicAppsProvider.LocatedAt(resourceGroup, logicAppName, authentication)
+                           .WithTimeout(TimeSpan.FromSeconds(60))
+                           .WithTrackedProperty("OrderNumber", "123456")
+                           .PollForLogicAppRunsAsync(minimumNumberOfItems: 3);
+```
+
+*Want to read more about how to monitor a Logic App?*  
+*Have a look on [this page](https://invictus-integration.github.io/testing-framework/#/logic-apps/polling-logicapp-runs).*  
+
 
 Hoping that this will enable and simplify the process of including test-cases within every single integration project on Azure Logic Apps, we are looking forward to receiving feedback allowing us to keep improving and extending our Invictus Test Framework for Azure Logic Apps.
-
-*Note: all documentation can be found on [this page](https://invictus-integration.github.io/testing-framework/#/).*
