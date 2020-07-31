@@ -86,7 +86,7 @@ To accommodate this, we provide a fluent way of describing what you are looking 
 - Get an Azure Logic App run by one or more tracked properties
 - Get an Azure Logic App run within a specific time frame  
 - Get a list of Azure Logic App runs within a specific time frame
-- Get a given number of completed Azure Logic App runs (polling).   
+- Get a given number of completed Azure Logic App runs (polling) which can be success or failed.     
   *In case you have the same Logic App running multiple times in parallel.* 
 
 Every Azure Logic App run provides information about all metadata of the run itself such the status, what triggered it, start/end time, correlation, information & tracked properties for every single action and more!  
