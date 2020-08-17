@@ -81,6 +81,27 @@ namespace Invictus.Testing.LogicApps
         }
 
         /// <summary>
+        /// Uses the service principal to authenticate with Azure.
+        /// </summary>
+        /// <param name="subscriptionId">The ID that identifies the subscription on Azure.</param>
+        /// <param name="accessTokenKey">The token to use to call the Azure management API.</param>
+        /// <param name="secretProvider">The provider to get the client secret; using the <paramref name="accessTokenKey"/>.</param>
+        public static LogicAppAuthentication UsingAccessToken(string subscriptionId, string accessTokenKey, ISecretProvider secretProvider)
+        {
+            Guard.NotNullOrWhitespace(subscriptionId, nameof(subscriptionId));
+            Guard.NotNullOrWhitespace(accessTokenKey, nameof(accessTokenKey));
+            Guard.NotNull(secretProvider, nameof(secretProvider));
+
+            return new LogicAppAuthentication(async () =>
+            {
+                string accessToken = await secretProvider.GetRawSecretAsync(accessTokenKey);
+                LogicManagementClient managementClient = await AuthenticateLogicAppsManagementAsync(subscriptionId, accessToken);
+
+            return managementClient;
+            });
+        }
+
+        /// <summary>
         /// Authenticate with Azure with the previously chosen authentication mechanism.
         /// </summary>
         /// <returns>
@@ -100,10 +121,7 @@ namespace Invictus.Testing.LogicApps
 
             AuthenticationResult token = await authContext.AcquireTokenAsync("https://management.azure.com/", credential);
 
-            return new LogicManagementClient(new TokenCredentials(token.AccessToken))
-            {
-                SubscriptionId = subscriptionId
-            };
+            return await AuthenticateLogicAppsManagementAsync(subscriptionId, token.AccessToken);
         }
 
         private static async Task<LogicManagementClient> AuthenticateLogicAppsManagementAsync(string subscriptionId, string accessToken)
