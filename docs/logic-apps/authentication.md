@@ -7,7 +7,7 @@ Before you can start using the Azure Logic App testing features, you need to aut
 As of today, we provide the following authentication scenarios:
 
 - [**Using Service Principal**](#using-a-service-principal)
-- [**Using a token**](#using-a-token)
+- [**Using a AccessToken**](#using-a-AccessToken)
 
 ## Using a Service Principal
 
@@ -40,7 +40,7 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 {	
 }
 ```
-## Using a Token
+## Using a AccessToken
 
 The service principal used to request a token will need to have at least [`Logic App Contributor`](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#logic-app-contributor) permissions on all your Azure Logic App instances that you want to test.
 
