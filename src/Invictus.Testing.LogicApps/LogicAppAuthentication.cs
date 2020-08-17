@@ -67,7 +67,7 @@ namespace Invictus.Testing.LogicApps
         }
 
         /// <summary>
-        /// Uses the service principal to authenticate with Azure.
+        /// Uses a accessToken to authenticate with Azure.
         /// </summary>
         /// <param name="subscriptionId">The ID that identifies the subscription on Azure.</param>
         /// <param name="accessToken">The token to use to call the Azure management API.</param>
@@ -81,7 +81,7 @@ namespace Invictus.Testing.LogicApps
         }
 
         /// <summary>
-        /// Uses the service principal to authenticate with Azure.
+        /// Uses a accessToken to authenticate with Azure.
         /// </summary>
         /// <param name="subscriptionId">The ID that identifies the subscription on Azure.</param>
         /// <param name="accessTokenKey">The token to use to call the Azure management API.</param>

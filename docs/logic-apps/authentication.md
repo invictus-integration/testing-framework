@@ -7,6 +7,7 @@ Before you can start using the Azure Logic App testing features, you need to aut
 As of today, we provide the following authentication scenarios:
 
 - [**Using Service Principal**](#using-a-service-principal)
+- [**Using a token**](#using-a-token)
 
 ## Using a Service Principal
 
@@ -30,6 +31,33 @@ string resourceGroup = "my-resource-group";
 string logicAppName = "my-logic-app-name";
 
 var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret);
+
+// For the Logic App provider
+var provider = LogicAppsProvider.LocatedAt(resourceGroupName, logicAppName, authentication);
+
+// For the Logic App client
+using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppName, authentication))	
+{	
+}
+```
+## Using a Token
+
+The service principal used to request a token will need to have at least [`Logic App Contributor`](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#logic-app-contributor) permissions on all your Azure Logic App instances that you want to test.
+
+The main purpose of authenticating using a token is to avoid distributing sensitive service principle details. More details on requesting a token can be found [here](https://docs.microsoft.com/en-us/rest/api/azure/#acquire-an-access-token). As the testing framework leverages the Azure Management API the `resource` should be set to `https://management.azure.com/`.
+
+When using a service principal, you need to provide the following information:
+- **Tenant Id** - Identifier of the Azure AD directory
+- **AccessToken** - The token to be used to authenticate with the Azure Management API
+
+Here is an example:
+```csharp
+string subscriptionId = "my-subscription-id";
+string accessToken = "my-accessToken";
+string resourceGroup = "my-resource-group";
+string logicAppName = "my-logic-app-name";
+
+var authentication = LogicAppAuthentication.UsingAccessToken(subscriptionId, accessToken);
 
 // For the Logic App provider
 var provider = LogicAppsProvider.LocatedAt(resourceGroupName, logicAppName, authentication);
