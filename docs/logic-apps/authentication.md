@@ -7,7 +7,7 @@ Before you can start using the Azure Logic App testing features, you need to aut
 As of today, we provide the following authentication scenarios:
 
 - [**Using Service Principal**](#using-a-service-principal)
-- [**Using a AccessToken**](#using-a-AccessToken)
+- [**Using an Access Token**](#using-an-Access-Token)
 
 ## Using a Service Principal
 
