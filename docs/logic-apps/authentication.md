@@ -9,11 +9,13 @@ As of today, we provide the following authentication scenarios:
 - [**Using Service Principal**](#using-a-service-principal)
 - [**Using an Access Token**](#using-an-Access-Token)
 
-## Using a Service Principal
+# Prerequisites 
 
 Before we can authenticate, you'll need to [create an Azure AD application](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal) which will be used as your service principle.
 
 The service principal will need to have at least [`Logic App Contributor`](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#logic-app-contributor) permissions on all your Azure Logic App instances that you want to test.
+
+## Using a Service Principal
 
 When using a service principal, you need to provide the following information:
 - **Tenant Id** - Identifier of the Azure AD directory
@@ -40,11 +42,11 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 {	
 }
 ```
-## Using a AccessToken
+## Using a Access Token
 
-The service principal used to request a token will need to have at least [`Logic App Contributor`](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#logic-app-contributor) permissions on all your Azure Logic App instances that you want to test.
+The main purpose of authenticating using a token is to avoid distributing sensitive service principle details. As the testing framework uses the Azure Management API, the `resource` scope when requesting a access token should be set to `https://management.azure.com/`.
 
-The main purpose of authenticating using a token is to avoid distributing sensitive service principle details. More details on requesting a token can be found [here](https://docs.microsoft.com/en-us/rest/api/azure/#acquire-an-access-token). As the testing framework leverages the Azure Management API the `resource` should be set to `https://management.azure.com/`.
+*More details on requesting a token can be found [here](https://docs.microsoft.com/en-us/rest/api/azure/#acquire-an-access-token).*
 
 When using a service principal, you need to provide the following information:
 - **Tenant Id** - Identifier of the Azure AD directory
