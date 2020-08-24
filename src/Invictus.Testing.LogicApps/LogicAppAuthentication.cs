@@ -84,7 +84,7 @@ namespace Invictus.Testing.LogicApps
         /// Uses an access token to authenticate with Azure.
         /// </summary>
         /// <param name="subscriptionId">The ID that identifies the subscription on Azure.</param>
-        /// <param name="accessTokenKey">The token to use to call the Azure management API.</param>
+        /// <param name="accessTokenKey">The secret key to use to fetch access token from the secret provider. This will be used to call the Azure management API.</param>
         /// <param name="secretProvider">The provider to get the client secret; using the <paramref name="accessTokenKey"/>.</param>
         public static LogicAppAuthentication UsingAccessToken(string subscriptionId, string accessTokenKey, ISecretProvider secretProvider)
         {
