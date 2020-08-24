@@ -126,6 +126,9 @@ namespace Invictus.Testing.LogicApps
 
         private static async Task<LogicManagementClient> AuthenticateLogicAppsManagementAsync(string subscriptionId, string accessToken)
         {
+            Guard.NotNullOrWhitespace(subscriptionId, nameof(subscriptionId));
+            Guard.NotNullOrWhitespace(accessToken, nameof(accessToken));
+
             return new LogicManagementClient(new TokenCredentials(accessToken))
             {
                 SubscriptionId = subscriptionId
