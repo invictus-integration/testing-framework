@@ -8,6 +8,7 @@ using Invictus.Testing.LogicApps;
 using Microsoft.Azure.Management.Logic;
 using Xunit;
 using Xunit.Abstractions;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace Invictus.Testing.Tests.Integration
 {
@@ -41,6 +42,32 @@ namespace Invictus.Testing.Tests.Integration
             }
 
             Assert.True(_isClientSecretRequested);
+        }
+
+        [Fact]
+        public async Task AuthenticateLogicAppManagement_UsingAccessToken_Succeeds()
+        {
+            // Arrange
+            string subscriptionId = Configuration.GetAzureSubscriptionId();
+            string tenantId = Configuration.GetAzureTenantId();
+            string clientId = Configuration.GetAzureClientId();
+            string clientSecret = Configuration.GetAzureClientSecret();
+
+            string authority = $"https://login.windows.net/{tenantId}";
+
+            var authContext = new AuthenticationContext(authority);
+            var credential = new ClientCredential(clientId, clientSecret);
+
+            AuthenticationResult token = await authContext.AcquireTokenAsync("https://management.azure.com/", credential);
+
+            var authentication = LogicAppAuthentication.UsingAccessToken(subscriptionId, token.AccessToken);
+
+            // Act
+            using (LogicManagementClient managementClient = await authentication.AuthenticateAsync())
+            {
+                // Assert
+                Assert.NotNull(managementClient);
+            }
         }
 
         public Task<string> GetRawSecretAsync(string secretName)
