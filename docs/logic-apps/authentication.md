@@ -42,6 +42,7 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 {	
 }
 ```
+
 ## Using a Access Token
 
 The main purpose of authenticating using a token is to avoid distributing sensitive service principle details. As the testing framework uses the Azure Management API, the `resource` scope when requesting a access token should be set to `https://management.azure.com/`.
