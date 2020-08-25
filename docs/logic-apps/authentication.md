@@ -6,10 +6,11 @@ Before you can start using the Azure Logic App testing features, you need to aut
 
 As of today, we provide the following authentication scenarios:
 
+- [**Prerequisites**](#Prerequisites)
 - [**Using Service Principal**](#using-a-service-principal)
 - [**Using an Access Token**](#using-an-Access-Token)
 
-# Prerequisites 
+## Prerequisites 
 
 Before we can authenticate, you'll need to [create an Azure AD application](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal) which will be used as your service principle.
 
@@ -43,7 +44,7 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 }
 ```
 
-## Using a Access Token
+## Using an Access Token
 
 The main purpose of authenticating using a token is to avoid distributing sensitive service principle details. As the testing framework uses the Azure Management API, the `resource` scope when requesting a access token should be set to `https://management.azure.com/`.
 
