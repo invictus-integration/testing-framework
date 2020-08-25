@@ -50,7 +50,7 @@ The main purpose of authenticating using a token is to avoid distributing sensit
 
 When using a service principal, you need to provide the following information:
 - **Tenant Id** - Identifier of the Azure AD directory
-- **AccessToken** - The token to be used to authenticate with the Azure Management API
+- **Access Token** - The token to be used to authenticate with the Azure Management API
 
 Here is an example:
 ```csharp
