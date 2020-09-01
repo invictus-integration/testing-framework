@@ -49,18 +49,9 @@ namespace Invictus.Testing.Tests.Integration
         {
             // Arrange
             string subscriptionId = Configuration.GetAzureSubscriptionId();
-            string tenantId = Configuration.GetAzureTenantId();
-            string clientId = Configuration.GetAzureClientId();
-            string clientSecret = Configuration.GetAzureClientSecret();
+            string accessToken = Environment.GetEnvironmentVariable("AzureManagementApiAccessToken");
 
-            string authority = $"https://login.windows.net/{tenantId}";
-
-            var authContext = new AuthenticationContext(authority);
-            var credential = new ClientCredential(clientId, clientSecret);
-
-            AuthenticationResult token = await authContext.AcquireTokenAsync("https://management.azure.com/", credential);
-
-            var authentication = LogicAppAuthentication.UsingAccessToken(subscriptionId, token.AccessToken);
+            var authentication = LogicAppAuthentication.UsingAccessToken(subscriptionId, accessToken);
 
             // Act
             using (LogicManagementClient managementClient = await authentication.AuthenticateAsync())
