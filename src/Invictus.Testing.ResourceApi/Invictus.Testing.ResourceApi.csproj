@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Codit</Authors>
+    <Company>Codit</Company>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Azure;Resource Api;Testing</PackageTags>
+    <Description>Provides capabilities for easily testing Azure resources via Api.</Description>
+    <Copyright>Copyright (c) Codit</Copyright>
+    <PackageLicenseUrl>https://github.com/invictus-integration/testing-framework/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/invictus-integration/testing-framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/invictus-integration/testing-framework</RepositoryUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/invictus-integration/testing-framework/master/docs/images/invictus-small.png</PackageIconUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+    <ItemGroup>
+    <PackageReference Include="Arcus.Security.Core" Version="1.2.0" />
+    <PackageReference Include="Arcus.Testing.Logging" Version="0.1.0" />
+    <PackageReference Include="Guard.NET" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Azure.Management.Logic" Version="4.1.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Rest.ClientRuntime.Azure.Authentication" Version="2.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Polly-Signed" Version="5.9.0" />
+  </ItemGroup>
+
+</Project>

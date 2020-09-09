@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{65BD93B8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Invictus.Testing.Tests.Integration", "Invictus.Testing.Tests.Integration\Invictus.Testing.Tests.Integration.csproj", "{621838F3-EF62-46C4-9517-77C2FF919A29}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invictus.Testing.ResourceApi", "Invictus.Testing.ResourceApi\Invictus.Testing.ResourceApi.csproj", "{CB8C7BED-3F6C-4DDF-BDF4-77404B25E366}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{621838F3-EF62-46C4-9517-77C2FF919A29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{621838F3-EF62-46C4-9517-77C2FF919A29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{621838F3-EF62-46C4-9517-77C2FF919A29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB8C7BED-3F6C-4DDF-BDF4-77404B25E366}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB8C7BED-3F6C-4DDF-BDF4-77404B25E366}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB8C7BED-3F6C-4DDF-BDF4-77404B25E366}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB8C7BED-3F6C-4DDF-BDF4-77404B25E366}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
