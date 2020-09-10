@@ -82,7 +82,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |              
                 $token= & az account get-access-token --resource="https://management.azure.com/" --query accessToken
-                Write-Host "##vso[task.setvariable variable=AzureManagementApiAccessToken]$token"
+                Write-Host "##vso[task.setvariable variable=Azure.ManagementApi.AccessToken]$token"
           - template: test/run-integration-tests.yml@templates
             parameters:
               dotnetSdkVersion: '$(DotNet.Sdk.Version)'
