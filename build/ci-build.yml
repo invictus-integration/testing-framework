@@ -74,6 +74,15 @@ stages:
             inputs:
               artifact: 'Build'
               path: '$(Build.SourcesDirectory)'
+          - task: AzureCLI@2
+            displayName: 'Get Token for Azure Management API'
+            inputs:
+              azureSubscription: 'Invictus - Azure'
+              scriptType: pscore
+              scriptLocation: inlineScript
+              inlineScript: |              
+                $token= & az account get-access-token --resource="https://management.azure.com/" --query accessToken
+                Write-Host "##vso[task.setvariable variable=Azure.ManagementApi.AccessToken]$token"
           - template: test/run-integration-tests.yml@templates
             parameters:
               dotnetSdkVersion: '$(DotNet.Sdk.Version)'

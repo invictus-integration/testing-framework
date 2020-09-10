@@ -8,6 +8,7 @@ using Invictus.Testing.LogicApps;
 using Microsoft.Azure.Management.Logic;
 using Xunit;
 using Xunit.Abstractions;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace Invictus.Testing.Tests.Integration
 {
@@ -41,6 +42,23 @@ namespace Invictus.Testing.Tests.Integration
             }
 
             Assert.True(_isClientSecretRequested);
+        }
+
+        [Fact]
+        public async Task AuthenticateLogicAppManagement_UsingAccessToken_Succeeds()
+        {
+            // Arrange
+            string subscriptionId = Configuration.GetAzureSubscriptionId();
+            string accessToken = Configuration.GetAzureAccessToken();
+
+            var authentication = LogicAppAuthentication.UsingAccessToken(subscriptionId, accessToken);
+
+            // Act
+            using (LogicManagementClient managementClient = await authentication.AuthenticateAsync())
+            {
+                // Assert
+                Assert.NotNull(managementClient);
+            }
         }
 
         public Task<string> GetRawSecretAsync(string secretName)
