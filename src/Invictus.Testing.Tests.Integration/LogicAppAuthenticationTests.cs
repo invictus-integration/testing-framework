@@ -49,7 +49,7 @@ namespace Invictus.Testing.Tests.Integration
         {
             // Arrange
             string subscriptionId = Configuration.GetAzureSubscriptionId();
-            string accessToken = Environment.GetEnvironmentVariable("AzureManagementApiAccessToken");
+            string accessToken = Configuration.GetAzureAccessToken();
 
             var authentication = LogicAppAuthentication.UsingAccessToken(subscriptionId, accessToken);
 

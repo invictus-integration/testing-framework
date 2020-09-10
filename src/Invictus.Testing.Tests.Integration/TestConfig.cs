@@ -104,6 +104,14 @@ namespace Invictus.Testing.Tests.Integration
             return GetRequiredValue("Azure:Authentication:ClientSecret");
         }
 
+        /// <summary>
+        /// Gets the access token of the application registered to authenticate with the Azure Logic Apps.
+        /// </summary>
+        public string GetAzureAccessToken()
+        {
+            return GetRequiredValue("Azure:Authentication:AccessToken");
+        }
+
         private string GetRequiredValue(string key)
         {
             string value = _configuration[key];
