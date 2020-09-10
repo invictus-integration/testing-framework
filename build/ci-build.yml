@@ -77,7 +77,7 @@ stages:
           - task: AzureCLI@2
             displayName: 'Get Token for Azure Management API'
             inputs:
-              azureSubscription: XXXX
+              azureSubscription: 'Azure - Codit-Arcus'
               scriptType: pscore
               scriptLocation: inlineScript
               inlineScript: |              
