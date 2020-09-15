@@ -11,7 +11,7 @@
     <PackageLicenseUrl>https://github.com/invictus-integration/testing-framework/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/invictus-integration/testing-framework</PackageProjectUrl>
     <RepositoryUrl>https://github.com/invictus-integration/testing-framework</RepositoryUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/invictus-integration/testing-framework/master/docs/images/invictus-small.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/invictus-integration/testing-framework/master/docs/images/logo/invictus-small.png</PackageIconUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
