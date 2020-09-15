@@ -4,7 +4,8 @@ trigger: none
 pr: none
 
 parameters:
-  - name: 'Package.Version'
+  - name: packageVersion
+    displayName: 'Package.Version'
     type: 'string'
 
 resources:
@@ -21,7 +22,8 @@ variables:
   - template: ./variables/tests.yml
   - name: 'Repository'
     value: 'invictus-integration/testing-framework'
-  # 'Package.Version' is added as queue-time variable on build in Azure DevOps
+  - name: Package.Version
+    value: ${{ parameters.packageVersion }}
 
 stages:
   - stage: Build
