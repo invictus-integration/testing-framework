@@ -46,9 +46,11 @@ using (var logicApp = ...)
 }
 ```
 
-### Temporary enable Logic App
+### Temporary enable/disable Logic App
 
-The library allows you to temporary enable a Logic App which makes sure that after the test the Logic App is back to its disabled state.
+The library allows you to temporary enable or disable a Logic App which makes sure that after the test the Logic App is back to its disabled state.
+
+**Enabling**
 
 ```csharp
 using (var logicApp = ...)
@@ -60,6 +62,19 @@ using (var logicApp = ...)
 ```
 
 The Logic App will be disabled when the returned disposable gets disposed.
+
+**Disabling**
+
+```csharp
+using (var logicApp = ...)
+{
+    await using (await logicApp.TemporaryDisableAsync())
+    {
+    }
+}
+```
+
+The Logic App will be enabled when the returned disposable gets disposed.
 
 ### Temporary update Logic App's workflow definition
 
