@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Bogus;
-using Bogus.Extensions;
 using Invictus.Testing.LogicApps;
 using Invictus.Testing.LogicApps.Model;
 using Microsoft.Azure.Management.Logic.Models;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Invictus.Testing.Tests.Integration
+namespace Invictus.Testing.Tests.Unit.LogicApps
 {
     public class LogicAppConverterTests
     {

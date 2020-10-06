@@ -5,20 +5,20 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Invictus.Testing.LogicApps;
 using Xunit;
 
-namespace Invictus.Testing.Tests.Integration
+namespace Invictus.Testing.Tests.Unit.LogicApps
 {
-    public class LogicAppNotUpdatedExceptionTests
+    public class LogicAppTriggerNotFoundExceptionTests
     {
         [Fact]
         public void CreateException_WithAllProperties_AssignsAllProperties()
         {
             // Arrange
             string logicApp = "logic app name", resourceGroup = "resource group", subscriptionId = "subscription ID";
-            string message = "There's something wrong with updating the logic app";
-            var innerException = new KeyNotFoundException("Couldn't find the logic app");
+            string message = "There's something wrong with finding the trigger in the logic app";
+            var innerException = new KeyNotFoundException("Couldn't find the trigger in the logic app");
 
             // Act
-            var exception = new LogicAppNotUpdatedException(subscriptionId, resourceGroup, logicApp, message, innerException);
+            var exception = new LogicAppTriggerNotFoundException(subscriptionId, resourceGroup, logicApp, message, innerException);
 
             // Assert
             Assert.Equal(message, exception.Message);
@@ -32,13 +32,13 @@ namespace Invictus.Testing.Tests.Integration
         public void SerializeException_WithoutProperties_SerializesWithoutProperties()
         {
             // Arrange
-            var innerException = new InvalidOperationException("Problem with update");
-            var exception = new LogicAppNotUpdatedException("App not updated", innerException);
+            var innerException = new KeyNotFoundException("No trigger with this key found");
+            var exception = new LogicAppTriggerNotFoundException("Trigger could not be found", innerException);
 
             var expected = exception.ToString();
 
             // Act
-            LogicAppNotUpdatedException actual = SerializeDeserializeException(exception);
+            LogicAppTriggerNotFoundException actual = SerializeDeserializeException(exception);
 
             // Assert
             Assert.Equal(expected, actual.ToString());
@@ -49,16 +49,16 @@ namespace Invictus.Testing.Tests.Integration
         {
             // Arrange
             string logicApp = "logic app name",
-                   resourceGroup = "resouce group",
+                   resourceGroup = "resource group",
                    subscriptionId = "subscription ID";
 
-            var innerException = new KeyNotFoundException("Problem with update");
-            var exception = new LogicAppNotUpdatedException(subscriptionId, resourceGroup, logicApp, "App not updated", innerException);
+            var innerException = new KeyNotFoundException("No trigger with this key found");
+            var exception = new LogicAppTriggerNotFoundException(subscriptionId, resourceGroup, logicApp, "Trigger could not be found", innerException);
 
             string expected = exception.ToString();
 
             // Act
-            LogicAppNotUpdatedException actual = SerializeDeserializeException(exception);
+            LogicAppTriggerNotFoundException actual = SerializeDeserializeException(exception);
 
             // Assert
             Assert.Equal(expected, actual.ToString());
@@ -74,7 +74,7 @@ namespace Invictus.Testing.Tests.Integration
         public void Constructor_WithBlankLogicAppName_Fails(string logicAppName)
         {
             Assert.Throws<ArgumentException>(
-                () => new LogicAppNotUpdatedException("subscription ID", "resource group", logicAppName, "App not updated"));
+                () => new LogicAppTriggerNotFoundException("subscription ID", "resource group", logicAppName, "Trigger could not be found"));
         }
 
         [Theory]
@@ -84,7 +84,7 @@ namespace Invictus.Testing.Tests.Integration
         public void Constructor_WithBlankResourceGroup_Fails(string resourceGroup)
         {
             Assert.Throws<ArgumentException>(
-                () => new LogicAppNotUpdatedException("subscription ID", resourceGroup, "logic app", "App not updated"));
+                () => new LogicAppTriggerNotFoundException("subscription ID", resourceGroup, "logic app", "Trigger could not be found"));
         }
 
         [Theory]
@@ -94,7 +94,7 @@ namespace Invictus.Testing.Tests.Integration
         public void Constructor_WithBlankSubscriptionId_Fails(string subscriptionId)
         {
             Assert.Throws<ArgumentException>(
-                () => new LogicAppNotUpdatedException(subscriptionId, "resource group", "logic app", "App not updated"));
+                () => new LogicAppTriggerNotFoundException(subscriptionId, "resource group", "logic app", "Trigger could not be found"));
         }
 
         [Theory]
@@ -105,7 +105,7 @@ namespace Invictus.Testing.Tests.Integration
         {
             var innerException = new Exception("The cause of the exception");
             Assert.Throws<ArgumentException>(
-                () => new LogicAppNotUpdatedException("subscription ID", "resource group", logicAppName, "App not updated", innerException));
+                () => new LogicAppTriggerNotFoundException("subscription ID", "resource group", logicAppName, "Trigger could not be found", innerException));
         }
 
         [Theory]
@@ -116,7 +116,7 @@ namespace Invictus.Testing.Tests.Integration
         {
             var innerException = new Exception("The cause of the exception");
             Assert.Throws<ArgumentException>(
-                () => new LogicAppNotUpdatedException("subscription ID", resourceGroup, "logic app", "App not updated", innerException));
+                () => new LogicAppTriggerNotFoundException("subscription ID", resourceGroup, "logic app", "Trigger could not be found", innerException));
         }
 
         [Theory]
@@ -127,10 +127,10 @@ namespace Invictus.Testing.Tests.Integration
         {
             var innerException = new Exception("The cause of the exception");
             Assert.Throws<ArgumentException>(
-                () => new LogicAppNotUpdatedException(subscriptionId, "resource group", "logic app", "Trigger could not be found", innerException));
+                () => new LogicAppTriggerNotFoundException(subscriptionId, "resource group", "logic app", "Trigger could not be found", innerException));
         }
 
-        private static LogicAppNotUpdatedException SerializeDeserializeException(LogicAppNotUpdatedException exception)
+        private static LogicAppTriggerNotFoundException SerializeDeserializeException(LogicAppTriggerNotFoundException exception)
         {
             var formatter = new BinaryFormatter();
             using (var contents = new MemoryStream())
@@ -138,7 +138,7 @@ namespace Invictus.Testing.Tests.Integration
                 formatter.Serialize(contents, exception);
                 contents.Seek(0, 0);
 
-                var deserialized = (LogicAppNotUpdatedException) formatter.Deserialize(contents);
+                var deserialized = (LogicAppTriggerNotFoundException) formatter.Deserialize(contents);
                 return deserialized;
             }
         }

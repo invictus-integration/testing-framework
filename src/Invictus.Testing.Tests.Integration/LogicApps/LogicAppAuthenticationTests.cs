@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Arcus.Security.Core;
 using GuardNet;
@@ -8,9 +8,8 @@ using Invictus.Testing.LogicApps;
 using Microsoft.Azure.Management.Logic;
 using Xunit;
 using Xunit.Abstractions;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
-namespace Invictus.Testing.Tests.Integration
+namespace Invictus.Testing.Tests.Integration.LogicApps
 {
     public class LogicAppAuthenticationTests : IntegrationTest, ISecretProvider
     {
