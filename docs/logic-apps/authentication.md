@@ -9,6 +9,7 @@ As of today, we provide the following authentication scenarios:
 - [**Prerequisites**](#Prerequisites)
 - [**Using Service Principal**](#using-a-service-principal)
 - [**Using an Access Token**](#using-an-Access-Token)
+- [**Supporting all cloud environments**](#supporting-all-cloud-environments)
 
 ## Prerequisites 
 
@@ -53,15 +54,6 @@ ISecretProvider secretProvider = ...
 var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecretKey, secretProvider);
 ```
 
-Both approaches allow you to pass along an optional Azure cloud environment to which the instance should authenticate and interact with the Logic Apps running on Azure.
-By default, it will use the global Azure environment.
-
-```csharp
-AzureCloud cloud = AzureCloud.German;
-
-var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret, cloud);
-```
-
 ## Using an Access Token
 
 The main purpose of authenticating using a token is to avoid distributing sensitive service principle details. As the testing framework uses the Azure Management API, the `resource` scope when requesting a access token should be set to `https://management.azure.com/`.
@@ -89,3 +81,18 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 {	
 }
 ```
+
+## Supporting all cloud environments
+
+All the following authentication approaches allows you to pass along an optional Azure cloud environment to which the instance should authenticate and interact with the Logic Apps running on Azure.
+
+* Service principal
+
+By default, it will use the global Azure environment.
+
+```csharp
+AzureCloud cloud = AzureCloud.German;
+
+var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret, cloud);
+```
+
