@@ -48,10 +48,10 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 Or, alternatively you can choose to store the **client secret** in a secret store and retrieve it with an `ISecretProvider` instance.
 
 ```csharp
-string clientSecretKey = "my-client-secret-key";
+string clientSecretName = "my-client-secret-key";
 ISecretProvider secretProvider = ...
 
-var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecretKey, secretProvider);
+var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecretName, secretProvider);
 ```
 
 ## Using an Access Token
