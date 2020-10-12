@@ -16,6 +16,15 @@ The features described here requires the following package:
 
 All the following features uses the `LogicAppClient` which can be created using [an Logic App authentication](/authentication.md).
 
+- [Gets Logic App metadata](#gets-logic-app-metadata)
+- [Gets Logic App trigger URL](#gets-logic-app-trigger-url)
+- [Temporary enable/disable Logic App](#temporary-enabledisable-logic-app)
+- [Temporary update Logic App's workflow definition](#temporary-update-logic-apps-workflow-definition)
+- [Temporary enabling static result on Logic App](#temporary-enabling-static-result-on-logic-app)
+- [Running an Logic App](#running-an-logic-app)
+- [Triggering an Logic App](#triggering-an-logic-app)
+- [Delete an Logic App](#delete-an-logic-app)
+
 ### Gets Logic App metadata
 
 This library allows you to retrieve extra metadata about the logic app, such as the name, the current workflow definition, access endpoint...
