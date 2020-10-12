@@ -60,7 +60,7 @@ namespace Invictus.Testing.LogicApps
         /// <param name="tenantId">The ID where the resources are located on Azure.</param>
         /// <param name="subscriptionId">The ID that identifies the subscription on Azure.</param>
         /// <param name="clientId">The ID of the client or application that has access to the logic apps running on Azure.</param>
-        /// <param name="clientSecret">The secret of the client or application that has access to the logic apps running on Azure.</param>
+        /// <param name="clientSecret">The authentication key of the client or application that has access to the logic apps running on Azure.</param>
         /// <param name="cloud">The Azure cloud environment to use during authenticating and interacting with the Azure Logic Apps resources.</param>
         /// <exception cref="ArgumentException">Thrown when the <paramref name="tenantId"/>, <paramref name="subscriptionId"/>, <paramref name="clientId"/>, or <paramref name="clientSecret"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when the <paramref name="cloud"/> is outside the bounds of the enumeration.</exception>
