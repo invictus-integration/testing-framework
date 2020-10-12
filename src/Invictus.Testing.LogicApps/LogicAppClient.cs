@@ -125,6 +125,27 @@ namespace Invictus.Testing.LogicApps
         }
 
         /// <summary>
+        /// Temporary disables the current logic app resource on Azure, and enables the logic app after the returned instance gets disposed.
+        /// </summary>
+        /// <returns>
+        ///     An instance to control the removal of the updates.
+        /// </returns>
+        public async Task<IAsyncDisposable> TemporaryDisableAsync()
+        {
+            return await AsyncDisposable.CreateAsync(
+                async () =>
+                {
+                    _logger.LogTrace("Disables (-) the workflow on logic app '{LogicAppName}' in resource group '{ResourceGroup}'", _logicAppName, _resourceGroup);
+                    await _logicManagementClient.Workflows.DisableAsync(_resourceGroup, _logicAppName);
+                },
+                async () =>
+                {
+                    _logger.LogTrace("Enables (+) the workflow on logic app '{LogicAppName}' in resource group '{ResourceGroup}'", _logicAppName, _resourceGroup);
+                    await _logicManagementClient.Workflows.EnableAsync(_resourceGroup, _logicAppName);
+                });
+        }
+
+        /// <summary>
         /// Updates the current JSON logic app definition with the given <paramref name="logicAppDefinition"/>,
         /// and removes this update after the returned instance gets disposed.
         /// </summary>

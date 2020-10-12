@@ -200,6 +200,26 @@ namespace Invictus.Testing.Tests.Integration
         }
 
         [Fact]
+        public async Task TemporaryDisableLogicApp_Succeeds()
+        {
+            // Arrange
+            using (var logicApp = await LogicAppClient.CreateAsync(ResourceGroup, LogicAppMockingName, Authentication, Logger))
+            {
+                // Act
+                await using (await logicApp.TemporaryDisableAsync())
+                {
+                    // Assert
+                    LogicAppMetadata metadata = await logicApp.GetMetadataAsync();
+                    Assert.Equal(LogicAppState.Disabled, metadata.State);
+                }
+                {
+                    LogicAppMetadata metadata = await logicApp.GetMetadataAsync();
+                    Assert.Equal(LogicAppState.Enabled, metadata.State);
+                }
+            }
+        }
+
+        [Fact]
         public async Task TemporaryUpdateLogicApp_WithUpdatedResponse_ReturnsUpdatedResponse()
         {
             // Arrange
