@@ -9,7 +9,7 @@ using Microsoft.Azure.Management.Logic.Models;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Invictus.Testing.Tests.Integration
+namespace Invictus.Testing.Tests.Unit.LogicApps
 {
     public class LogicAppConverterTests
     {

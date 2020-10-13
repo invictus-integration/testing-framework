@@ -7,7 +7,7 @@ using Invictus.Testing.LogicApps.Model;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Invictus.Testing.Tests.Integration
+namespace Invictus.Testing.Tests.Integration.LogicApps
 {
     public class LogicAppsProviderTests : IntegrationTest
     {

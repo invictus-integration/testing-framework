@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Invictus.Testing.LogicApps;
 using Xunit;
 
-namespace Invictus.Testing.Tests.Integration
+namespace Invictus.Testing.Tests.Unit.LogicApps
 {
     public class LogicAppExceptionTests
     {

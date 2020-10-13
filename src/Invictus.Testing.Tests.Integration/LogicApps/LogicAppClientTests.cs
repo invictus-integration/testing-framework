@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Invictus.Testing.Tests.Integration
+namespace Invictus.Testing.Tests.Integration.LogicApps
 {
     public class LogicAppClientTests : IntegrationTest
     {

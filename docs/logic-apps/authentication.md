@@ -9,6 +9,7 @@ As of today, we provide the following authentication scenarios:
 - [**Prerequisites**](#Prerequisites)
 - [**Using Service Principal**](#using-a-service-principal)
 - [**Using an Access Token**](#using-an-Access-Token)
+- [**Supporting all cloud environments**](#supporting-all-cloud-environments)
 
 ## Prerequisites 
 
@@ -22,7 +23,7 @@ When using a service principal, you need to provide the following information:
 - **Tenant Id** - Identifier of the Azure AD directory
 - **Subscription Id** - Identifier of the Azure subscription that contains your Azure Logic App
 - **Client Id** - Identifier of the service principal in Azure AD. In this case, it is the application id of the Azure AD app.
-- **Client Id** - Secret of the service principal in Azure AD to authenticate with.
+- **Client Secret** - Secret of the service principal in Azure AD to authenticate with.
 
 Here is an example:
 ```csharp
@@ -42,6 +43,15 @@ var provider = LogicAppsProvider.LocatedAt(resourceGroupName, logicAppName, auth
 using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppName, authentication))	
 {	
 }
+```
+
+Or, alternatively you can choose to store the **client secret** in a secret store and retrieve it with an `ISecretProvider` instance.
+
+```csharp
+string clientSecretName = "my-client-secret-key";
+ISecretProvider secretProvider = ...
+
+var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecretName, secretProvider);
 ```
 
 ## Using an Access Token
@@ -71,3 +81,18 @@ using (var logicApp = await LogicAppClient.CreateAsync(resourceGroup, logicAppNa
 {	
 }
 ```
+
+## Supporting all cloud environments
+
+All the following authentication approaches allows you to pass along an optional Azure cloud environment to which the instance should authenticate and interact with the Logic Apps running on Azure.
+
+* Service principal
+
+By default, it will use the global Azure environment.
+
+```csharp
+AzureCloud cloud = AzureCloud.German;
+
+var authentication = LogicAppAuthentication.UsingServicePrincipal(tenantId, subscriptionId, clientId, clientSecret, cloud);
+```
+
