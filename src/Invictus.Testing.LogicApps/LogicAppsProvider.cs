@@ -287,8 +287,8 @@ namespace Invictus.Testing.LogicApps
             var actions = new Collection<LogicAppAction>();
             foreach (WorkflowRunAction workflowRunAction in workflowRunActions)
             {
-                JToken input = await GetHttpJsonStringAsync(workflowRunAction.InputsLink?.Uri);
-                JToken output = await GetHttpJsonStringAsync(workflowRunAction.OutputsLink?.Uri);
+                string input = await GetHttpJsonStringAsync(workflowRunAction.InputsLink?.Uri);
+                string output = await GetHttpJsonStringAsync(workflowRunAction.OutputsLink?.Uri);
                 
                 var action = LogicAppConverter.ToLogicAppAction(workflowRunAction, input, output);
                 actions.Add(action);
@@ -298,12 +298,12 @@ namespace Invictus.Testing.LogicApps
             return actions.AsEnumerable();
         }
 
-        private static async Task<JToken> GetHttpJsonStringAsync(string uri)
+        private static async Task<string> GetHttpJsonStringAsync(string uri)
         {
             if (uri != null)
             {
-                string json = await HttpClient.GetStringAsync(uri);
-                return JToken.Parse(json);
+                string content = await HttpClient.GetStringAsync(uri);
+                return content;
             }
 
             return null;
